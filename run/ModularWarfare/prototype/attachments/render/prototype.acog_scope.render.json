@@ -1,0 +1,17 @@
+{
+  "modelFileName": "acog_scope.obj",
+  "extra": {
+    "modelScale": 1.0
+  },
+  "sight": {
+    "fovZoom": 8.0,
+    "mouseSensitivityFactor": 0.6
+  },
+  "grip": {
+    "leftArmOffset": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    }
+  }
+}

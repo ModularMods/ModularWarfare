@@ -1,0 +1,15 @@
+{
+  "displayName": "Mono. AK Suppressor",
+  "internalName": "prototype.ak47_suppressor",
+  "attachmentType": "barrel",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.ak47_suppressor",
+      "displayName": "AK47 Suppressor - Default"
+    }
+  ],
+  "barrel": {
+    "isSuppressor": true,
+    "hideFlash": true
+  }
+}

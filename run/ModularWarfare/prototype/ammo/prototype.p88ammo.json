@@ -1,0 +1,11 @@
+{
+    "internalName": "prototype.p88ammo",
+    "displayName": "P88 Mag 15rnd",
+    "numBullets": 1,
+    "ammoCapacity": 15,
+    "subAmmo": [
+        "prototype.9x19"
+    ],
+    "magazineCount": 1,
+    "reloadTime": 4
+}

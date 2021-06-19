@@ -1,0 +1,15 @@
+{
+  "displayName": "AR Suppressor",
+  "internalName": "prototype.ar_suppressor",
+  "attachmentType": "barrel",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.ar_suppressor",
+      "displayName": "AR Suppressor - Default"
+    }
+  ],
+  "barrel": {
+    "isSuppressor": true,
+    "hideFlash": true
+  }
+}

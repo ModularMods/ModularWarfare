@@ -1,0 +1,15 @@
+{
+  "displayName": "VSS PSV Scope",
+  "internalName": "prototype.psv_scope",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.psv_scope",
+      "displayName": "PSV Scope - Default"
+    }
+  ],
+  "sight": {
+    "scopeType": "2x",
+    "dotColorType": "green"
+  }
+}

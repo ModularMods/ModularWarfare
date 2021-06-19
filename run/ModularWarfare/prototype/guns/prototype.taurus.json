@@ -1,0 +1,84 @@
+{
+    "displayName": "Taurus Raging Bull",
+    "internalName": "prototype.taurus",
+    "gunDamage": 11,
+    "roundsPerMin": 350,
+    "allowEmptyMagazines": true,
+    "weaponType": "revolver",
+    "fireModes": ["semi"],
+
+    "acceptedBullets": ["prototype.44magnum"],
+    "internalAmmoStorage": 6,
+    "reloadTime": 120,
+
+    "recoilPitch": 15.0,
+    "recoilYaw": 3.0,
+    "randomRecoilPitch": 1.0,
+    "randomRecoilYaw": 2.0,
+
+    "armPose": "ITEM",
+    "armPoseAiming": "BOW_AND_ARROW",
+
+    "accuracySneakFactor": 0.75,
+    "moveSpeedModifier": 1.0,
+    "allowSprintFiring": true,
+
+    "dropBulletCasing": false,
+    "weaponSoundMap": {
+        "weaponFire": [
+            {
+                "soundEvent": "weaponFire",
+                "soundName": "prototype.taurus.shoot",
+                "soundNameDistant": "prototype.taurus.shoot.distant",
+                "soundRange": 64,
+                "soundMaxRange": 96,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponReload": [
+            {
+                "soundEvent": "weaponReload",
+                "soundName": "prototype.p88.reload"
+            }
+        ],
+        "weaponUnload": [
+            {
+                "soundEvent": "weaponUnload",
+                "soundName": "prototype.generic.unload"
+            }
+        ],
+        "weaponLoad": [
+            {
+                "soundEvent": "weaponLoad",
+                "soundName": "prototype.generic.load"
+            }
+        ],
+        "weaponFireSuppressed": [
+            {
+                "soundEvent": "weaponFireSuppressed",
+                "soundName": "prototype.p88.shoot.sup",
+                "soundRange": 30,
+                "soundMaxRange": 30,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponBulletLoad": [
+            {
+                "soundEvent": "weaponBulletLoad",
+                "soundName": "prototype.spas12.chamber"
+            }
+        ]
+    },
+    "acceptedAttachments": {
+        "flashlight": [
+            "prototype.tactical_flashlight"
+        ]
+    },
+    "modelSkins": [
+        {
+            "internalName": "prototype.taurus",
+            "skinAsset": "prototype.taurus",
+            "displayName": "Default"
+        }
+    ]
+}

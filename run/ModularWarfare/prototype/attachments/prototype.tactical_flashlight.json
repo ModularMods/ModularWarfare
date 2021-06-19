@@ -1,0 +1,11 @@
+{
+  "displayName": "Tactical Flashlight",
+  "internalName": "prototype.tactical_flashlight",
+  "attachmentType": "flashlight",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.tactical_flashlight",
+      "displayName": "Tactical Flashlight - Default"
+    }
+  ]
+}

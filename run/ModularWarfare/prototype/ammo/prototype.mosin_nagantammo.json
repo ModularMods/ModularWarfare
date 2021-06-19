@@ -1,0 +1,10 @@
+{
+  "displayName": "Mosin Nagant Stripper Clip 5rnd",
+  "internalName": "prototype.mosin_nagantammo",
+  "skinAsset": "default",
+  "ammoCapacity": 5,
+  "allowEmptyMagazines": true,
+  "subAmmo": [
+    "prototype.7_62x54"
+  ]
+}

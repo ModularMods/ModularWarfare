@@ -1,0 +1,82 @@
+{
+    "internalName": "prototype.ak74u",
+    "displayName": "AK74u",
+    "weaponType": "carbine",
+
+    "gunDamage": 8,
+    "gunDamageHeadshotBonus": 2,
+
+    "roundsPerMin": 500,
+
+    "allowEmptyMagazines": true,
+
+    "recoilPitch": 4.0,
+    "recoilYaw": 1.5,
+    "randomRecoilPitch": 0.8,
+    "randomRecoilYaw": 0.8,
+    "bulletSpread": 1.25,
+
+    "accuracySneakFactor": 0.5,
+    "moveSpeedModifier": 1.0,
+    "allowSprintFiring": true,
+
+    "fireModes": ["full", "semi"],
+    "acceptedAmmo": ["prototype.ak74uammo", "prototype.ak74ufastmag"],
+
+    "dropBulletCasing": true,
+    "shellEjectOffsetNormal": {
+        "x": -1.0,
+        "y": 0.0,
+        "z": 1.0
+    },
+    "shellEjectOffsetAiming": {
+        "x": -0.2,
+        "y": 0.12,
+        "z": 0.5
+    },
+    "weaponSoundMap": {
+        "weaponFire": [
+            {
+                "soundEvent": "weaponFire",
+                "soundName": "prototype.ak74u.shoot",
+                "soundNameDistant": "prototype.ak74u.shoot.distant",
+                "soundRange": 64,
+                "soundMaxRange": 96,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponUnload": [
+            {
+                "soundEvent": "weaponReload",
+                "soundName": "prototype.generic.reload"
+            }
+        ],
+        "weaponFireSuppressed": [
+            {
+                "soundEvent": "weaponFireSuppressed",
+                "soundName": "prototype.ak74u.shoot.sup",
+                "soundRange": 30,
+                "soundMaxRange": 30,
+                "soundFadeMultiplier": 1
+            }
+        ]
+    },
+    "acceptedAttachments": {
+        "barrel": [
+            "prototype.ak47_suppressor"
+        ],
+        "sight": [
+            "prototype.obzor_sight"
+        ],
+        "flashlight": [
+            "prototype.ak74u_flashlight"
+        ]
+    },
+    "modelSkins": [
+        {
+            "internalName": "prototype.ak74u",
+            "skinAsset": "prototype.ak74u",
+            "displayName": "Default"
+        }
+    ]
+}

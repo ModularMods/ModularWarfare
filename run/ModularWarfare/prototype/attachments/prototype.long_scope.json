@@ -1,0 +1,14 @@
+{
+  "displayName": "Long Scope",
+  "internalName": "prototype.long_scope",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.long_scope",
+      "displayName": "Long Scope - Default"
+    }
+  ],
+  "sight": {
+    "scopeType": "15x"
+  }
+}

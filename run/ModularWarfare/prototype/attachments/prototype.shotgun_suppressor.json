@@ -1,0 +1,15 @@
+{
+  "displayName": "Mono. Shotgun Suppressor",
+  "internalName": "prototype.shotgun_suppressor",
+  "attachmentType": "barrel",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.shotgun_suppressor",
+      "displayName": "Mono. Shotgun Suppressor - Default"
+    }
+  ],
+  "barrel": {
+    "isSuppressor": true,
+    "hideFlash": true
+  }
+}

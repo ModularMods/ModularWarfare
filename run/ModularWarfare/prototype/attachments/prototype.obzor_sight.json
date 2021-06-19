@@ -1,0 +1,15 @@
+{
+  "displayName": "Obzor Sight",
+  "internalName": "prototype.obzor_sight",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.obzor_sight",
+      "displayName": "Obzor Sight - Default"
+    }
+  ],
+  "sight": {
+    "scopeType": "2x",
+    "dotColorType": "red"
+  }
+}

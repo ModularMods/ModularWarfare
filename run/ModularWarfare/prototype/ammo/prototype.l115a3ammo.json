@@ -1,0 +1,10 @@
+{
+  "displayName": "L115A3 Mag 5rnd",
+  "internalName": "prototype.l115a3ammo",
+  "skinAsset": "default",
+  "ammoCapacity": 5,
+  "allowEmptyMagazines": true,
+  "subAmmo": [
+    "prototype.300win"
+  ]
+}

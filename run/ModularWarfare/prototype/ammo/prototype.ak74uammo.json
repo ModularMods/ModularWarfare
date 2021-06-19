@@ -1,0 +1,10 @@
+{
+    "internalName": "prototype.ak74uammo",
+    "displayName": "AK74u Mag 30rnd ",
+    "ammoCapacity": 30,
+    "magazineCount": 1,
+    "subAmmo": [
+        "prototype.7_62x39"
+    ],
+    "allowEmptyMagazines": true
+}

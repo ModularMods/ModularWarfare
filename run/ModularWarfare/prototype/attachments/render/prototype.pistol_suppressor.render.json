@@ -1,0 +1,9 @@
+{
+  "modelFileName": "pistol_suppressor.obj",
+  "extra": {
+    "modelScale": 1.0
+  },
+  "barrel": {
+    "hideMuzzleFlash": true
+  }
+}

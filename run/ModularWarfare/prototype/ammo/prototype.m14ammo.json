@@ -1,0 +1,10 @@
+{
+    "internalName": "prototype.m14ammo",
+    "displayName": "M14 Mag 20rnd",
+    "ammoCapacity": 20,
+    "magazineCount": 1,
+    "subAmmo": [
+        "prototype.7_62x51"
+    ],
+    "allowEmptyMagazines": true
+}

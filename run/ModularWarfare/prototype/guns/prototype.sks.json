@@ -1,0 +1,81 @@
+{
+    "internalName": "prototype.sks",
+    "displayName": "SKS",
+    "weaponType": "dmr",
+    "gunDamage": 9.7,
+    "moveSpeedModifier": 1.0,
+    "roundsPerMin": 200,
+    "reloadTime": 40,
+    "gunDamageHeadshotBonus": 2,
+    "fireModes": [
+        "semi"
+    ],
+    "accuracySneakFactor": 0.3,
+    "allowEmptyMagazines": true,
+    "allowSprintFiring": true,
+    "recoilPitch": 4.0,
+    "recoilYaw": 1.0,
+    "randomRecoilPitch": 0.8,
+    "randomRecoilYaw": 0.8,
+    "acceptedAttachments": {
+        "barrel": [
+            "prototype.sr_suppressor"
+        ]
+    },
+
+    "dropBulletCasing": true,
+    "shellEjectOffsetNormal": {
+        "x": -1.0,
+        "y": 0.0,
+        "z": 1.0
+    },
+    "shellEjectOffsetAiming": {
+        "x": -0.2,
+        "y": 0.12,
+        "z": 0.5
+    },
+    "modelSkins": [
+        {
+            "internalName": "prototype.sks",
+            "skinAsset": "prototype.sks",
+            "displayName": "Default"
+        }
+    ],
+    "acceptedAmmo": [
+        "prototype.sksammo"
+    ],
+    "weaponSoundMap": {
+        "weaponFire": [
+            {
+                "soundEvent": "weaponFire",
+                "soundName": "prototype.sks.shoot",
+                "soundNameDistant": "prototype.sks.distant",
+                "soundRange": 64,
+                "soundMaxRange": 96,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponFireSuppressed": [
+            {
+                "soundEvent": "weaponFireSuppressed",
+                "soundName": "prototype.sks.shoot.sup",
+                "soundNameDistant": "prototype.sks.sup",
+                "soundRange": 20,
+                "soundMaxRange": 32,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponReload": [
+            {
+                "soundEvent": "weaponReload",
+                "soundName": "prototype.sks.reload"
+            }
+        ],
+        "weaponBolt": [
+            {
+                "soundEvent": "weaponBolt",
+                "soundName": "prototype.sks.bolt"
+            }
+        ]
+    }
+}

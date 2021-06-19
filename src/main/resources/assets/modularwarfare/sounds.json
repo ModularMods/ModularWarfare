@@ -1,0 +1,418 @@
+{
+  "defweaponmodeswitch": {
+    "category": "player",
+    "subtitle": "MW Sound",
+    "sounds": [
+      "modularwarfare:defweaponmodeswitch"
+    ]
+  },
+  "defemptyclick": {
+    "category": "player",
+    "subtitle": "MW Sound",
+    "sounds": [
+      "modularwarfare:defemptyclick"
+    ]
+  },
+  "hitmarker": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:hitmarker"
+    ]
+  },
+  "load": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:load"
+    ]
+  },
+  "unload": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:unload"
+    ]
+  },
+  "reload": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:reload"
+    ]
+  },
+  "punched": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:punched"
+    ]
+  },
+  "spray": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:spray"
+    ]
+  },
+  "grenade_throw": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:grenade/throw"
+    ]
+  },
+  "grenade_hit": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:grenade/hit"
+    ]
+  },
+  "grenade_arm": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:grenade/arm"
+    ]
+  },
+  "explosions.close": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:explosions/close/close1",
+      "modularwarfare:explosions/close/close2",
+      "modularwarfare:explosions/close/close3"
+    ]
+  },
+  "explosions.distant": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:explosions/distant/distant1",
+      "modularwarfare:explosions/distant/distant2",
+      "modularwarfare:explosions/distant/distant3"
+    ]
+  },
+  "explosions.far": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:explosions/far/far1",
+      "modularwarfare:explosions/far/far2",
+      "modularwarfare:explosions/far/far3"
+    ]
+  },
+  "attachment.open": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:attachment/open1",
+      "modularwarfare:attachment/open2",
+      "modularwarfare:attachment/open3",
+      "modularwarfare:attachment/open4"
+    ]
+  },
+  "attachment.apply": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:attachment/apply1",
+      "modularwarfare:attachment/apply2",
+      "modularwarfare:attachment/apply3",
+      "modularwarfare:attachment/apply4"
+    ]
+  },
+  "impact.dirt": {
+    "category": "player",
+    "volume": 0.25,
+    "sounds": [
+      "modularwarfare:bullet/impact/dirt1",
+      "modularwarfare:bullet/impact/dirt2",
+      "modularwarfare:bullet/impact/dirt3",
+      "modularwarfare:bullet/impact/dirt4"
+    ]
+  },
+  "impact.glass": {
+    "category": "player",
+    "volume": 0.25,
+    "sounds": [
+      "modularwarfare:bullet/impact/glass1",
+      "modularwarfare:bullet/impact/glass2",
+      "modularwarfare:bullet/impact/glass3",
+      "modularwarfare:bullet/impact/glass4"
+    ]
+  },
+  "impact.metal": {
+    "category": "player",
+    "volume": 0.25,
+    "sounds": [
+      "modularwarfare:bullet/impact/metal1",
+      "modularwarfare:bullet/impact/metal2",
+      "modularwarfare:bullet/impact/metal3",
+      "modularwarfare:bullet/impact/metal4"
+    ]
+  },
+  "impact.stone": {
+    "category": "player",
+    "volume": 0.25,
+    "sounds": [
+      "modularwarfare:bullet/impact/stone1",
+      "modularwarfare:bullet/impact/stone2",
+      "modularwarfare:bullet/impact/stone3",
+      "modularwarfare:bullet/impact/stone4"
+    ]
+  },
+  "impact.water": {
+    "category": "player",
+    "volume": 0.25,
+    "sounds": [
+      "modularwarfare:bullet/impact/water1",
+      "modularwarfare:bullet/impact/water2",
+      "modularwarfare:bullet/impact/water3",
+      "modularwarfare:bullet/impact/water4"
+    ]
+  },
+  "impact.wood": {
+    "category": "player",
+    "volume": 0.25,
+    "sounds": [
+      "modularwarfare:bullet/impact/wood1",
+      "modularwarfare:bullet/impact/wood2",
+      "modularwarfare:bullet/impact/wood3",
+      "modularwarfare:bullet/impact/wood4"
+    ]
+  },
+  "flyby": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:bullet/flyby/idle1",
+      "modularwarfare:bullet/flyby/idle2",
+      "modularwarfare:bullet/flyby/idle3",
+      "modularwarfare:bullet/flyby/idle4",
+      "modularwarfare:bullet/flyby/idle5",
+      "modularwarfare:bullet/flyby/idle6",
+      "modularwarfare:bullet/flyby/idle7",
+      "modularwarfare:bullet/flyby/idle8",
+      "modularwarfare:bullet/flyby/idle9",
+      "modularwarfare:bullet/flyby/idle10",
+      "modularwarfare:bullet/flyby/idle11",
+      "modularwarfare:bullet/flyby/idle12",
+      "modularwarfare:bullet/flyby/idle13",
+      "modularwarfare:bullet/flyby/idle14"
+    ]
+  },
+  "crack": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:bullet/crack/crack1",
+      "modularwarfare:bullet/crack/crack2",
+      "modularwarfare:bullet/crack/crack3",
+      "modularwarfare:bullet/crack/crack4",
+      "modularwarfare:bullet/crack/crack5",
+      "modularwarfare:bullet/crack/crack6",
+      "modularwarfare:bullet/crack/crack7"
+    ]
+  },
+  "casing": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:bullet/casings/casing1",
+      "modularwarfare:bullet/casings/casing2",
+      "modularwarfare:bullet/casings/casing3",
+      "modularwarfare:bullet/casings/casing4",
+      "modularwarfare:bullet/casings/casing5",
+      "modularwarfare:bullet/casings/casing6",
+      "modularwarfare:bullet/casings/casing7",
+      "modularwarfare:bullet/casings/casing8",
+      "modularwarfare:bullet/casings/casing9",
+      "modularwarfare:bullet/casings/casing10"
+    ]
+  },
+  "close": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:bullet/shoot/close1",
+      "modularwarfare:bullet/shoot/close2",
+      "modularwarfare:bullet/shoot/close3",
+      "modularwarfare:bullet/shoot/close4",
+      "modularwarfare:bullet/shoot/close5"
+    ]
+  },
+  "far": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:bullet/shoot/far1",
+      "modularwarfare:bullet/shoot/far2",
+      "modularwarfare:bullet/shoot/far3",
+      "modularwarfare:bullet/shoot/far4",
+      "modularwarfare:bullet/shoot/far5"
+    ]
+  },
+  "distant": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:bullet/shoot/distant1"
+    ]
+  },
+  "indoors": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:bullet/shoot/indoors"
+    ]
+  },
+  "penetration": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:bullet/penetration/impact/impact1",
+      "modularwarfare:bullet/penetration/impact/impact2",
+      "modularwarfare:bullet/penetration/impact/impact3",
+      "modularwarfare:bullet/penetration/impact/impact4"
+    ]
+  },
+  "human.step.grass.walk": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/grass/walk/walk1",
+      "modularwarfare:human/step/grass/walk/walk2",
+      "modularwarfare:human/step/grass/walk/walk3",
+      "modularwarfare:human/step/grass/walk/walk4",
+      "modularwarfare:human/step/grass/walk/walk5"
+    ]
+  },
+  "human.step.grass.sprint": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/grass/sprint/sprint1",
+      "modularwarfare:human/step/grass/sprint/sprint2",
+      "modularwarfare:human/step/grass/sprint/sprint3",
+      "modularwarfare:human/step/grass/sprint/sprint4",
+      "modularwarfare:human/step/grass/sprint/sprint5"
+    ]
+  },
+  "human.step.stone.walk": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/stone/walk/walk1",
+      "modularwarfare:human/step/stone/walk/walk2",
+      "modularwarfare:human/step/stone/walk/walk3",
+      "modularwarfare:human/step/stone/walk/walk4",
+      "modularwarfare:human/step/stone/walk/walk5"
+    ]
+  },
+  "human.step.stone.sprint": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/stone/sprint/sprint1",
+      "modularwarfare:human/step/stone/sprint/sprint2",
+      "modularwarfare:human/step/stone/sprint/sprint3",
+      "modularwarfare:human/step/stone/sprint/sprint4",
+      "modularwarfare:human/step/stone/sprint/sprint5"
+    ]
+  },
+  "human.step.metal.walk": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/metal/walk/walk1",
+      "modularwarfare:human/step/metal/walk/walk2",
+      "modularwarfare:human/step/metal/walk/walk3",
+      "modularwarfare:human/step/metal/walk/walk4",
+      "modularwarfare:human/step/metal/walk/walk5"
+    ]
+  },
+  "human.step.metal.sprint": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/metal/sprint/sprint1",
+      "modularwarfare:human/step/metal/sprint/sprint2",
+      "modularwarfare:human/step/metal/sprint/sprint3",
+      "modularwarfare:human/step/metal/sprint/sprint4",
+      "modularwarfare:human/step/metal/sprint/sprint5"
+    ]
+  },
+  "human.step.snow.walk": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/snow/walk/walk1",
+      "modularwarfare:human/step/snow/walk/walk2",
+      "modularwarfare:human/step/snow/walk/walk3",
+      "modularwarfare:human/step/snow/walk/walk4",
+      "modularwarfare:human/step/snow/walk/walk5"
+    ]
+  },
+  "human.step.snow.sprint": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/snow/sprint/sprint1",
+      "modularwarfare:human/step/snow/sprint/sprint2",
+      "modularwarfare:human/step/snow/sprint/sprint3",
+      "modularwarfare:human/step/snow/sprint/sprint4",
+      "modularwarfare:human/step/snow/sprint/sprint5"
+    ]
+  },
+  "human.step.wood.walk": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/wood/walk/walk1",
+      "modularwarfare:human/step/wood/walk/walk2",
+      "modularwarfare:human/step/wood/walk/walk3",
+      "modularwarfare:human/step/wood/walk/walk4",
+      "modularwarfare:human/step/wood/walk/walk5"
+    ]
+  },
+  "human.step.wood.sprint": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/wood/sprint/sprint1",
+      "modularwarfare:human/step/wood/sprint/sprint2",
+      "modularwarfare:human/step/wood/sprint/sprint3",
+      "modularwarfare:human/step/wood/sprint/sprint4",
+      "modularwarfare:human/step/wood/sprint/sprint5"
+    ]
+  },
+  "human.step.gravel.walk": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/gravel/walk/walk1",
+      "modularwarfare:human/step/gravel/walk/walk2",
+      "modularwarfare:human/step/gravel/walk/walk3",
+      "modularwarfare:human/step/gravel/walk/walk4",
+      "modularwarfare:human/step/gravel/walk/walk5"
+    ]
+  },
+  "human.step.gravel.sprint": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/gravel/sprint/sprint1",
+      "modularwarfare:human/step/gravel/sprint/sprint2",
+      "modularwarfare:human/step/gravel/sprint/sprint3",
+      "modularwarfare:human/step/gravel/sprint/sprint4",
+      "modularwarfare:human/step/gravel/sprint/sprint5"
+    ]
+  },
+  "human.step.sand.walk": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/sand/walk/walk1",
+      "modularwarfare:human/step/sand/walk/walk2",
+      "modularwarfare:human/step/sand/walk/walk3",
+      "modularwarfare:human/step/sand/walk/walk4",
+      "modularwarfare:human/step/sand/walk/walk5"
+    ]
+  },
+  "human.step.sand.sprint": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/step/sand/sprint/sprint1",
+      "modularwarfare:human/step/sand/sprint/sprint2",
+      "modularwarfare:human/step/sand/sprint/sprint3",
+      "modularwarfare:human/step/sand/sprint/sprint4",
+      "modularwarfare:human/step/sand/sprint/sprint5"
+    ]
+  },
+  "human.equip.gun": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/equip/gun/equip1",
+      "modularwarfare:human/equip/gun/equip2",
+      "modularwarfare:human/equip/gun/equip3",
+      "modularwarfare:human/equip/gun/equip4",
+      "modularwarfare:human/equip/gun/equip5"
+    ]
+  },
+  "human.equip.extra": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:human/equip/extra/extra1",
+      "modularwarfare:human/equip/extra/extra2",
+      "modularwarfare:human/equip/extra/extra3",
+      "modularwarfare:human/equip/extra/extra4"
+    ]
+  }
+}

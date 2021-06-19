@@ -1,0 +1,15 @@
+{
+  "displayName": "Mono. Pistol Suppressor",
+  "internalName": "prototype.pistol_suppressor",
+  "attachmentType": "barrel",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.pistol_suppressor",
+      "displayName": "Mono. Pistol Suppressor - Default"
+    }
+  ],
+  "barrel": {
+    "isSuppressor": true,
+    "hideFlash": true
+  }
+}

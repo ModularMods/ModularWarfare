@@ -1,0 +1,19 @@
+{
+    "internalName": "prototype.tactical_vest_lv2_green",
+    "defense": "0.25",
+    "durability": 500,
+    "armorTypes": 
+    {
+        "vest":
+        {
+          "displayName": "Tactical Vest Lv.2"
+        }
+    },
+    "modelSkins":
+    [
+      {
+        "skinAsset": "prototype.tactical_vest_lv2_green",
+        "displayName": "Tactical Vest - Green"
+      }
+    ]
+}

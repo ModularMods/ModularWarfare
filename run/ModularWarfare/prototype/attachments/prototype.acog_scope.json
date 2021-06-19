@@ -1,0 +1,14 @@
+{
+  "displayName": "Acog Scope",
+  "internalName": "prototype.acog_scope",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.acog_scope",
+      "displayName": "ACOG Scope - Default"
+    }
+  ],
+  "sight": {
+    "scopeType": "4x"
+  }
+}

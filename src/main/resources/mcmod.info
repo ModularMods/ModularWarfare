@@ -1,0 +1,16 @@
+[
+{
+  "modid": "modularwarfare",
+  "name": "ModularWarfare",
+  "description": "A Minecraft Gun Mod",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Protoxy, Deltric"],
+  "credits": "The Forge and FML guys, for making this example",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

@@ -1,0 +1,10 @@
+{
+    "internalName": "prototype.m4a1ammo",
+    "displayName": "M4A1 Mag 30rnd",
+    "ammoCapacity": 30,
+    "magazineCount": 1,
+    "allowEmptyMagazines": true,
+    "subAmmo": [
+        "prototype.5_56x45"
+    ]
+}

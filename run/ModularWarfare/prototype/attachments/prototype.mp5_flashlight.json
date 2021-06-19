@@ -1,0 +1,11 @@
+{
+  "displayName": "MP5 Flashlight",
+  "internalName": "prototype.mp5_flashlight",
+  "attachmentType": "flashlight",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.ak74u_flashlight",
+      "displayName": "MP5 Flashlight - Default"
+    }
+  ]
+}

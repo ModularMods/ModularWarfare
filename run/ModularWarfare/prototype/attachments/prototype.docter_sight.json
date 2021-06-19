@@ -1,0 +1,15 @@
+{
+  "displayName": "Docter Sight Red Dot",
+  "internalName": "prototype.docter_sight",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.docter_sight",
+      "displayName": "Docter Sight Red Dot - Default"
+    }
+  ],
+  "sight": {
+    "scopeType": "reddot",
+    "dotColorType": "red"
+  }
+}

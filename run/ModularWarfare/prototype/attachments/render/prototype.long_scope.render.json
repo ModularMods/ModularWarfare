@@ -1,0 +1,10 @@
+{
+  "modelFileName": "long_scope.obj",
+  "extra": {
+    "modelScale": 1.0
+  },
+  "sight": {
+    "fovZoom": 14.0,
+    "mouseSensitivityFactor": 0.5
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "modelFileName": "psv_scope.obj",
+  "extra": {
+    "modelScale": 1.0
+  },
+  "sight": {
+    "fovZoom": 5.5,
+    "mouseSensitivityFactor": 0.5
+  }
+}

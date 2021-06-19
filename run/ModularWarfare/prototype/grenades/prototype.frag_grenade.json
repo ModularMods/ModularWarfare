@@ -1,0 +1,9 @@
+{
+  "displayName": "Frag Grenade",
+  "internalName": "prototype.frag_grenade",
+  "fuseTime": 5,
+  "damageWorld": false,
+  "explosionPower": 5,
+  "throwStrength": 1.0,
+  "throwerVulnerable": true
+}

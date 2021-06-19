@@ -1,0 +1,77 @@
+{
+    "internalName": "prototype.mp5",
+    "displayName": "MP5",
+    "weaponType": "smg",
+
+    "gunDamage": 7,
+    "gunDamageHeadshotBonus": 2,
+
+    "roundsPerMin": 500,
+
+    "allowEmptyMagazines": true,
+
+    "recoilPitch": 3.0,
+    "recoilYaw": 1,
+    "randomRecoilPitch": 0.8,
+    "randomRecoilYaw": 0.8,
+    "bulletSpread": 1.25,
+
+    "accuracySneakFactor": 0.5,
+    "moveSpeedModifier": 1.0,
+    "allowSprintFiring": true,
+
+    "dropBulletCasing": true,
+
+    "fireModes": ["full", "burst","semi"],
+    "acceptedAmmo": ["prototype.mp5ammo"],
+
+    "shellEjectOffsetNormal": {
+        "x": -1.0,
+        "y": 0.0,
+        "z": 1.0
+    },
+    "shellEjectOffsetAiming": {
+        "x": -0.2,
+        "y": 0.12,
+        "z": 0.5
+    },
+    "weaponSoundMap": {
+        "weaponFire": [
+            {
+                "soundEvent": "weaponFire",
+                "soundName": "prototype.mp5.shoot",
+                "soundNameDistant": "prototype.mp5.distant",
+                "soundRange": 64,
+                "soundMaxRange": 96,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponUnload": [
+            {
+                "soundEvent": "weaponReload",
+                "soundName": "prototype.generic.reload"
+            }
+        ],
+        "weaponFireSuppressed": [
+            {
+                "soundEvent": "weaponFireSuppressed",
+                "soundName": "prototype.mp5.shoot.sup",
+                "soundRange": 30,
+                "soundMaxRange": 30,
+                "soundFadeMultiplier": 1
+            }
+        ]
+    },
+    "acceptedAttachments": {
+        "flashlight": [
+            "prototype.mp5_flashlight"
+        ]
+    },
+    "modelSkins": [
+        {
+            "internalName": "prototype.mp5",
+            "skinAsset": "prototype.mp5",
+            "displayName": "Default"
+        }
+    ]
+}

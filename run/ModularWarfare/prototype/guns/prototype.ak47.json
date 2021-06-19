@@ -1,0 +1,81 @@
+{
+    "internalName": "prototype.ak47",
+    "displayName": "AKM",
+    "weaponType": "carbine",
+
+    "gunDamage": 9,
+    "gunDamageHeadshotBonus": 2,
+
+    "roundsPerMin": 350,
+
+    "allowEmptyMagazines": true,
+
+    "recoilPitch": 6.0,
+    "recoilYaw": 1.5,
+    "randomRecoilPitch": 0.8,
+    "randomRecoilYaw": 0.8,
+    "bulletSpread": 1.0,
+
+    "accuracySneakFactor": 0.5,
+    "moveSpeedModifier": 1.0,
+    "allowSprintFiring": true,
+
+    "fireModes": ["full", "semi"],
+    "acceptedAmmo": ["prototype.ak47ammo"],
+
+    "dropBulletCasing": true,
+    "shellEjectOffsetNormal": {
+        "x": -1.0,
+        "y": 0.0,
+        "z": 1.0
+    },
+    "shellEjectOffsetAiming": {
+        "x": -0.2,
+        "y": 0.12,
+        "z": 0.5
+    },
+    "weaponSoundMap": {
+        "weaponFire": [
+            {
+                "soundEvent": "weaponFire",
+                "soundName": "prototype.ak47.shoot",
+                "soundNameDistant": "prototype.ak47.shoot.distant",
+                "soundRange": 64,
+                "soundMaxRange": 96,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponUnload": [
+            {
+                "soundEvent": "weaponReload",
+                "soundName": "prototype.generic.reload"
+            }
+        ],
+        "weaponFireSuppressed": [
+            {
+                "soundEvent": "weaponFireSuppressed",
+                "soundName": "prototype.ak47.shoot.sup",
+                "soundRange": 30,
+                "soundMaxRange": 30,
+                "soundFadeMultiplier": 1
+            }
+        ]
+    },
+    "acceptedAttachments": {
+        "barrel": [
+            "prototype.ak47_suppressor"
+        ]
+    },
+    "modelSkins": [
+        {
+            "internalName": "prototype.ak47",
+            "skinAsset": "prototype.ak47",
+            "displayName": "Default"
+        },
+        {
+            "internalName": "prototype.ak47.urban",
+            "skinAsset": "prototype.ak47.urban",
+            "displayName": "Urban"
+        }
+    ]
+}

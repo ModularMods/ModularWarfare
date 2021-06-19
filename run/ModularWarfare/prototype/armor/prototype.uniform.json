@@ -1,0 +1,28 @@
+{
+    "internalName": "prototype.uniform",
+    "defense": "0.1",
+    "durability": 500,
+    "armorTypes": 
+    {
+        "chest": 
+        {
+            "displayName": "Uniform Chest"
+        },
+        "legs": 
+        {
+            "displayName": "Uniform Pants",
+            "armorModels": ["leftLegModel"]
+        },
+        "feet": 
+        {
+            "displayName": "Uniform Boots"
+        }
+    },
+    "modelSkins":
+    [
+      {
+        "skinAsset": "prototype.uniform",
+        "displayName": "Uniform - Default"
+      }
+    ]
+}

@@ -1,0 +1,72 @@
+{
+    "displayName": "P88",
+    "internalName": "prototype.p88",
+    "gunDamage": 8,
+    "roundsPerMin": 350,
+    "allowEmptyMagazines": true,
+    "weaponType": "pistol",
+    "acceptedAmmo": ["prototype.p88ammo"],
+    "fireModes": ["semi"],
+
+    "recoilPitch": 0.2,
+    "recoilYaw": 0.2,
+    "randomRecoilPitch": 0.1,
+    "randomRecoilYaw": 0.5,
+
+    "armPose": "ITEM",
+    "armPoseAiming": "BOW_AND_ARROW",
+
+    "accuracySneakFactor": 0.75,
+    "moveSpeedModifier": 1.0,
+    "allowSprintFiring": true,
+
+    "dropBulletCasing": true,
+
+    "weaponSoundMap": {
+        "weaponFire": [
+            {
+                "soundEvent": "weaponFire",
+                "soundName": "prototype.p88.shoot",
+                "soundNameDistant": "prototype.p88.distant",
+                "soundRange": 64,
+                "soundMaxRange": 96,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponReload": [
+            {
+                "soundEvent": "weaponReload",
+                "soundName": "prototype.p88.reload"
+            }
+        ],
+        "weaponUnload": [
+            {
+                "soundEvent": "weaponUnload",
+                "soundName": "prototype.generic.unload"
+            }
+        ],
+        "weaponLoad": [
+            {
+                "soundEvent": "weaponLoad",
+                "soundName": "prototype.generic.load"
+            }
+        ],
+        "weaponFireSuppressed": [
+            {
+                "soundEvent": "weaponFireSuppressed",
+                "soundName": "prototype.p88.shoot.sup",
+                "soundRange": 30,
+                "soundMaxRange": 30,
+                "soundFadeMultiplier": 1
+            }
+        ]
+    },
+    "acceptedAttachments": {
+        "sight": [
+            "prototype.docter_sight_mini"
+        ],
+        "barrel": [
+            "prototype.pistol_suppressor"
+        ]
+    }
+}

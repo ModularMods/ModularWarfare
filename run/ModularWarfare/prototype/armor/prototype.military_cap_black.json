@@ -1,0 +1,19 @@
+{
+    "internalName": "prototype.military_cap_black",
+  "defense": "0.08",
+    "durability": 500,
+    "armorTypes": 
+    {
+        "head":
+        {
+            "displayName": "Military Cap Lv.1"
+        }
+    },
+    "modelSkins":
+    [
+      {
+        "skinAsset": "prototype.military_cap_black",
+        "displayName": "Tactical Vest - Black"
+      }
+    ]
+}
