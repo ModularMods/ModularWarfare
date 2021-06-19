@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import java.lang.reflect.Field;
 
-public class GCInteropImpl {
+public class GCInteropImpl implements GCCompatInterop {
 
     public boolean fixApplied;
 
@@ -17,24 +17,26 @@ public class GCInteropImpl {
         this.fixApplied = false;
     }
 
+    @Override
     public boolean isModLoaded() {
         return true;
     }
 
+    @Override
     public boolean isFixApplied() {
         return this.fixApplied;
     }
-
+    @Override
     public void setFixed() {
         this.fixApplied = true;
     }
-
+    @Override
     public void addLayers(final RenderPlayer rp) {
         rp.addLayer(new RenderLayerBackpack(rp, rp.getMainModel().bipedBodyWear));
         rp.addLayer(new RenderLayerBody(rp, rp.getMainModel().bipedBodyWear));
         rp.addLayer(new RenderLayerHeldGun(rp));
     }
-
+    @Override
     public boolean isGCLayer(final LayerRenderer<EntityPlayer> layer) {
         try {
             return layer.getClass().equals(Class.forName("micdoodle8.mods.galacticraft.core.client.render.entities.layer.LayerOxygenTanks")) || layer.getClass().equals(Class.forName("micdoodle8.mods.galacticraft.core.client.render.entities.layer.LayerOxygenGear")) || layer.getClass().equals(Class.forName("micdoodle8.mods.galacticraft.core.client.render.entities.layer.LayerOxygenMask")) || layer.getClass().equals(Class.forName("micdoodle8.mods.galacticraft.core.client.render.entities.layer.LayerOxygenParachute")) || layer.getClass().equals(Class.forName("micdoodle8.mods.galacticraft.core.client.render.entities.layer.LayerFrequencyModule.class"));
@@ -43,7 +45,7 @@ public class GCInteropImpl {
         }
         return false;
     }
-
+    @Override
     public void applyFix() {
         try {
             Field field = Class.forName("micdoodle8.mods.galacticraft.core.util.CompatibilityManager").getField("RenderPlayerAPILoaded");
