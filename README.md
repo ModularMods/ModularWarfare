@@ -8,3 +8,12 @@ This new version allows you to add your stuff without minecraft modding knowledg
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
+Links:
+
+* Wiki: [https://modularwarfare.com/docs/](https://modularwarfare.com/docs/)
+* Website/Forum: [https://modularwarfare.com](https://modularwarfare.com/)
+* Discord: [https://discord.gg/TtzsDXwx9M](https://discord.gg/TtzsDXwx9M)
+
+
