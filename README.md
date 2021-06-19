@@ -1,5 +1,7 @@
 # ModularWarfare
 
+![](https://raw.githubusercontent.com/ModularMods/ModularWarfare/main/modularwarfare.png | width=30)
+
 ModularWarfare is a 1.12.2 Minecraft mod made for military stuff, it is content-pack based and allow you to create your guns, attachments, magazines, bullets, armors & backpacks.
 
 This new version allows you to add your stuff without minecraft modding knowledges, everything is based on .json files (plain text configurations).
