@@ -17,6 +17,7 @@ import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.event.ForgeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -73,10 +74,26 @@ public class KeyInputHandler extends ForgeEvent {
             switch (keyType) {
                 // F9 Reloads Models /// SHIFT + F9 Reloads Textures & Icons
                 case ClientReload:
+
+                    if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
+                        final ItemStack gunStack = entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
+                        final GunType gunType = ((ItemGun)gunStack.getItem()).type;
+                        for (AttachmentEnum attachment : AttachmentEnum.values()) {
+                            ItemStack itemStack = GunType.getAttachment(gunStack, attachment);
+                            if (itemStack != null && itemStack.getItem() != Items.AIR) {
+                                AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
+                                if (attachmentType.hasModel()) {
+                                    attachmentType.reloadModel();
+                                }
+                            }
+                        }
+                        if (gunType.hasModel()) {
+                            gunType.reloadModel();
+                        }
+                    }
+
                     if (entityPlayer.isSneaking()) {
                         ModularWarfare.PROXY.reloadModels(true);
-                    } else {
-                        ModularWarfare.PROXY.reloadModels(false);
                     }
                     break;
                 case FireMode:
