@@ -42,6 +42,7 @@ import net.minecraft.item.ItemAir;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -468,10 +469,11 @@ public class ItemGun extends BaseItem {
                             }
 
                             if (!ModConfig.INSTANCE.applyKnockback) {
-                                RayUtil.attackEntityWithoutKnockback(target, new ModularDamageSource("modularwarfare", entityPlayer, itemGun, headshot), preHitEvent.getDamage());
+                                RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(preFireEvent.getWeaponUser()).setProjectile(), preHitEvent.getDamage());
                             } else {
-                                target.attackEntityFrom(new ModularDamageSource("modularwarfare", entityPlayer, itemGun, headshot), preHitEvent.getDamage());
+                                target.attackEntityFrom(DamageSource.causePlayerDamage(preFireEvent.getWeaponUser()).setProjectile(), preHitEvent.getDamage());
                             }
+
                             target.hurtResistantTime = 0;
 
                             // Weapon pre hit event

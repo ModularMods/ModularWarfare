@@ -66,7 +66,7 @@ public class ModularWarfare {
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
-    public static final String MOD_VERSION = "1.0.9f";
+    public static final String MOD_VERSION = "1.0.10f";
     // Main instance
     @Instance(ModularWarfare.MOD_ID)
     public static ModularWarfare INSTANCE;
@@ -74,7 +74,7 @@ public class ModularWarfare {
     @SidedProxy(clientSide = "com.modularwarfare.client.ClientProxy", serverSide = "com.modularwarfare.common.CommonProxy")
     public static CommonProxy PROXY;
     // Development Environment
-    public static boolean DEV_ENV = false;
+    public static boolean DEV_ENV = true;
 
     // Logger
     public static Logger LOGGER;
@@ -293,7 +293,7 @@ public class ModularWarfare {
                 LOGGER.info("As the mod itself doesn't come with any content.");
             }
             new ModConfig(new File(MOD_DIR, "mod_config.json"));
-            DEV_ENV = ModConfig.INSTANCE.dev_mode;
+            DEV_ENV = true;
 
 
             contentPacks = PROXY.getContentList();
@@ -357,8 +357,8 @@ public class ModularWarfare {
     public void constructionEvent(FMLConstructionEvent event) {
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             PROTECTOR = new ModularProtector();
-            PROXY.construction(event);
         }
+        PROXY.construction(event);
     }
 
     @SubscribeEvent

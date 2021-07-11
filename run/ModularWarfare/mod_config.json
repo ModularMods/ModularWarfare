@@ -17,15 +17,14 @@
   "autoExtractContentpack": true,
   "killFeed": {
     "enableKillFeed": true,
-    "universalDeathsMessage": false,
     "sendDefaultKillMessage": false,
     "messageDuration": 10,
     "messageList": [
-      "§a{killer} §7killed §c{victim}",
-      "§a{killer} §fdestroyed §c{victim}",
-      "§a{killer} §fshoted §c{victim}"
+      "\u0026a{killer} \u00267killed \u0026c{victim}",
+      "\u0026a{killer} \u0026fdestroyed \u0026c{victim}",
+      "\u0026a{killer} \u0026fshoted \u0026c{victim}"
     ]
   },
-  "dev_mode": false,
-  "version": "1.0.9f"
+  "dev_mode": true,
+  "version": "1.0.10f"
 }

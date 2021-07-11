@@ -1,0 +1,10 @@
+{
+    "internalName": "prototype.vz68ammo",
+    "displayName": "VZ.68 Mag 24rnd",
+    "ammoCapacity": 24,
+    "magazineCount": 1,
+    "allowEmptyMagazines": true,
+    "subAmmo": [
+        "prototype.9x19"
+    ]
+}

@@ -16,8 +16,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -45,12 +47,14 @@ public class CommonEventHandler {
             final Entity entity = event.getEntity();
             if (entity instanceof EntityPlayer) {
                 if (!entity.world.isRemote) {
-                    boolean flag = (event.getSource() instanceof ModularDamageSource) || ModConfig.INSTANCE.killFeed.universalDeathsMessage;
-                    if (flag) {
-                        if (event.getSource() instanceof ModularDamageSource) {
-                            if (event.getSource().getTrueSource() instanceof EntityPlayer) {
-                                final String text = getRandomMessage((event.getSource().getTrueSource()).getDisplayName().getFormattedText(), (event.getEntity()).getDisplayName().getFormattedText());
-                                ModularWarfare.NETWORK.sendToAll(new PacketClientKillFeedEntry(text, ModConfig.INSTANCE.killFeed.messageDuration, ((ModularDamageSource) event.getSource()).gun.type.internalName));
+                    if (event.getSource().isProjectile()) {
+                        if (event.getSource().getTrueSource() instanceof EntityPlayer) {
+                            ItemStack heldStack = ((EntityPlayer) event.getSource().getTrueSource()).getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
+                            if (heldStack != null) {
+                                if (heldStack.getItem() instanceof ItemGun) {
+                                    final String text = getRandomMessage((event.getSource().getTrueSource()).getDisplayName().getFormattedText(), (event.getEntity()).getDisplayName().getFormattedText());
+                                    ModularWarfare.NETWORK.sendToAll(new PacketClientKillFeedEntry(text, ModConfig.INSTANCE.killFeed.messageDuration, ((ItemGun) heldStack.getItem()).type.internalName));
+                                }
                             }
                         }
                     }
@@ -64,6 +68,7 @@ public class CommonEventHandler {
             int r = getRandomNumberInRange(0, ModConfig.INSTANCE.killFeed.messageList.size() - 1);
             String choosen = ModConfig.INSTANCE.killFeed.messageList.get(r);
             choosen = choosen.replace("{killer}", killer).replace("{victim}", victim);
+            choosen = choosen.replace("&", "§");
             return choosen;
         }
         return "";

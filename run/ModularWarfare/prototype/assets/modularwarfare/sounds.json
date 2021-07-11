@@ -382,5 +382,20 @@
     "sounds": [
       "modularwarfare:taurus/click"
     ]
+  },
+  "prototype.vz68.shoot": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:vz68/shoot1",
+      "modularwarfare:vz68/shoot2",
+      "modularwarfare:vz68/shoot3",
+      "modularwarfare:vz68/shoot4"
+    ]
+  },
+  "prototype.vz68.shoot.distant": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:vz68/distant"
+    ]
   }
 }

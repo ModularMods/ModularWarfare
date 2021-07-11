@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +38,7 @@ public class ModConfig {
 
     public KillFeed killFeed = new KillFeed();
 
-    public boolean dev_mode = false;
+    public boolean dev_mode = true;
     public String version = ModularWarfare.MOD_VERSION;
 
     public ModConfig(File configFile) {
@@ -52,7 +49,7 @@ public class ModConfig {
                 ModConfig config = gson.fromJson(jsonReader, ModConfig.class);
                 System.out.println("Comparing version " + config.version + " to " + ModularWarfare.MOD_VERSION);
                 if (config.version == null || !config.version.matches(ModularWarfare.MOD_VERSION)) {
-                    try (Writer writer = new FileWriter(configFile)) {
+                    try (Writer writer = new OutputStreamWriter(new FileOutputStream(configFile),"UTF-8")) {
                         gson.toJson(this, writer);
                     }
                     INSTANCE = this;
@@ -60,7 +57,7 @@ public class ModConfig {
                     INSTANCE = config;
                 }
             } else {
-                try (Writer writer = new FileWriter(configFile)) {
+                try (Writer writer = new OutputStreamWriter(new FileOutputStream(configFile),"UTF-8")) {
                     gson.toJson(this, writer);
                 }
                 INSTANCE = this;
@@ -72,10 +69,9 @@ public class ModConfig {
 
     public static class KillFeed {
         public boolean enableKillFeed = true;
-        public boolean universalDeathsMessage = false;
         public boolean sendDefaultKillMessage = false;
         public int messageDuration = 10;
-        public List<String> messageList = Arrays.asList("§a{killer} §7killed §c{victim}", "§a{killer} §fdestroyed §c{victim}", "§a{killer} §fshoted §c{victim}");
+        public List<String> messageList = Arrays.asList("&a{killer} &7killed &c{victim}", "&a{killer} &fdestroyed &c{victim}", "&a{killer} &fshoted &c{victim}");
     }
 
 }

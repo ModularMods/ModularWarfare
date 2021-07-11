@@ -223,7 +223,6 @@ public class ClientProxy extends CommonProxy {
                             container.bindMetadata(MetadataCollection.from(null, ""));
                             FMLClientHandler.instance().addModAsResource(container);
                             contentPacks.add(file);
-
                         } else {
                             try {
                                 HashMap<String, Object> map = new HashMap<String, Object>();

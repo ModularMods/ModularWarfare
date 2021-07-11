@@ -18,6 +18,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -75,27 +76,29 @@ public class CapabilityExtra {
     }
 
     @SubscribeEvent
-    public static void playerDeath(final PlayerDropsEvent event) {
-        final EntityPlayer player = event.getEntityPlayer();
-        final World world = player.world;
-        if (world.isRemote || world.getGameRules().getBoolean("keepInventory") || !ModConfig.INSTANCE.dropExtraSlotsOnDeath) {
-            return;
-        }
-
-        for (int i = 0; i < ((IExtraItemHandler) player.getCapability((Capability) CapabilityExtra.CAPABILITY, (EnumFacing) null)).getSlots(); i++) {
-            final ItemStack extra = ((IExtraItemHandler) player.getCapability((Capability) CapabilityExtra.CAPABILITY, (EnumFacing) null)).getStackInSlot(i);
-            if (extra.isEmpty()) {
+    public static void playerDeath(final LivingDeathEvent event) {
+        if(event.getEntity() instanceof EntityPlayer) {
+            final EntityPlayer player = (EntityPlayer) event.getEntity();
+            final World world = player.world;
+            if (world.isRemote || world.getGameRules().getBoolean("keepInventory") || !ModConfig.INSTANCE.dropExtraSlotsOnDeath) {
                 return;
             }
-            final EntityItem item = new EntityItem(world, player.posX, player.posY + player.getEyeHeight(), player.posZ, extra);
-            item.setPickupDelay(40);
-            final float f1 = world.rand.nextFloat() * 0.5f;
-            final float f2 = world.rand.nextFloat() * 3.1415927f * 2.0f;
-            item.motionX = -MathHelper.sin(f2) * f1;
-            item.motionZ = MathHelper.cos(f2) * f1;
-            item.motionY = 0.20000000298023224;
-            event.getDrops().add(item);
-            ((IExtraItemHandler) player.getCapability((Capability) CapabilityExtra.CAPABILITY, (EnumFacing) null)).setStackInSlot(i, ItemStack.EMPTY);
+
+            for (int i = 0; i < ((IExtraItemHandler) player.getCapability((Capability) CapabilityExtra.CAPABILITY, (EnumFacing) null)).getSlots(); i++) {
+                final ItemStack extra = ((IExtraItemHandler) player.getCapability((Capability) CapabilityExtra.CAPABILITY, (EnumFacing) null)).getStackInSlot(i);
+                if (extra.isEmpty()) {
+                    return;
+                }
+                final EntityItem item = new EntityItem(world, player.posX, player.posY + player.getEyeHeight(), player.posZ, extra);
+                item.setPickupDelay(40);
+                final float f1 = world.rand.nextFloat() * 0.5f;
+                final float f2 = world.rand.nextFloat() * 3.1415927f * 2.0f;
+                item.motionX = -MathHelper.sin(f2) * f1;
+                item.motionZ = MathHelper.cos(f2) * f1;
+                item.motionY = 0.20000000298023224;
+                world.spawnEntity(item);
+                ((IExtraItemHandler) player.getCapability((Capability) CapabilityExtra.CAPABILITY, (EnumFacing) null)).setStackInSlot(i, ItemStack.EMPTY);
+            }
         }
     }
 
