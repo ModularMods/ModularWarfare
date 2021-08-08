@@ -38,6 +38,7 @@ public class ModConfig {
 
     public KillFeed killFeed = new KillFeed();
 
+    public boolean model_optimization = true;
     public boolean dev_mode = true;
     public String version = ModularWarfare.MOD_VERSION;
 

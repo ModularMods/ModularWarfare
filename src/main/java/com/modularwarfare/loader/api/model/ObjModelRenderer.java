@@ -1,6 +1,7 @@
 package com.modularwarfare.loader.api.model;
 
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.loader.ObjModel;
 import com.modularwarfare.loader.part.ModelObject;
 import com.modularwarfare.loader.part.Vertex;
@@ -85,12 +86,19 @@ public class ObjModelRenderer {
         }
         if (!this.isHidden) {
             if (!this.compiled) {
-                this.compileVAO(scale);
+                if(ModConfig.INSTANCE.model_optimization){
+                    this.compileVAO(scale);
+                } else {
+                    this.compileDisplayList(scale);
+                }
             }
 
             if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
-                //GlStateManager.callList(this.displayList);
-                callVAO();
+                if(ModConfig.INSTANCE.model_optimization) {
+                    callVAO();
+                } else {
+                    GlStateManager.callList(this.displayList);
+                }
                 if (this.childModels != null) {
                     for (ObjModelRenderer childModel : this.childModels) {
                         childModel.render(scale);
@@ -118,7 +126,11 @@ public class ObjModelRenderer {
                 GlStateManager.translate(-this.rotationPointX * scale, -this.rotationPointY * scale,
                         -this.rotationPointZ * scale);
 
-                callVAO();
+                if(ModConfig.INSTANCE.model_optimization) {
+                    callVAO();
+                } else {
+                    GlStateManager.callList(this.displayList);
+                }
 
                 if (this.childModels != null) {
                     for (ObjModelRenderer childModel : this.childModels) {
@@ -140,7 +152,11 @@ public class ObjModelRenderer {
     public void renderWithRotation(float scale) {
         if (!this.isHidden) {
             if (!this.compiled) {
-                this.compileVAO(scale);
+                if(ModConfig.INSTANCE.model_optimization){
+                    this.compileVAO(scale);
+                } else {
+                    this.compileDisplayList(scale);
+                }
             }
 
             GlStateManager.pushMatrix();
@@ -162,7 +178,11 @@ public class ObjModelRenderer {
             GlStateManager.translate(-this.rotationPointX * scale, -this.rotationPointY * scale,
                     -this.rotationPointZ * scale);
 
-            callVAO();
+            if(ModConfig.INSTANCE.model_optimization) {
+                callVAO();
+            } else {
+                GlStateManager.callList(this.displayList);
+            }
 
             if (this.childModels != null) {
                 for (ObjModelRenderer childModel : this.childModels) {
@@ -180,7 +200,11 @@ public class ObjModelRenderer {
     public void postRender(float scale) {
         if (!this.isHidden) {
             if (!this.compiled) {
-                this.compileVAO(scale);
+                if(ModConfig.INSTANCE.model_optimization){
+                    this.compileVAO(scale);
+                } else {
+                    this.compileDisplayList(scale);
+                }
             }
 
             if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {

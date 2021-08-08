@@ -49,6 +49,24 @@
       "modularwarfare:spray"
     ]
   },
+  "stun_grenade": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:grenade/stun"
+    ]
+  },
+  "flashed": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:grenade/flashed"
+    ]
+  },
+  "smoke_grenade": {
+  "category": "player",
+  "sounds": [
+    "modularwarfare:grenade/smoke"
+  ]
+  },
   "grenade_throw": {
     "category": "player",
     "sounds": [

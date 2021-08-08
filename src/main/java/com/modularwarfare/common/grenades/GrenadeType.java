@@ -7,19 +7,21 @@ import com.modularwarfare.common.type.BaseType;
 
 public class GrenadeType extends BaseType {
 
-    public int fuseTime = 5;
+
+    public GrenadesEnumType grenadeType = GrenadesEnumType.Frag;
+    public float fuseTime = 5.0f;
     public boolean damageWorld = false;
-    public int explosionPower = 5;
+    public int explosionPower = 8;
     public float throwStrength = 1f;
     public boolean throwerVulnerable = false;
+
+    public float smokeTime = 10f;
 
     @Override
     public void loadExtraValues() {
         if (maxStackSize == null)
             maxStackSize = 1;
-
         loadBaseValues();
-
     }
 
     @Override

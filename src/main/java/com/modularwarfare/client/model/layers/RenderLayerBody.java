@@ -47,8 +47,7 @@ public class RenderLayerBody implements LayerRenderer<EntityPlayer> {
             final ModelCustomArmor armorModel = (ModelCustomArmor) armorType.bipedModel;
             GlStateManager.pushMatrix();
             if (player.isSneaking()) {
-                GlStateManager.translate(0.0f, 0.3f, 0.0f);
-                GlStateManager.translate(0.0f, 0.0f, 0.0f);
+                GlStateManager.translate(0.0f, 0.2f, 0.0f);
                 GlStateManager.rotate(30.0f, 1.0f, 0.0f, 0.0f);
             }
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);

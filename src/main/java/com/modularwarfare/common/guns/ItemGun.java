@@ -221,7 +221,7 @@ public class ItemGun extends BaseItem {
         if (RenderParameters.switchDelay > 0) {
             RenderParameters.switchDelay--;
         }
-        if (entityPlayer.getHeldItemMainhand() != null && entityPlayer.getHeldItemMainhand().getItem() instanceof ItemGun && RenderParameters.switchDelay == 0) {
+        if (entityPlayer.getHeldItemMainhand() != null && entityPlayer.getHeldItemMainhand().getItem() instanceof ItemGun && RenderParameters.switchDelay == 0 && RenderParameters.collideFrontDistance <= 0.2f) {
             if (fireButtonHeld && Minecraft.getMinecraft().inGameHasFocus && gunType.getFireMode(heldStack) == WeaponFireMode.FULL) {
                 fireClient(entityPlayer, world, heldStack, itemGun, gunType.getFireMode(heldStack));
             } else if (fireButtonHeld & !lastFireButtonHeld && Minecraft.getMinecraft().inGameHasFocus && gunType.getFireMode(heldStack) == WeaponFireMode.SEMI) {
@@ -374,7 +374,7 @@ public class ItemGun extends BaseItem {
                                 if (entityPlayer instanceof EntityPlayerMP) {
                                     ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(headshot), (EntityPlayerMP) entityPlayer);
                                     ModularWarfare.NETWORK.sendTo(new PacketPlaySound(victim.getPosition(), "flyby", 1f, 1f), (EntityPlayerMP) victim);
-                                    //ModularWarfare.NETWORK.sendTo(new PacketBulletSnap(), (EntityPlayerMP) victim);
+                                    ModularWarfare.NETWORK.sendTo(new PacketPlayerHit(), (EntityPlayerMP) victim);
                                 }
                             }
                         }

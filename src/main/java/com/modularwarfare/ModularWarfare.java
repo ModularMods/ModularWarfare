@@ -8,10 +8,13 @@ import com.modularwarfare.common.MWTab;
 import com.modularwarfare.common.armor.ItemMWArmor;
 import com.modularwarfare.common.armor.ItemSpecialArmor;
 import com.modularwarfare.common.backpacks.ItemBackpack;
+import com.modularwarfare.common.commands.CommandClear;
 import com.modularwarfare.common.entity.EntityBullet;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
+import com.modularwarfare.common.entity.grenades.EntitySmokeGrenade;
+import com.modularwarfare.common.entity.grenades.EntityStunGrenade;
 import com.modularwarfare.common.entity.item.EntityItemLoot;
 import com.modularwarfare.common.extra.ItemLight;
 import com.modularwarfare.common.grenades.ItemGrenade;
@@ -66,7 +69,7 @@ public class ModularWarfare {
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
-    public static final String MOD_VERSION = "1.0.10f";
+    public static final String MOD_VERSION = "1.0.11f";
     // Main instance
     @Instance(ModularWarfare.MOD_ID)
     public static ModularWarfare INSTANCE;
@@ -346,6 +349,7 @@ public class ModularWarfare {
      */
     @EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandClear());
     }
 
     /**
@@ -435,7 +439,10 @@ public class ModularWarfare {
         EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "shell"), EntityShell.class, "shell", 4, this, 64, 1, false);
         EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "itemloot"), EntityItemLoot.class, "itemloot", 6, this, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "grenade"), EntityGrenade.class, "grenade", 7, this, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "bullet"), EntityBullet.class, "bullet", 8, this, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "smoke_grenade"), EntitySmokeGrenade.class, "smoke_grenade", 8, this, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "stun_grenade"), EntityStunGrenade.class, "stun_grenade", 9, this, 64, 1, true);
+
+        EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "bullet"), EntityBullet.class, "bullet", 15, this, 64, 1, true);
     }
 }
 

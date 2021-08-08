@@ -31,7 +31,8 @@ public class ItemAmmo extends BaseItem {
     public ItemAmmo(AmmoType type) {
         super(type);
         this.type = type;
-        this.maxStackSize = type.subAmmo != null ? 1 : type.maxStackSize;
+        //this.maxStackSize = type.subAmmo != null ? 1 : type.maxStackSize;
+        this.setMaxStackSize(4);
         this.render3d = false;
         this.setMaxDamage(type.ammoCapacity);
     }
@@ -100,6 +101,11 @@ public class ItemAmmo extends BaseItem {
                 }
             }
             heldStack.setTagCompound(nbtTagCompound);
+        }
+        if (heldStack.getTagCompound() != null) {
+            ItemAmmo itemAmmo = (ItemAmmo) heldStack.getItem();
+            NBTTagCompound tag = heldStack.getTagCompound();
+            this.setDamage(heldStack,itemAmmo.type.ammoCapacity - tag.getInteger("ammocount"));
         }
     }
 

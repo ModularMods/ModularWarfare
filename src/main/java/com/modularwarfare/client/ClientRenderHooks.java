@@ -8,12 +8,15 @@ import com.modularwarfare.client.model.objects.CustomItemRenderType;
 import com.modularwarfare.client.model.objects.CustomItemRenderer;
 import com.modularwarfare.client.model.renders.*;
 import com.modularwarfare.common.backpacks.ItemBackpack;
+import com.modularwarfare.common.entity.grenades.EntityGrenade;
+import com.modularwarfare.common.entity.grenades.EntitySmokeGrenade;
 import com.modularwarfare.common.guns.ItemAttachment;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.network.BackWeaponsManager;
 import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.utility.OptifineHelper;
+import com.modularwarfare.utility.RenderHelperMW;
 import com.modularwarfare.utility.event.ForgeEvent;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -23,17 +26,19 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.event.RenderItemInFrameEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.util.glu.Project;
@@ -49,6 +54,10 @@ public class ClientRenderHooks extends ForgeEvent {
     public float partialTicks;
     private Minecraft mc;
     private float equippedProgress = 1f, prevEquippedProgress = 1f;
+
+    public static int flashValue;
+
+    public static final ResourceLocation grenade_smoke = new ResourceLocation("modularwarfare", "textures/particles/smoke.png");
 
     public ClientRenderHooks() {
         mc = Minecraft.getMinecraft();
@@ -105,6 +114,33 @@ public class ClientRenderHooks extends ForgeEvent {
                 GlStateManager.translate(0.15F, -0.15F, 0F);
                 customRenderers[type.id].renderItem(CustomItemRenderType.ENTITY, EnumHand.MAIN_HAND, event.getItem());
                 GlStateManager.popMatrix();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldRenderLast(RenderWorldLastEvent event) {
+        //For each entity loaded, process with layers
+        for (Object o : mc.world.getLoadedEntityList()) {
+            Entity givenEntity = (Entity) o;
+            //If entity is smoke grenade, render smoke
+            if (givenEntity instanceof EntitySmokeGrenade) {
+                EntitySmokeGrenade smokeGrenade = (EntitySmokeGrenade) givenEntity;
+                if (smokeGrenade.exploded) {
+                    if (smokeGrenade.smokeTime <= 220) {
+                        RenderHelperMW.renderSmoke(grenade_smoke, smokeGrenade.posX, smokeGrenade.posY + 1, smokeGrenade.posZ, partialTicks, 600, 600, "0xFFFFFF", 0.8f);
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderPost(RenderGameOverlayEvent.Post event) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if(event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+            if (flashValue != 0) {
+                RenderHelperMW.renderRectAlphaComp(0, 0, mc.displayWidth, mc.displayHeight, 0xFFFFFF, ClientRenderHooks.flashValue);
             }
         }
     }
@@ -226,6 +262,32 @@ public class ClientRenderHooks extends ForgeEvent {
     public void renderThirdPose(RenderLivingEvent.Pre event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer)) {
             return;
+        }
+
+        AbstractClientPlayer clientPlayer = (AbstractClientPlayer)event.getEntity();
+        Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(event.getEntity());
+        RenderPlayer renderplayer = (RenderPlayer) render;
+
+        if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()){
+            renderplayer.getMainModel().bipedHeadwear.isHidden = false;
+        } else {
+            renderplayer.getMainModel().bipedHeadwear.isHidden = true;
+        }
+        if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()){
+            renderplayer.getMainModel().bipedLeftArmwear.isHidden = false;
+            renderplayer.getMainModel().bipedRightArmwear.isHidden = false;
+            renderplayer.getMainModel().bipedBodyWear.isHidden = false;
+        } else {
+            renderplayer.getMainModel().bipedLeftArmwear.isHidden = true;
+            renderplayer.getMainModel().bipedRightArmwear.isHidden = true;
+            renderplayer.getMainModel().bipedBodyWear.isHidden = true;
+        }
+        if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty()){
+            renderplayer.getMainModel().bipedLeftLegwear.isHidden = false;
+            renderplayer.getMainModel().bipedRightLegwear.isHidden = false;
+        } else {
+            renderplayer.getMainModel().bipedLeftLegwear.isHidden = true;
+            renderplayer.getMainModel().bipedRightLegwear.isHidden = true;
         }
 
         ItemStack itemstack = event.getEntity().getHeldItemMainhand();

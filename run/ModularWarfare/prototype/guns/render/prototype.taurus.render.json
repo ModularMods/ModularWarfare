@@ -97,12 +97,12 @@
     "rotateHipPosition": {
       "x": 0.0,
       "y": 0.0,
-      "z": 0.0
+      "z": 5.0
     },
     "translateHipPosition": {
       "x": 0.0,
-      "y": 0.0,
-      "z": 0.0
+      "y": 0.05,
+      "z": -0.15
     },
     "rotateAimPosition": {
       "x": 0.0,

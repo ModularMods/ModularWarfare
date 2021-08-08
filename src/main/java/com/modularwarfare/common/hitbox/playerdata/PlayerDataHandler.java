@@ -13,7 +13,6 @@ import java.util.Map;
 public class PlayerDataHandler {
 
     public static Map<String, PlayerData> serverSideData = new HashMap<>();
-    public static Map<String, PlayerData> clientSideData = new HashMap<>();
 
     public static PlayerData getPlayerData(EntityPlayer player) {
         if (player == null)
@@ -32,14 +31,9 @@ public class PlayerDataHandler {
     }
 
     public static PlayerData getPlayerData(String username, Side side) {
-        if (side.isClient()) {
-            if (!clientSideData.containsKey(username))
-                clientSideData.put(username, new PlayerData(username));
-        } else {
-            if (!serverSideData.containsKey(username))
-                serverSideData.put(username, new PlayerData(username));
-        }
-        return side.isClient() ? clientSideData.get(username) : serverSideData.get(username);
+        if (!serverSideData.containsKey(username))
+            serverSideData.put(username, new PlayerData(username));
+        return serverSideData.get(username);
     }
 
     public void serverTick() {
@@ -49,14 +43,6 @@ public class PlayerDataHandler {
         }
         for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worlds) {
             for (Object player : world.playerEntities) {
-                getPlayerData((EntityPlayer) player).tick((EntityPlayer) player);
-            }
-        }
-    }
-
-    public void clientTick() {
-        if (Minecraft.getMinecraft().world != null) {
-            for (Object player : Minecraft.getMinecraft().world.playerEntities) {
                 getPlayerData((EntityPlayer) player).tick((EntityPlayer) player);
             }
         }

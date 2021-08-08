@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -78,7 +79,6 @@ public class ClientTickHandler extends ForgeEvent {
                 break;
             case END:
                 onClientTickEnd(Minecraft.getMinecraft());
-                ModularWarfare.PLAYERHANDLER.clientTick();
 
         }
     }
@@ -145,21 +145,16 @@ public class ClientTickHandler extends ForgeEvent {
             float modeSwitchValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
             RenderParameters.triggerPullSwitch = Math.max(0, Math.min(model.triggerDistance, triggerPullValue));
 
-            //Guns animations
-            float maxHorizontal = 1.5f;
-            float maxVertical = 0.75f;
-            float swaySpeed = (player.isSprinting()) ? 0.005f : (0.006f * renderTick);
-
-            RenderParameters.swayHorizontal = 0f;
-            RenderParameters.swayVertical = 0f;
-            RenderParameters.swayHorizontalEP = 0f;
-            RenderParameters.swayVerticalEP = 0f;
-            //if(RenderParameters.swayHorizontalEP == null || Float.isNaN(RenderParameters.swayHorizontalEP)) RenderParameters.swayHorizontalEP = NumberHelper.generateInRange(maxHorizontal);
-            //if(RenderParameters.swayVerticalEP == null || Float.isNaN(RenderParameters.swayVerticalEP)) RenderParameters.swayVerticalEP = NumberHelper.generateInRange(maxVertical);
-            //RenderParameters.swayHorizontal = !Float.isNaN(RenderParameters.swayHorizontal) ? NumberHelper.isInRange(maxHorizontal, RenderParameters.swayHorizontal) ? NumberHelper.addTowards(RenderParameters.swayHorizontalEP, RenderParameters.swayHorizontal, swaySpeed) : 0 : 0;
-            //RenderParameters.swayVertical = !Float.isNaN(RenderParameters.swayVertical) ? NumberHelper.isInRange(maxVertical, RenderParameters.swayVertical) ? NumberHelper.addTowards(RenderParameters.swayVerticalEP, RenderParameters.swayVertical, swaySpeed/2) : 0 : 0;
-            //RenderParameters.swayHorizontalEP = NumberHelper.isTargetMet(RenderParameters.swayHorizontalEP, RenderParameters.swayHorizontal) ? NumberHelper.generateInRange(maxHorizontal) : RenderParameters.swayHorizontalEP;
-            //RenderParameters.swayVerticalEP = NumberHelper.isTargetMet(RenderParameters.swayVerticalEP, RenderParameters.swayVertical) ? NumberHelper.generateInRange(maxVertical) : RenderParameters.swayVerticalEP;
+            if (Minecraft.getMinecraft().objectMouseOver != null) {
+                double d1 = Minecraft.getMinecraft().objectMouseOver.hitVec.distanceTo(player.getPositionEyes(renderTick));
+                if (d1 <= 1.0f) {
+                    RenderParameters.collideFrontDistance = (float) (RenderParameters.collideFrontDistance + ((1.0f-d1) - RenderParameters.collideFrontDistance) * renderTick);
+                } else {
+                    RenderParameters.collideFrontDistance = 0.0f;
+                }
+            } else {
+                RenderParameters.collideFrontDistance = 0.0f;
+            }
 
             for (AnimStateMachine stateMachine : ClientRenderHooks.weaponAnimations.values()) {
                 stateMachine.onRenderTickUpdate();
@@ -209,12 +204,18 @@ public class ClientTickHandler extends ForgeEvent {
             GUN_ROT_Y = -20;
         }
 
+        this.processGunChange();
+        ItemGun.fireButtonHeld = Mouse.isButtonDown(0);
+
         if (ClientProxy.gunUI.bulletSnapFade > 0) {
             ClientProxy.gunUI.bulletSnapFade -= 0.01F;
         }
-
-        this.processGunChange();
-        ItemGun.fireButtonHeld = Mouse.isButtonDown(0);
+        //Client Flash Grenade
+        if (ClientRenderHooks.flashValue > 0) {
+            ClientRenderHooks.flashValue -= 2;
+        } else if (ClientRenderHooks.flashValue < 0) {
+            ClientRenderHooks.flashValue = 0;
+        }
     }
 
     public void onClientTickEnd(Minecraft minecraft) {

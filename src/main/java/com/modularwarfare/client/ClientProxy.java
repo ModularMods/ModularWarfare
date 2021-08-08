@@ -36,6 +36,8 @@ import com.modularwarfare.common.entity.EntityBulletClient;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
+import com.modularwarfare.common.entity.grenades.EntitySmokeGrenade;
+import com.modularwarfare.common.entity.grenades.EntityStunGrenade;
 import com.modularwarfare.common.entity.item.EntityItemLoot;
 import com.modularwarfare.common.extra.ItemLight;
 import com.modularwarfare.common.grenades.GrenadeType;
@@ -46,6 +48,7 @@ import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWResourcePack;
 import com.modularwarfare.utility.MWSound;
+import com.modularwarfare.utility.ModUtil;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.minecraft.client.Minecraft;
@@ -340,6 +343,10 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void init() {
+        //Disable VAO on Mac computer (not compatibility)
+        if(ModUtil.isMac()){
+            ModConfig.INSTANCE.model_optimization = false;
+        }
     }
 
     @SubscribeEvent
@@ -860,7 +867,8 @@ public class ClientProxy extends CommonProxy {
 
             //RENDER GRENADES
             RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, RenderGrenadeEntity.FACTORY);
-
+            RenderingRegistry.registerEntityRenderingHandler(EntitySmokeGrenade.class, RenderGrenadeEntity.FACTORY);
+            RenderingRegistry.registerEntityRenderingHandler(EntityStunGrenade.class, RenderGrenadeEntity.FACTORY);
 
             RenderingRegistry.registerEntityRenderingHandler(EntityItemLoot.class, RenderItemLoot.FACTORY);
 

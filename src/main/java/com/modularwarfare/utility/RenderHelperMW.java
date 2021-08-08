@@ -1,5 +1,6 @@
 package com.modularwarfare.utility;
 
+import com.modularwarfare.client.model.renders.RenderParameters;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.*;
@@ -159,6 +160,44 @@ public class RenderHelperMW {
         float f1 = (givenColor >> 8 & 0xFF) / 255.0F;
         float f2 = (givenColor & 0xFF) / 255.0F;
         float f3 = (givenColor >> 24 & 0xFF) / 255.0F;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(f, f1, f2, f3);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.pos(givenPosX, givenHeight, 0.0D).endVertex();
+        bufferbuilder.pos(givenWidth, givenHeight, 0.0D).endVertex();
+        bufferbuilder.pos(givenWidth, givenPosY, 0.0D).endVertex();
+        bufferbuilder.pos(givenPosX, givenPosY, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+
+        GL11.glPopMatrix();
+    }
+
+    public static void renderRectAlphaComp(int givenPosX, int givenPosY, int givenWidth, int givenHeight, int givenColor, int alpha) {
+        GL11.glPushMatrix();
+
+        givenWidth = givenPosX + givenWidth;
+        givenHeight = givenPosY + givenHeight;
+        if (givenPosX < givenWidth) {
+            int i = givenPosX;
+            givenPosX = givenWidth;
+            givenWidth = i;
+        }
+        if (givenPosY < givenHeight) {
+            int j = givenPosY;
+            givenPosY = givenHeight;
+            givenHeight = j;
+        }
+        float f = (givenColor >> 16 & 0xFF) / 255.0F;
+        float f1 = (givenColor >> 8 & 0xFF) / 255.0F;
+        float f2 = (givenColor & 0xFF) / 255.0F;
+        float f3 = alpha / 255.0F;
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -747,6 +786,58 @@ public class RenderHelperMW {
         GlStateManager.disableBlend();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
+    }
+
+
+    public static void renderSmoke(ResourceLocation par1, double par2, double par3, double par4, float par5, int width, int height, String color, double alpha) {
+
+        EntityPlayer player = Minecraft.getMinecraft().player;
+
+        GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_BLEND);
+
+        float scale2 = 0.02F;
+
+        float d0 = (float) (player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) par5);
+        float d1 = (float) (player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) par5);
+        float d2 = (float) (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) par5);
+
+        GL11.glTranslatef((float) par2, (float) par3, (float) par4);
+        GL11.glTranslatef(-d0, -d1, -d2);
+        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+
+        //Scaling and fitting for the text above item
+        GL11.glScalef(-scale2, -scale2, scale2);
+        GL11.glDepthMask(false);
+
+        float realTick = RenderParameters.SMOOTH_SWING;
+
+        for (int i1 = 0; i1 < 4; i1++) {
+
+            float val = (float) (Math.sin(realTick / 100) * 3);
+
+            if (i1 % 2 == 0) {
+                val = -val;
+            }
+
+            for (int i = 0; i < 9; i++) {
+
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GL11.glEnable(GL11.GL_ALPHA_TEST);
+
+                renderImageAlpha(-width / 2, -height / 2, par1, width, height, alpha);
+
+                GL11.glDisable(GL11.GL_ALPHA_TEST);
+                GL11.glRotatef(64, 0, 1, 0);
+                GL11.glRotatef(val, 1, 0, 0);
+            }
+
+            GL11.glRotatef(90, 1, 0, 0);
+        }
+
+        GL11.glDepthMask(true);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glPopMatrix();
     }
 
 }

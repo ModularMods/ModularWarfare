@@ -27,6 +27,26 @@ public class ModUtil {
     public static final int BACKPACK_CONTENT_OFFSET_X = 180;
     public static final int BACKPACK_CONTENT_OFFSET_Y = 18;
 
+    private static String OS = System.getProperty("os.name").toLowerCase();
+
+    public static boolean isWindows() {
+        return (OS.indexOf("win") >= 0);
+    }
+
+    public static boolean isMac() {
+        return (OS.indexOf("mac") >= 0);
+    }
+
+    public static boolean isUnix() {
+        return (OS.indexOf("nix") >= 0
+                || OS.indexOf("nux") >= 0
+                || OS.indexOf("aix") > 0);
+    }
+
+    public static boolean isSolaris() {
+        return (OS.indexOf("sunos") >= 0);
+    }
+
     public static void renderLightModel(final IBakedModel model, final int alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.4f, -0.4f, -0.4f);

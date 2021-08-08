@@ -271,11 +271,11 @@ public class RenderGunStatic extends CustomItemRenderer {
                     adsSwitch = anim.reloading ? 0f : adsSwitch;
 
                     rotateX = (0 + customHipRotation.x) - (VALROT * (0.95f - adsSwitch)) - (0F + customAimRotation.x + customHipRotation.x * adsSwitch);
-                    rotateY = (46F + customHipRotation.y + swayHorizontal) - (1F + customAimRotation.y + customHipRotation.y + swayHorizontal) * adsSwitch;
-                    rotateZ = (1 + customHipRotation.z + swayVertical) - (1.0F + customAimRotation.z + customHipRotation.z + swayVertical) * adsSwitch;
+                    rotateY = (46F + customHipRotation.y) - (1F + customAimRotation.y + customHipRotation.y) * adsSwitch;
+                    rotateZ = (35F * collideFrontDistance) + (1 + customHipRotation.z) - (1.0F + customAimRotation.z + customHipRotation.z) * adsSwitch;
 
                     translateX = (-1.3F + customHipTranslate.x) - (0.0F + customAimTranslate.x + customHipTranslate.x) * adsSwitch;
-                    translateY = (0.834F + customHipTranslate.y) - ((VAL / 500) * (0.95f - adsSwitch)) - (-0.064F + customAimTranslate.y + customHipTranslate.y) * adsSwitch;
+                    translateY = (0.7F * collideFrontDistance) + (0.834F + customHipTranslate.y) - ((VAL / 500) * (0.95f - adsSwitch)) - (-0.064F + customAimTranslate.y + customHipTranslate.y) * adsSwitch;
                     translateZ = (-1.05F + customHipTranslate.z) - ((VAL2 / 500 * (0.95f - adsSwitch))) - (0.35F + customAimTranslate.z + customHipTranslate.z) * adsSwitch;
 
                     if (this.timer == null) {
@@ -431,10 +431,6 @@ public class RenderGunStatic extends CustomItemRenderer {
                     GL11.glPopMatrix();
 
                     if (anim.gunRecoil > 0.1F && entityplayer.isSprinting()) {
-                        RenderParameters.swayHorizontal = 0f;
-                        RenderParameters.swayVertical = 0f;
-                        RenderParameters.swayHorizontalEP = 0f;
-                        RenderParameters.swayVerticalEP = 0f;
                         RenderParameters.reloadSwitch = 0f;
                         RenderParameters.sprintSwitch = 0f;
                     }

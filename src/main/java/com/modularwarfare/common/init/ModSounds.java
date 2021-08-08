@@ -39,6 +39,10 @@ public class ModSounds {
     public static SoundEvent GRENADE_HIT;
     public static SoundEvent GRENADE_ARM;
 
+    public static SoundEvent GRENADE_SMOKE;
+    public static SoundEvent GRENADE_STUN;
+    public static SoundEvent FLASHED;
+
     public static SoundEvent EXPLOSIONS_CLOSE;
     public static SoundEvent EXPLOSIONS_DISTANT;
     public static SoundEvent EXPLOSIONS_FAR;
@@ -81,6 +85,12 @@ public class ModSounds {
 
         registerSound(event.getRegistry(), "human.other.whistle");
 
+
+        registerSound(event.getRegistry(), "smoke_grenade");
+
+        registerSound(event.getRegistry(), "stun_grenade");
+        registerSound(event.getRegistry(), "flashed");
+
         STEP_GRASS_WALK = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "human.step.grass.walk"));
         STEP_GRASS_SPRINT = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "human.step.grass.sprint"));
 
@@ -107,6 +117,10 @@ public class ModSounds {
         GRENADE_THROW = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "grenade_throw"));
         GRENADE_HIT = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "grenade_hit"));
         GRENADE_ARM = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "grenade_arm"));
+        GRENADE_SMOKE = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "smoke_grenade"));
+
+        GRENADE_STUN = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "stun_grenade"));
+        FLASHED = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "flashed"));
 
         EXPLOSIONS_CLOSE = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "explosions.close"));
         EXPLOSIONS_DISTANT = SoundEvent.REGISTRY.getObject(new ResourceLocation("modularwarfare", "explosions.distant"));

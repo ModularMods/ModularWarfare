@@ -74,7 +74,7 @@ public class GunUI {
                             RenderPlayerAmmo(width, height);
                         }
                         RenderHitMarker(Tessellator.getInstance(), width, height);
-                        //RenderPlayerSnap(width, height);
+                        RenderPlayerSnap(width, height);
                         if (mc.gameSettings.thirdPersonView == 0 && ClientRenderHooks.isAimingScope) {
                             if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                                 final ItemStack gunStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
@@ -153,18 +153,20 @@ public class GunUI {
 
                         GlStateManager.popMatrix();
                         if (ModConfig.INSTANCE.enableDynamicCrosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && adsSwitch < 0.6F && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
-                            GlStateManager.pushMatrix();
-                            final float accuracy = RayUtil.calculateAccuracyClient((ItemGun) mc.player.getHeldItemMainhand().getItem(), mc.player);
-                            int move = Math.max(0, (int) (accuracy * 3.0f));
-                            mc.renderEngine.bindTexture(crosshair);
-                            int xPos = width / 2;
-                            int yPos = height / 2;
-                            Gui.drawModalRectWithCustomSizedTexture(xPos, yPos, 1.0f, 1.0f, 1, 1, 16.0f, 16.0f);
-                            Gui.drawModalRectWithCustomSizedTexture(xPos, yPos + move, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
-                            Gui.drawModalRectWithCustomSizedTexture(xPos, yPos - move - 3, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
-                            Gui.drawModalRectWithCustomSizedTexture(xPos + move, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
-                            Gui.drawModalRectWithCustomSizedTexture(xPos - move - 3, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
-                            GlStateManager.popMatrix();
+                            if(RenderParameters.collideFrontDistance <= 0.2f) {
+                                GlStateManager.pushMatrix();
+                                final float accuracy = RayUtil.calculateAccuracyClient((ItemGun) mc.player.getHeldItemMainhand().getItem(), mc.player);
+                                int move = Math.max(0, (int) (accuracy * 3.0f));
+                                mc.renderEngine.bindTexture(crosshair);
+                                int xPos = width / 2;
+                                int yPos = height / 2;
+                                Gui.drawModalRectWithCustomSizedTexture(xPos, yPos, 1.0f, 1.0f, 1, 1, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(xPos, yPos + move, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(xPos, yPos - move - 3, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(xPos + move, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(xPos - move - 3, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
+                                GlStateManager.popMatrix();
+                            }
                         }
                         break;
                     default:

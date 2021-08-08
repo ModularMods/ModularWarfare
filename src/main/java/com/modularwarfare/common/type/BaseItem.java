@@ -16,6 +16,7 @@ public class BaseItem extends Item {
 
         this.baseType = type;
         this.setMaxStackSize(type.maxStackSize);
+        this.canRepair = false;
     }
 
     public void setType(BaseType type) {

@@ -25,6 +25,7 @@
       "\u0026a{killer} \u0026fshoted \u0026c{victim}"
     ]
   },
+  "model_optimization": true,
   "dev_mode": true,
-  "version": "1.0.10f"
+  "version": "1.0.11f"
 }

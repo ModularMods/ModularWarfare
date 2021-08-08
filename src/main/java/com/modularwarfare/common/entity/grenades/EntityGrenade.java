@@ -2,6 +2,10 @@ package com.modularwarfare.common.entity.grenades;
 
 import com.modularwarfare.common.grenades.GrenadeType;
 import com.modularwarfare.common.init.ModSounds;
+import com.modularwarfare.common.particle.EntityBloodFX;
+import com.modularwarfare.common.particle.ParticleExplosion;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -21,11 +25,12 @@ public class EntityGrenade extends Entity {
 
     private static final DataParameter GRENADE_NAME = EntityDataManager.createKey(EntityGrenade.class, DataSerializers.STRING);
     private static final DataParameter GRENADE_TYPE = EntityDataManager.createKey(EntityGrenade.class, DataSerializers.STRING);
+
     public EntityLivingBase thrower;
     public GrenadeType grenadeType;
     public boolean playedSound = false;
-    private int fuse;
-    private boolean exploded = false;
+    public float fuse;
+    public boolean exploded = false;
 
     public EntityGrenade(World worldIn) {
         super(worldIn);
@@ -105,6 +110,8 @@ public class EntityGrenade extends Entity {
                     Explosion explosion = new Explosion(this.world, grenadeType.throwerVulnerable ? null : thrower, posX, posY, posZ, grenadeType.explosionPower, false, grenadeType.damageWorld);
                     explosion.doExplosionA();
                     explosion.doExplosionB(true);
+                    final Particle explosionParticle = new ParticleExplosion(world, this.posX, this.posY, this.posZ);
+                    Minecraft.getMinecraft().effectRenderer.addEffect(explosionParticle);
                 }
                 exploded = true;
             }
@@ -159,7 +166,7 @@ public class EntityGrenade extends Entity {
         compound.setDouble("motionX", this.motionX);
         compound.setDouble("motionY", this.motionY);
         compound.setDouble("motionZ", this.motionZ);
-        compound.setInteger("fuse", this.fuse);
+        compound.setFloat("fuse", this.fuse);
     }
 
     @Override
@@ -171,13 +178,5 @@ public class EntityGrenade extends Entity {
         motionY = compound.getDouble("motionY");
         motionZ = compound.getDouble("motionZ");
         fuse = compound.getInteger("fuse");
-    }
-
-    public int getFuse() {
-        return fuse;
-    }
-
-    public void setFuse(int fuse) {
-        this.fuse = fuse;
     }
 }

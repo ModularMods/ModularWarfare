@@ -12,11 +12,6 @@ public class RenderParameters {
 
     public static int switchDelay = 20;
 
-    public static float swayVertical = 0f;
-    public static float swayHorizontal = 0f;
-    public static Float swayVerticalEP;
-    public static Float swayHorizontalEP;
-
     public static float triggerPullSwitch;
 
     public static String lastModel = "";
@@ -31,6 +26,10 @@ public class RenderParameters {
     public static float GUN_ROT_X_LAST = 0;
     public static float GUN_ROT_Y_LAST = 0;
     public static float GUN_ROT_Z_LAST = 0;
+
+    public static float collideFrontDistance;
+
+
 
     // Recoil variables
     /**
@@ -57,10 +56,6 @@ public class RenderParameters {
 
     // Resets render modifiers
     public static void resetRenderMods() {
-        RenderParameters.swayHorizontal = 0f;
-        RenderParameters.swayVertical = 0f;
-        RenderParameters.swayHorizontalEP = 0f;
-        RenderParameters.swayVerticalEP = 0f;
         RenderParameters.reloadSwitch = 0f;
         RenderParameters.sprintSwitch = 0f;
         RenderParameters.adsSwitch = 0f;
