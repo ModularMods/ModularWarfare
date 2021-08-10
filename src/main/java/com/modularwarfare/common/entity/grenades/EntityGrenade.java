@@ -1,11 +1,8 @@
 package com.modularwarfare.common.entity.grenades;
 
+import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.common.grenades.GrenadeType;
 import com.modularwarfare.common.init.ModSounds;
-import com.modularwarfare.common.particle.EntityBloodFX;
-import com.modularwarfare.common.particle.ParticleExplosion;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -20,11 +17,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-
 public class EntityGrenade extends Entity {
 
     private static final DataParameter GRENADE_NAME = EntityDataManager.createKey(EntityGrenade.class, DataSerializers.STRING);
-    private static final DataParameter GRENADE_TYPE = EntityDataManager.createKey(EntityGrenade.class, DataSerializers.STRING);
 
     public EntityLivingBase thrower;
     public GrenadeType grenadeType;
@@ -110,8 +105,7 @@ public class EntityGrenade extends Entity {
                     Explosion explosion = new Explosion(this.world, grenadeType.throwerVulnerable ? null : thrower, posX, posY, posZ, grenadeType.explosionPower, false, grenadeType.damageWorld);
                     explosion.doExplosionA();
                     explosion.doExplosionB(true);
-                    final Particle explosionParticle = new ParticleExplosion(world, this.posX, this.posY, this.posZ);
-                    Minecraft.getMinecraft().effectRenderer.addEffect(explosionParticle);
+                    ModularWarfare.PROXY.spawnExplosionParticle(this.world, this.posX, this.posY, this.posZ);
                 }
                 exploded = true;
             }

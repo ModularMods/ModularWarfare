@@ -25,7 +25,6 @@ import net.minecraft.world.World;
 public class EntitySmokeGrenade extends EntityGrenade {
 
     private static final DataParameter GRENADE_NAME = EntityDataManager.createKey(EntitySmokeGrenade.class, DataSerializers.STRING);
-    private static final DataParameter GRENADE_TYPE = EntityDataManager.createKey(EntitySmokeGrenade.class, DataSerializers.STRING);
 
     public float smokeTime = 12 * 20;
 
