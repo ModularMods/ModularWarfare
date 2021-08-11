@@ -36,7 +36,6 @@ public class AttachmentType extends BaseType {
     public static class Sight {
         public WeaponScopeType scopeType = WeaponScopeType.DEFAULT;
         public WeaponDotColorType dotColorType = WeaponDotColorType.RED;
-        public float sensivityScopeFactor = 1.0f;
     }
 
     public static class Barrel {

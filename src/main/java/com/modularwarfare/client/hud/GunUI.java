@@ -4,6 +4,7 @@ import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
+import com.modularwarfare.client.model.ModelAttachment;
 import com.modularwarfare.client.model.renders.RenderParameters;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.utility.OptifineHelper;
@@ -135,7 +136,7 @@ public class GunUI {
                                                             factor = 2;
                                                         }
                                                         int size = (32 * 2 / (int) (event.getResolution().getScaleFactor() * factor)) + ((int) (crouchSwitch) * 5);
-                                                        size = (int) (size * (1 + playerRecoilYaw * 0.2));
+                                                        size = (int) (((size * (1 + playerRecoilYaw * 0.2))) * ((ModelAttachment) itemAttachment.type.model).config.sight.rectileScale);
                                                         GL11.glTranslatef((width / 2 - size), (height / 2 - size), 0);
                                                         GL11.glTranslatef((VAL2 / 10), (VAL / 10), 0);
                                                         RenderHelperMW.renderImageAlpha(0, 0, overlayToRender, size * 2, size * 2, 1f - alpha);

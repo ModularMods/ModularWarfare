@@ -116,36 +116,12 @@
     }
   },
   "attachments": {
-    "attachmentPointMap": {
-      "barrel": [
+    "positionPointMap": {
+      "prototype.docter_sight_mini": [
         {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        }
-      ],
-      "sight": [
-        {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        },
-        {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
-        }
-      ],
-      "flashlight": [
-        {
-          "x": 0.0,
-          "y": 0.0,
-          "z": 0.0
+          "x": -3.0,
+          "y": -0.2,
+          "z": 0.02
         },
         {
           "x": 0.0,
@@ -154,10 +130,19 @@
         }
       ]
     },
-    "attachmentModeRotate": {
-      "x": 10.0,
-      "y": 30.0,
-      "z": 0.0
+    "aimPointMap": {
+      "prototype.docter_sight_mini": [
+        {
+          "x": 0.0,
+          "y": -0.15,
+          "z": 0.0
+        },
+        {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.5
+        }
+      ]
     }
   },
   "itemFrame": {

@@ -152,6 +152,20 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                                 }
                             }
 
+                            if (model.config.attachments.positionPointMap != null) {
+                                for (String internalName : model.config.attachments.positionPointMap.keySet()) {
+                                    if (internalName.equals(attachmentType.internalName)) {
+                                        Vector3f trans = model.config.attachments.positionPointMap.get(internalName).get(0);
+                                        Vector3f rot = model.config.attachments.positionPointMap.get(internalName).get(1);
+                                        GL11.glTranslatef(trans.x / attachmentModel.config.extra.modelScale * worldScale, trans.y / attachmentModel.config.extra.modelScale * worldScale, trans.z / attachmentModel.config.extra.modelScale * worldScale);
+
+                                        GL11.glRotatef(rot.x, 1F, 0F, 0F); //ROLL LEFT-RIGHT
+                                        GL11.glRotatef(rot.y, 0F, 1F, 0F); //ANGLE LEFT-RIGHT
+                                        GL11.glRotatef(rot.z, 0F, 0F, 1F); //ANGLE UP-DOWN
+                                    }
+                                }
+                            }
+
                             skinId = 0;
                             if (itemStack.hasTagCompound()) {
                                 if (itemStack.getTagCompound().hasKey("skinId")) {
@@ -169,7 +183,6 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
 
                 GlStateManager.popMatrix();
             }
-            GlStateManager.popMatrix();
 
             GlStateManager.popMatrix();
             GlStateManager.disableRescaleNormal();

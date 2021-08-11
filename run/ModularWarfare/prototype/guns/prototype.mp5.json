@@ -63,6 +63,9 @@
         ]
     },
     "acceptedAttachments": {
+        "sight": [
+            "prototype.docter_sight_mini"
+        ],
         "flashlight": [
             "prototype.mp5_flashlight"
         ]

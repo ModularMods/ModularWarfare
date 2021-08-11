@@ -35,7 +35,10 @@ public class EntitySmokeGrenade extends EntityGrenade {
     public EntitySmokeGrenade(World world, EntityLivingBase thrower, boolean isRightClick, GrenadeType grenadeType) {
         super(world, thrower, isRightClick, grenadeType);
         this.smokeTime = grenadeType.smokeTime * 20;
-        this.setInvisible(true);
+        this.preventEntitySpawning = true;
+        this.isImmuneToFire = true;
+        this.setSize(0.35f, 0.35f);
+        this.setEntityInvulnerable(false);
     }
 
     @Override
@@ -76,10 +79,7 @@ public class EntitySmokeGrenade extends EntityGrenade {
         this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
 
         if (this.fuse <= 0) {
-            if (!exploded) {
-                exploded = true;
-                world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.GRENADE_SMOKE, SoundCategory.BLOCKS, 2.0f, 1.0f);
-            }
+            explode();
         } else {
             this.handleWaterMovement();
             if (!this.isInWater()) {
@@ -89,11 +89,21 @@ public class EntitySmokeGrenade extends EntityGrenade {
             }
         }
 
-        if(exploded){
+        if(this.exploded){
             --this.smokeTime;
             if(this.smokeTime <= 0){
                 setDead();
             }
+        }
+    }
+
+    @Override
+    public void explode(){
+        if (!this.exploded) {
+            this.world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.GRENADE_SMOKE, SoundCategory.BLOCKS, 2.0f, 1.0f);
+            this.exploded = true;
+            this.fuse = 0;
+            this.smokeTime = 220;
         }
     }
 

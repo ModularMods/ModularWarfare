@@ -5,7 +5,8 @@
   },
   "sight": {
     "fovZoom": 8.0,
-    "mouseSensitivityFactor": 0.6
+    "mouseSensitivityFactor": 0.6,
+    "rectileScale": 1.0
   },
   "grip": {
     "leftArmOffset": {

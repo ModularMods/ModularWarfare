@@ -14,6 +14,7 @@ import com.modularwarfare.common.capability.extraslots.CapabilityExtra;
 import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
 import com.modularwarfare.common.entity.decals.EntityDecal;
 import com.modularwarfare.common.entity.decals.EntityShell;
+import com.modularwarfare.common.entity.grenades.EntityGrenade;
 import com.modularwarfare.common.handler.ServerTickHandler;
 import com.modularwarfare.common.hitbox.hits.BulletHit;
 import com.modularwarfare.common.hitbox.hits.PlayerHit;
@@ -398,6 +399,10 @@ public class ItemGun extends BaseItem {
                                 gunType.playSoundPos(blockPos, world, WeaponSoundType.Crack, entityPlayer, 1.0f);
                                 doHit(rayTrace.rayTraceResult, entityPlayer);
                             }
+                            if (rayTrace.rayTraceResult.entityHit instanceof EntityGrenade) {
+                                ((EntityGrenade)rayTrace.rayTraceResult.entityHit).explode();
+                            }
+
                         }
                     }
                 }

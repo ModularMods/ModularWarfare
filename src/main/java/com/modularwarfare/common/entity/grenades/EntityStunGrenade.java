@@ -29,8 +29,10 @@ public class EntityStunGrenade extends EntityGrenade {
 
     public EntityStunGrenade(World world, EntityLivingBase thrower, boolean isRightClick, GrenadeType grenadeType) {
         super(world, thrower, isRightClick, grenadeType);
-        this.setInvisible(true);
+        this.preventEntitySpawning = true;
+        this.isImmuneToFire = true;
         this.setSize(0.35f, 0.35f);
+        this.setEntityInvulnerable(false);
     }
 
     @Override
@@ -72,12 +74,7 @@ public class EntityStunGrenade extends EntityGrenade {
 
         if (this.fuse <= 0) {
             if (!exploded) {
-                exploded = true;
-                world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.GRENADE_STUN, SoundCategory.BLOCKS, 2.0f, 1.0f);
-                if (!this.world.isRemote) {
-                    stunExplosion();
-                }
-                setDead();
+                explode();
             }
         } else {
             this.handleWaterMovement();
@@ -89,22 +86,31 @@ public class EntityStunGrenade extends EntityGrenade {
         }
     }
 
-    public void stunExplosion(){
-        for (EntityPlayer player : world.playerEntities) {
-            if (this.isInFieldOfVision(this, player)) {
-                if (player.getDistance(this) < 10) {
-                    ModularWarfare.NETWORK.sendTo(new PacketFlashClient(255), (EntityPlayerMP) player);
-                } else if (player.getDistance(this) < 15) {
-                    ModularWarfare.NETWORK.sendTo(new PacketFlashClient(180), (EntityPlayerMP) player);
-                } else if (player.getDistance(this) < 20) {
-                    ModularWarfare.NETWORK.sendTo(new PacketFlashClient(100), (EntityPlayerMP) player);
-                } else if (player.getDistance(this) < 35) {
-                    ModularWarfare.NETWORK.sendTo(new PacketFlashClient(60), (EntityPlayerMP) player);
+    @Override
+    public void explode(){
+        if (!exploded) {
+            world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.GRENADE_STUN, SoundCategory.BLOCKS, 2.0f, 1.0f);
+            exploded = true;
+            setDead();
+            if (!this.world.isRemote) {
+                for (EntityPlayer player : world.playerEntities) {
+                    if (this.isInFieldOfVision(this, player)) {
+                        if (player.getDistance(this) < 10) {
+                            ModularWarfare.NETWORK.sendTo(new PacketFlashClient(255), (EntityPlayerMP) player);
+                        } else if (player.getDistance(this) < 15) {
+                            ModularWarfare.NETWORK.sendTo(new PacketFlashClient(180), (EntityPlayerMP) player);
+                        } else if (player.getDistance(this) < 20) {
+                            ModularWarfare.NETWORK.sendTo(new PacketFlashClient(100), (EntityPlayerMP) player);
+                        } else if (player.getDistance(this) < 35) {
+                            ModularWarfare.NETWORK.sendTo(new PacketFlashClient(60), (EntityPlayerMP) player);
+                        }
+                    }
+
                 }
             }
-
         }
     }
+
 
     boolean isInFieldOfVision(Entity e1, EntityLivingBase e2) {
         float rotationYawPrime = e2.rotationYaw;

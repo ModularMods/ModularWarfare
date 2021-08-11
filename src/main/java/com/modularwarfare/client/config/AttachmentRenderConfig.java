@@ -1,6 +1,7 @@
 package com.modularwarfare.client.config;
 
 
+import com.modularwarfare.common.guns.WeaponDotColorType;
 import org.lwjgl.util.vector.Vector3f;
 
 public class AttachmentRenderConfig {
@@ -20,6 +21,7 @@ public class AttachmentRenderConfig {
     public static class Sight {
         public float fovZoom = 3.5f;
         public float mouseSensitivityFactor = 1.0f;
+        public float rectileScale = 1.0f;
     }
 
     public static class Grip {

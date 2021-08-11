@@ -2,6 +2,7 @@ package com.modularwarfare.utility;
 
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.common.entity.grenades.EntityGrenade;
 import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemBullet;
 import com.modularwarfare.common.guns.ItemGun;
@@ -267,6 +268,21 @@ public class RayUtil {
                                     closestHit = currentHit;
                                     closestHitEntity = ent;
                                 }
+                            }
+                        }
+                    }
+                } else if (ent instanceof EntityGrenade){
+                    float entBorder = ent.getCollisionBorderSize();
+                    entityBb = ent.getEntityBoundingBox();
+                    if (entityBb != null) {
+                        entityBb = entityBb.grow(entBorder, entBorder, entBorder);
+                        intercept = entityBb.calculateIntercept(startVec, endVec);
+                        if (intercept != null) {
+                            currentHit = (float) intercept.hitVec.distanceTo(startVec);
+                            hit = intercept.hitVec;
+                            if (currentHit < closestHit || currentHit == 0) {
+                                closestHit = currentHit;
+                                closestHitEntity = ent;
                             }
                         }
                     }

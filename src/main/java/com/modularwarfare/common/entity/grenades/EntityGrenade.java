@@ -33,6 +33,7 @@ public class EntityGrenade extends Entity {
         this.preventEntitySpawning = true;
         this.isImmuneToFire = true;
         this.setSize(0.35f, 0.35f);
+        this.setEntityInvulnerable(false);
     }
 
     public EntityGrenade(World world, EntityLivingBase thrower, boolean isRightClick, GrenadeType grenadeType) {
@@ -100,15 +101,7 @@ public class EntityGrenade extends Entity {
         this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
 
         if (this.fuse <= 0) {
-            if (!this.world.isRemote && !exploded) {
-                if (grenadeType != null) {
-                    Explosion explosion = new Explosion(this.world, grenadeType.throwerVulnerable ? null : thrower, posX, posY, posZ, grenadeType.explosionPower, false, grenadeType.damageWorld);
-                    explosion.doExplosionA();
-                    explosion.doExplosionB(true);
-                    ModularWarfare.PROXY.spawnExplosionParticle(this.world, this.posX, this.posY, this.posZ);
-                }
-                exploded = true;
-            }
+            explode();
             if (this.fuse <= -20) {
                 this.setDead();
             }
@@ -131,6 +124,19 @@ public class EntityGrenade extends Entity {
         this.dataManager.set(GRENADE_NAME, grenadeName);
     }
 
+
+    public void explode(){
+        if (!this.world.isRemote && !exploded) {
+            if (grenadeType != null) {
+                Explosion explosion = new Explosion(this.world, grenadeType.throwerVulnerable ? null : thrower, posX, posY, posZ, grenadeType.explosionPower, false, grenadeType.damageWorld);
+                explosion.doExplosionA();
+                explosion.doExplosionB(true);
+                ModularWarfare.PROXY.spawnExplosionParticle(this.world, this.posX, this.posY, this.posZ);
+            }
+        }
+        exploded = true;
+        this.setDead();
+    }
 
     @Override
     public boolean canBeCollidedWith() {
