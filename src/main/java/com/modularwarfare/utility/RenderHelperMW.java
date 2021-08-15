@@ -840,4 +840,26 @@ public class RenderHelperMW {
         GL11.glPopMatrix();
     }
 
+
+    public static void renderRectFlash(double x, double y, double width, double height) {
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+
+        GL11.glEnable(3042);
+        GL11.glEnable(2832);
+        GL11.glHint(3153, 4353);
+
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+
+        bufferbuilder.pos(x, y + height, 0.0D).tex(0.0D, 1.0D).endVertex();
+        bufferbuilder.pos(x + width, y + height, 0.0D).tex(1.0D, 1.0D).endVertex();
+        bufferbuilder.pos(x + width, y, 0.0D).tex(1.0D, 0.0D).endVertex();
+        bufferbuilder.pos(x, y, 0.0D).tex(0.0D, 0.0D).endVertex();
+
+        tessellator.draw();
+
+        GL11.glDisable(3042);
+        GL11.glDisable(2832);
+    }
 }

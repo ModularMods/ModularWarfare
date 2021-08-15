@@ -1,6 +1,6 @@
 package com.modularwarfare.common.network;
 
-import com.modularwarfare.client.ClientRenderHooks;
+import com.modularwarfare.client.hud.FlashSystem;
 import com.modularwarfare.common.init.ModSounds;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -41,13 +41,14 @@ public class PacketFlashClient extends PacketBase {
 
         //Minecraft.getMinecraft().getSoundHandler().stopSounds();
 
-        ClientRenderHooks.flashValue += this.flashAmount;
-        Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, (float) ClientRenderHooks.flashValue / 1000, 1, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
+        FlashSystem.hasTookScreenshot = false;
+        FlashSystem.flashValue += this.flashAmount;
+        Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, (float) FlashSystem.flashValue / 1000, 1, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
         Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, 5.0f, 0.2f, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
         Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, 5.0f, 0.1f, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
 
-        if (ClientRenderHooks.flashValue > 255) {
-            ClientRenderHooks.flashValue = 255;
+        if (FlashSystem.flashValue > 255) {
+            FlashSystem.flashValue = 255;
         }
     }
 }

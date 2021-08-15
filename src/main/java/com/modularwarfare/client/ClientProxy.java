@@ -11,6 +11,7 @@ import com.modularwarfare.client.config.*;
 import com.modularwarfare.client.export.ItemModelExport;
 import com.modularwarfare.client.handler.*;
 import com.modularwarfare.client.hud.AttachmentUI;
+import com.modularwarfare.client.hud.FlashSystem;
 import com.modularwarfare.client.hud.GunUI;
 import com.modularwarfare.client.killchat.KillFeedManager;
 import com.modularwarfare.client.killchat.KillFeedRender;
@@ -108,6 +109,8 @@ public class ClientProxy extends CommonProxy {
     public static HashMap<String, SoundEvent> modSounds = new HashMap<String, SoundEvent>();
 
     public static ScopeUtils scopeUtils;
+    public static FlashSystem flashImage;
+
     public static ItemLight itemLight = new ItemLight("light");
 
     public static ClientRenderHooks renderHooks;
@@ -308,6 +311,9 @@ public class ClientProxy extends CommonProxy {
 
         this.scopeUtils = new ScopeUtils();
         MinecraftForge.EVENT_BUS.register(this.scopeUtils);
+
+        this.flashImage = new FlashSystem();
+        MinecraftForge.EVENT_BUS.register(this.flashImage);
 
         this.attachmentUI = new AttachmentUI();
         MinecraftForge.EVENT_BUS.register(this.attachmentUI);

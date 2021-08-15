@@ -104,7 +104,6 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
             GlStateManager.rotate(entity.rotationPitch, 1, 0, 0.0F);
             GlStateManager.translate(0, -height, 0);
 
-
             ItemGun gun = (ItemGun) itemstack.getItem();
             GunType gunType = gun.type;
             ModelGun model = (ModelGun) gunType.model;
@@ -183,12 +182,12 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
 
                 GlStateManager.popMatrix();
             }
+            GlStateManager.popMatrix();
 
             GlStateManager.popMatrix();
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableBlend();
         } else {
-
             int i;
             if (itemstack != null && itemstack.getItem() != null) {
                 i = Item.getIdFromItem(itemstack.getItem()) + itemstack.getMetadata();

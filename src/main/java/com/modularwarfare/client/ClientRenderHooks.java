@@ -55,8 +55,6 @@ public class ClientRenderHooks extends ForgeEvent {
     private Minecraft mc;
     private float equippedProgress = 1f, prevEquippedProgress = 1f;
 
-    public static int flashValue;
-
     public static final ResourceLocation grenade_smoke = new ResourceLocation("modularwarfare", "textures/particles/smoke.png");
 
     public ClientRenderHooks() {
@@ -135,15 +133,6 @@ public class ClientRenderHooks extends ForgeEvent {
         }
     }
 
-    @SubscribeEvent
-    public void onRenderPost(RenderGameOverlayEvent.Post event) {
-        Minecraft mc = Minecraft.getMinecraft();
-        if(event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            if (flashValue != 0) {
-                RenderHelperMW.renderRectAlphaComp(0, 0, mc.displayWidth, mc.displayHeight, 0xFFFFFF, ClientRenderHooks.flashValue);
-            }
-        }
-    }
 
     @SubscribeEvent
     public void renderHeldItem(RenderSpecificHandEvent event) {

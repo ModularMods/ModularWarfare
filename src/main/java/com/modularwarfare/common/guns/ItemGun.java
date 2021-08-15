@@ -383,6 +383,9 @@ public class ItemGun extends BaseItem {
                 } else {
                     if (!world.isRemote) {
                         if (rayTrace.rayTraceResult != null) {
+                            if (rayTrace.rayTraceResult.entityHit instanceof EntityGrenade) {
+                                ((EntityGrenade)rayTrace.rayTraceResult.entityHit).explode();
+                            }
                             if (rayTrace.rayTraceResult.entityHit instanceof EntityLivingBase) {
                                 final EntityLivingBase victim = (EntityLivingBase) ((BulletHit) rayTrace).rayTraceResult.entityHit;
                                 if (victim != null) {
@@ -399,10 +402,6 @@ public class ItemGun extends BaseItem {
                                 gunType.playSoundPos(blockPos, world, WeaponSoundType.Crack, entityPlayer, 1.0f);
                                 doHit(rayTrace.rayTraceResult, entityPlayer);
                             }
-                            if (rayTrace.rayTraceResult.entityHit instanceof EntityGrenade) {
-                                ((EntityGrenade)rayTrace.rayTraceResult.entityHit).explode();
-                            }
-
                         }
                     }
                 }
@@ -771,7 +770,7 @@ public class ItemGun extends BaseItem {
 
     @Override
     public EnumAction getItemUseAction(ItemStack p_77661_1_) {
-        return EnumAction.BLOCK;
+        return EnumAction.NONE;
     }
 
     @Override

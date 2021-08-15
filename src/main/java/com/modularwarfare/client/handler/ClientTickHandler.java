@@ -5,6 +5,7 @@ import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.anim.AnimStateMachine;
 import com.modularwarfare.client.anim.StateEntry;
+import com.modularwarfare.client.hud.FlashSystem;
 import com.modularwarfare.client.model.InstantBulletRenderer;
 import com.modularwarfare.client.model.ModelGun;
 import com.modularwarfare.client.model.renders.RenderParameters;
@@ -211,10 +212,10 @@ public class ClientTickHandler extends ForgeEvent {
             ClientProxy.gunUI.bulletSnapFade -= 0.01F;
         }
         //Client Flash Grenade
-        if (ClientRenderHooks.flashValue > 0) {
-            ClientRenderHooks.flashValue -= 2;
-        } else if (ClientRenderHooks.flashValue < 0) {
-            ClientRenderHooks.flashValue = 0;
+        if (FlashSystem.flashValue > 0) {
+            FlashSystem.flashValue -= 2;
+        } else if (FlashSystem.flashValue < 0) {
+            FlashSystem.flashValue = 0;
         }
     }
 
