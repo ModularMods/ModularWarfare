@@ -1,5 +1,7 @@
 package com.modularwarfare.common.network;
 
+import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.hud.FlashSystem;
 import com.modularwarfare.common.init.ModSounds;
 import io.netty.buffer.ByteBuf;
@@ -39,13 +41,10 @@ public class PacketFlashClient extends PacketBase {
     @Override
     public void handleClientSide(EntityPlayer entityPlayer) {
 
-        //Minecraft.getMinecraft().getSoundHandler().stopSounds();
-
         FlashSystem.hasTookScreenshot = false;
         FlashSystem.flashValue += this.flashAmount;
-        Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, (float) FlashSystem.flashValue / 1000, 1, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
-        Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, 5.0f, 0.2f, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
-        Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, 5.0f, 0.1f, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
+
+        ((ClientProxy)(ModularWarfare.PROXY)).playFlashSound(entityPlayer);
 
         if (FlashSystem.flashValue > 255) {
             FlashSystem.flashValue = 255;

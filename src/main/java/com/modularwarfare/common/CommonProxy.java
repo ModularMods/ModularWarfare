@@ -198,4 +198,7 @@ public class CommonProxy extends ForgeEvent {
     public void resetSens() {
     }
 
+    public void playFlashSound(EntityPlayer player) {
+    }
+
 }
