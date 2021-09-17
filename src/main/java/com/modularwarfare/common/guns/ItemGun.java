@@ -41,6 +41,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemAir;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -368,13 +370,14 @@ public class ItemGun extends BaseItem {
                     if (!world.isRemote) {
                         final EntityPlayer victim = ((PlayerHit) rayTrace).getEntity();
                         if (victim != null) {
-                            if (!victim.isDead) {
+                            if (!victim.isDead && victim.getHealth() > 0.0f) {
                                 entities.add(victim);
                                 gunType.playSoundPos(victim.getPosition(), world, WeaponSoundType.Penetration);
                                 headshot = ((PlayerHit) rayTrace).hitbox.type.equals(EnumHitboxType.HEAD);
                                 if (entityPlayer instanceof EntityPlayerMP) {
                                     ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(headshot), (EntityPlayerMP) entityPlayer);
                                     ModularWarfare.NETWORK.sendTo(new PacketPlaySound(victim.getPosition(), "flyby", 1f, 1f), (EntityPlayerMP) victim);
+
                                     ModularWarfare.NETWORK.sendTo(new PacketPlayerHit(), (EntityPlayerMP) victim);
                                 }
                             }
@@ -503,11 +506,12 @@ public class ItemGun extends BaseItem {
                 ModularWarfare.NETWORK.sendToAll(new PacketAimingReponse(entityPlayer.getName(), true));
             }
             ServerTickHandler.playerAimShootCooldown.put(entityPlayer.getName(), 60);
-
         } else {
             if (ModConfig.INSTANCE.kickIfModifiedContentPack) {
                 ((EntityPlayerMP) entityPlayer).connection.disconnect(new TextComponentString("[ModularWarfare] Kicked for client-side modified content-pack. (Bad RPM/Recoil for the gun: " + itemGun.type.internalName + ") [RPM should be: " + itemGun.type.roundsPerMin + "]"));
             }
+
+
         }
     }
 

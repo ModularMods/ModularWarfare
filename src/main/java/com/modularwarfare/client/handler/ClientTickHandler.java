@@ -13,12 +13,18 @@ import com.modularwarfare.common.grenades.ItemGrenade;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.guns.ItemSpray;
 import com.modularwarfare.utility.MWSound;
+import com.modularwarfare.utility.RayUtil;
 import com.modularwarfare.utility.event.ForgeEvent;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -26,6 +32,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.lwjgl.input.Mouse;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -146,16 +153,35 @@ public class ClientTickHandler extends ForgeEvent {
             float modeSwitchValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
             RenderParameters.triggerPullSwitch = Math.max(0, Math.min(model.triggerDistance, triggerPullValue));
 
-            if (Minecraft.getMinecraft().objectMouseOver != null) {
-                double d1 = Minecraft.getMinecraft().objectMouseOver.hitVec.distanceTo(player.getPositionEyes(renderTick));
-                if (d1 <= 1.0f) {
-                    RenderParameters.collideFrontDistance = (float) (RenderParameters.collideFrontDistance + ((1.0f-d1) - RenderParameters.collideFrontDistance) * renderTick);
+            World world = Minecraft.getMinecraft().world;
+            double dx = player.getLookVec().x * 1;
+            double dy = player.getLookVec().y * 1;
+            double dz = player.getLookVec().z * 1;
+
+            Vec3d vecStart = new Vec3d((float) player.posX, (float) (player.getEntityBoundingBox().minY + player.getEyeHeight() - 0.10000000149011612), (float) player.posZ);
+            Vec3d vedEnd = new Vec3d((float) (player.posX + dx + player.motionX), (float) (player.posY + dy + player.motionY), (float) (player.posZ + dz + player.motionZ));
+
+            RayTraceResult rayTraceResult = world.rayTraceBlocks(vecStart, vedEnd, false, true, false);
+            if(rayTraceResult != null) {
+                if (rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
+                    if (rayTraceResult.hitVec != null) {
+                        double d = vecStart.distanceTo(rayTraceResult.hitVec);
+                        if (d <= 1.0f) {
+                            RenderParameters.collideFrontDistance = (float) (RenderParameters.collideFrontDistance + ((1.0f - d) - RenderParameters.collideFrontDistance) * renderTick);
+                        } else {
+                            RenderParameters.collideFrontDistance = 0.0f;
+                        }
+                    } else {
+                        RenderParameters.collideFrontDistance = 0.0f;
+                    }
                 } else {
                     RenderParameters.collideFrontDistance = 0.0f;
                 }
             } else {
                 RenderParameters.collideFrontDistance = 0.0f;
             }
+
+
 
             for (AnimStateMachine stateMachine : ClientRenderHooks.weaponAnimations.values()) {
                 stateMachine.onRenderTickUpdate();
