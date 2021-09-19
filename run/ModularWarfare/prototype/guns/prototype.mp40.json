@@ -2,33 +2,31 @@
     "internalName": "prototype.mp40",
     "displayName": "MP40",
     "weaponType": "smg",
-
+    "customFlashTexture": "prototype.flash",
     "gunDamage": 8,
     "gunDamageHeadshotBonus": 2,
-
     "roundsPerMin": 500,
-
     "allowEmptyMagazines": true,
-
-    "recoilPitch": 3.0,
-    "recoilYaw": 1.0,
+    "recoilPitch": 3,
+    "recoilYaw": 1,
     "randomRecoilPitch": 0.8,
     "randomRecoilYaw": 0.8,
     "bulletSpread": 1.25,
-
     "accuracySneakFactor": 0.5,
-    "moveSpeedModifier": 1.0,
+    "moveSpeedModifier": 1,
     "allowSprintFiring": true,
-
     "dropBulletCasing": true,
-
-    "fireModes": ["full", "semi"],
-    "acceptedAmmo": ["prototype.mp40ammo"],
-
+    "fireModes": [
+        "full",
+        "semi"
+    ],
+    "acceptedAmmo": [
+        "prototype.mp40ammo"
+    ],
     "shellEjectOffsetNormal": {
-        "x": -1.0,
-        "y": 0.0,
-        "z": 1.0
+        "x": -1,
+        "y": 0,
+        "z": 1
     },
     "shellEjectOffsetAiming": {
         "x": -0.2,
@@ -57,7 +55,7 @@
                 "soundEvent": "weaponFireSuppressed",
                 "soundName": "prototype.ak74u.shoot.sup",
                 "soundRange": 30,
-                "soundMaxRange": 30,
+                "soundMaxRange": 50,
                 "soundFadeMultiplier": 1
             }
         ]

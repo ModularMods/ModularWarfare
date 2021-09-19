@@ -106,7 +106,6 @@ public class ClientProxy extends CommonProxy {
     public static RenderAttachment attachmentRenderer;
     public static RenderGrenade grenadeRenderer;
 
-
     public static HashMap<String, SoundEvent> modSounds = new HashMap<String, SoundEvent>();
 
     public static ScopeUtils scopeUtils;
@@ -118,7 +117,6 @@ public class ClientProxy extends CommonProxy {
 
     public static AttachmentUI attachmentUI;
     public static GunUI gunUI;
-
 
     public static KillFeedManager killFeedManager;
     /**
@@ -168,25 +166,9 @@ public class ClientProxy extends CommonProxy {
                 .addAll(CoreModManager.getReparseableCoremods())
                 .build();
 
-        File[] minecraftSources = event.getModClassLoader().getParentSources();
-        if (minecraftSources.length == 1 && minecraftSources[0].isFile()) {
-            FMLLog.log.debug("Minecraft is a file at {}, loading", minecraftSources[0].getAbsolutePath());
-        } else {
-            int i = 0;
-            for (File source : minecraftSources) {
-                if (source.isFile()) {
-                    if (knownLibraries.contains(source.getName()) || event.getModClassLoader().isDefaultLibrary(source)) {
-                        FMLLog.log.trace("Skipping known library file {}", source.getAbsolutePath());
-                    } else {
-                        FMLLog.log.debug("Found a minecraft related file at {}, examining for mod candidates", source.getAbsolutePath());
-                        if (source.getAbsolutePath().contains("modularwarfare")) {
-                            modFile = source;
-                        }
-                    }
-                } else if (minecraftSources[i].isDirectory()) {
-                    FMLLog.log.debug("Found a minecraft related directory at {}, examining for mod candidates", source.getAbsolutePath());
-                }
-                i++;
+        for (File source : new File(Minecraft.getMinecraft().mcDataDir, "mods").listFiles()) {
+            if(source.getName().contains("modularwarfare")){
+                modFile = source;
             }
         }
 

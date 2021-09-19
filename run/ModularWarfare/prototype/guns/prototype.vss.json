@@ -2,33 +2,30 @@
     "internalName": "prototype.vss",
     "displayName": "VSS Vintorez",
     "weaponType": "carbine",
-
     "gunDamage": 8,
     "gunDamageHeadshotBonus": 2,
-
     "roundsPerMin": 350,
-
     "allowEmptyMagazines": true,
-
-    "recoilPitch": 6.0,
-    "recoilYaw": 2.5,
+    "recoilPitch": 2,
+    "recoilYaw": 1.5,
     "randomRecoilPitch": 0.8,
     "randomRecoilYaw": 0.8,
-    "bulletSpread": 1.0,
-
+    "bulletSpread": 1,
     "accuracySneakFactor": 0.5,
-    "moveSpeedModifier": 1.0,
+    "moveSpeedModifier": 1,
     "allowSprintFiring": true,
-
-    "fireModes": ["full", "semi"],
-    "acceptedAmmo": ["prototype.vssammo"],
-
+    "fireModes": [
+        "full",
+        "semi"
+    ],
+    "acceptedAmmo": [
+        "prototype.vssammo"
+    ],
     "dropBulletCasing": true,
-
     "shellEjectOffsetNormal": {
-        "x": -1.0,
-        "y": 0.0,
-        "z": 1.0
+        "x": -1,
+        "y": 0,
+        "z": 1
     },
     "shellEjectOffsetAiming": {
         "x": -0.2,

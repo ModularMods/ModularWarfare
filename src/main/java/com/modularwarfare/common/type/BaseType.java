@@ -58,6 +58,10 @@ public class BaseType {
             iconName = internalName;
     }
 
+    public void postLoad(){
+
+    }
+
     /**
      * Method for sub types to use for handling staticModel reloading
      */

@@ -3,7 +3,6 @@
   "internalName": "prototype.smoke_grenade",
   "grenadeType": "smoke",
   "smokeTime": 10,
-
   "fuseTime": 5,
   "damageWorld": false,
   "explosionPower": 5,

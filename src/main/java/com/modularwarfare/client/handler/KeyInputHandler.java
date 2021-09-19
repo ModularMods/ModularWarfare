@@ -5,6 +5,7 @@ import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.anim.AnimStateMachine;
+import com.modularwarfare.client.gui.customization.GuiMainScreen;
 import com.modularwarfare.client.input.KeyEntry;
 import com.modularwarfare.client.input.KeyType;
 import com.modularwarfare.client.model.renders.RenderGunStatic;
@@ -128,6 +129,7 @@ public class KeyInputHandler extends ForgeEvent {
                     break;
 
                 case AddAttachment:
+
                     if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
                         if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                             AnimStateMachine stateMachine = ClientRenderHooks.getAnimMachine(entityPlayer);
@@ -135,6 +137,14 @@ public class KeyInputHandler extends ForgeEvent {
                             ModularWarfare.PROXY.playSound(new MWSound(entityPlayer.getPosition(), "attachment.open", 1f, 1f));
                         }
                     }
+
+
+                    if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
+                        if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
+                            //Minecraft.getMinecraft().displayGuiScreen(new GuiMainScreen(entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND),(ItemGun) entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem()));
+                        }
+                    }
+
                     break;
                 case Flashlight:
                     if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {

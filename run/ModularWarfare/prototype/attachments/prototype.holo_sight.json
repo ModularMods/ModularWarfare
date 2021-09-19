@@ -1,0 +1,15 @@
+{
+  "displayName": "Holo Sight",
+  "internalName": "prototype.holo_sight",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "prototype.holo_sight",
+      "displayName": "Holo Sight - Default"
+    }
+  ],
+  "sight": {
+    "scopeType": "2x",
+    "customOverlayTexture": "prototype.holo_sight"
+  }
+}

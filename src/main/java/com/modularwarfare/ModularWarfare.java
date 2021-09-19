@@ -9,6 +9,8 @@ import com.modularwarfare.common.armor.ItemMWArmor;
 import com.modularwarfare.common.armor.ItemSpecialArmor;
 import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.commands.CommandClear;
+import com.modularwarfare.common.commands.CommandDebug;
+import com.modularwarfare.common.commands.CommandNBT;
 import com.modularwarfare.common.entity.EntityBullet;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
@@ -25,6 +27,7 @@ import com.modularwarfare.common.handler.ServerTickHandler;
 import com.modularwarfare.common.hitbox.playerdata.PlayerDataHandler;
 import com.modularwarfare.common.network.NetworkHandler;
 import com.modularwarfare.common.protector.ModularProtector;
+import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
@@ -69,7 +72,7 @@ public class ModularWarfare {
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
-    public static final String MOD_VERSION = "1.0.13f";
+    public static final String MOD_VERSION = "1.0.14f";
     // Main instance
     @Instance(ModularWarfare.MOD_ID)
     public static ModularWarfare INSTANCE;
@@ -106,6 +109,7 @@ public class ModularWarfare {
     public static HashMap<String, ItemSpray> sprayTypes = new HashMap<String, ItemSpray>();
     public static HashMap<String, ItemBackpack> backpackTypes = new HashMap<String, ItemBackpack>();
     public static HashMap<String, ItemGrenade> grenadeTypes = new HashMap<String, ItemGrenade>();
+    public static HashMap<String, TextureType> textureTypes = new HashMap<String, TextureType>();
 
     public static ArrayList<BaseType> baseTypes = new ArrayList<BaseType>();
 
@@ -161,11 +165,14 @@ public class ModularWarfare {
             PROXY.generateJsonModels(baseTypes);
         }
 
+        for(TextureType type : textureTypes.values()){
+            type.loadExtraValues();
+        }
+
         for (BaseType baseType : baseTypes) {
             baseType.loadExtraValues();
             ContentTypes.values.get(baseType.id).typeAssignFunction.accept(baseType, reload);
         }
-
 
         if (DEV_ENV) {
             if (reload)
@@ -298,7 +305,6 @@ public class ModularWarfare {
             new ModConfig(new File(MOD_DIR, "mod_config.json"));
             DEV_ENV = true;
 
-
             contentPacks = PROXY.getContentList();
         }
 
@@ -350,6 +356,9 @@ public class ModularWarfare {
     @EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandClear());
+        event.registerServerCommand(new CommandNBT());
+        event.registerServerCommand(new CommandDebug());
+
     }
 
     /**

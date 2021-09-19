@@ -35,12 +35,6 @@ public class GunUI {
     public static final ResourceLocation greendot = new ResourceLocation("modularwarfare", "textures/gui/greendot.png");
     public static final ResourceLocation bluedot = new ResourceLocation("modularwarfare", "textures/gui/bluedot.png");
 
-    public static final ResourceLocation scope2x = new ResourceLocation("modularwarfare", "skins/overlay/scope2x.png");
-    public static final ResourceLocation scope4x = new ResourceLocation("modularwarfare", "skins/overlay/scope4x.png");
-    public static final ResourceLocation scope8x = new ResourceLocation("modularwarfare", "skins/overlay/scope8x.png");
-    public static final ResourceLocation scope15x = new ResourceLocation("modularwarfare", "skins/overlay/scope15x.png");
-
-
     public static final ResourceLocation hitMarker = new ResourceLocation("modularwarfare", "textures/gui/hitmarker.png");
     public static final ResourceLocation hitMarkerHS = new ResourceLocation("modularwarfare", "textures/gui/hitmarkerhs.png");
 
@@ -76,7 +70,7 @@ public class GunUI {
                         }
                         RenderHitMarker(Tessellator.getInstance(), width, height);
                         RenderPlayerSnap(width, height);
-                        if (mc.gameSettings.thirdPersonView == 0 && ClientRenderHooks.isAimingScope) {
+                        if (mc.gameSettings.thirdPersonView == 0 && ClientRenderHooks.isAimingScope && RenderParameters.collideFrontDistance <= 0.025f) {
                             if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                                 final ItemStack gunStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
                                 if (GunType.getAttachment(gunStack, AttachmentEnum.Sight) != null) {
@@ -115,21 +109,7 @@ public class GunUI {
                                                     Gui.drawModalRectWithCustomSizedTexture(width / 2, height / 2, 2.0f, 2.0f, 1, 1, 16.0f, 16.0f);
                                                 } else {
                                                     if (!OptifineHelper.isShadersEnabled()) {
-                                                        ResourceLocation overlayToRender = scope2x;
-                                                        switch (itemAttachment.type.sight.scopeType) {
-                                                            case TWO:
-                                                                overlayToRender = scope2x;
-                                                                break;
-                                                            case FOUR:
-                                                                overlayToRender = scope4x;
-                                                                break;
-                                                            case EIGHT:
-                                                                overlayToRender = scope8x;
-                                                                break;
-                                                            case FIFTEEN:
-                                                                overlayToRender = scope15x;
-                                                                break;
-                                                        }
+                                                        ResourceLocation overlayToRender = itemAttachment.type.sight.overlayType.resourceLocations.get(0);
 
                                                         float factor = 1;
                                                         if (width < 700) {
@@ -271,46 +251,47 @@ public class GunUI {
                         GlStateManager.popMatrix();
 
                         /** If gun use bullets **/
-                    } else if (stack.getTagCompound().getCompoundTag("bullet") != null) {
-                        ItemBullet itemBullet = ItemGun.getUsedBullet(stack, ((ItemGun) (stack.getItem())).type);
-
-                        int currentAmmoCount = stack.getTagCompound().getInteger("ammocount");
-
-                        GlStateManager.pushMatrix();
-                        GlStateManager.translate(i - 120, 0F, 0F);
-
-                        Gui.drawRect(left + right - 3, top, right * 2 - 18, bottom, Integer.MIN_VALUE);
-
-                        RenderHelper.enableGUIStandardItemLighting();
-                        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
-                        drawSlotInventory(mc.fontRenderer, new ItemStack(itemBullet), left + 67, j - 35);
-                        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                        RenderHelper.disableStandardItemLighting();
-
-                        String color = TextFormatting.WHITE + "";
-                        if (currentAmmoCount < ((ItemGun) (stack.getItem())).type.numBullets / 6) {
-                            color = TextFormatting.RED + "";
-                            mc.fontRenderer.drawString(String.valueOf(TextFormatting.YELLOW + "[R]" + TextFormatting.WHITE + " Reload"), 10, j - 30, 0xffffff);
-                        }
-
-                        String s = String.valueOf(color + currentAmmoCount) + "/" + ((ItemGun) (stack.getItem())).type.numBullets;
-
-                        mc.fontRenderer.drawStringWithShadow(String.valueOf(s), left + 83, j - 30, 0xffffff);
-                        x += 16 + mc.fontRenderer.getStringWidth(s);
-
-                        ItemGun gun = (ItemGun) stack.getItem();
-                        if (gun.type.getFireMode(stack) != null) {
-                            RenderHelperMW.renderCenteredTextWithShadow(String.valueOf(gun.type.getFireMode(stack)), left + 90, j - 50, 0xffffff);
-                        }
-
-                        GlStateManager.popMatrix();
                     }
+
+                } else if (ItemGun.getUsedBullet(stack, ((ItemGun) (stack.getItem())).type) != null) {
+                    ItemBullet itemBullet = ItemGun.getUsedBullet(stack, ((ItemGun) (stack.getItem())).type);
+
+                    int currentAmmoCount = stack.getTagCompound().getInteger("ammocount");
+                    int maxAmmo = (((ItemGun) (stack.getItem())).type.internalAmmoStorage == null) ? 0 : (((ItemGun) (stack.getItem())).type.internalAmmoStorage);
+
+                    GlStateManager.pushMatrix();
+
+                    GlStateManager.translate(i - 120, 0F, 0F);
+
+                    Gui.drawRect(left + right - 3, top, right * 2 - 18, bottom, Integer.MIN_VALUE);
+
+                    RenderHelper.enableGUIStandardItemLighting();
+                    GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
+                    drawSlotInventory(mc.fontRenderer, new ItemStack(itemBullet), left + 67, j - 35);
+                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+                    RenderHelper.disableStandardItemLighting();
+
+                    String color = TextFormatting.WHITE + "";
+                    if (currentAmmoCount < maxAmmo / 6) {
+                        color = TextFormatting.RED + "";
+                        mc.fontRenderer.drawString(String.valueOf(TextFormatting.YELLOW + "[R]" + TextFormatting.WHITE + " Reload"), 10, j - 30, 0xffffff);
+                    }
+
+                    String s = String.valueOf(color + currentAmmoCount) + "/" + maxAmmo;
+
+                    mc.fontRenderer.drawStringWithShadow(String.valueOf(s), left + 83, j - 30, 0xffffff);
+                    x += 16 + mc.fontRenderer.getStringWidth(s);
+
+                    ItemGun gun = (ItemGun) stack.getItem();
+                    if (gun.type.getFireMode(stack) != null) {
+                        RenderHelperMW.renderCenteredTextWithShadow(String.valueOf(gun.type.getFireMode(stack)), left + 90, j - 50, 0xffffff);
+                    }
+
+                    GlStateManager.popMatrix();
                 }
             }
-
         }
-
     }
 
     public void RenderPlayerSnap(int i, int j) {

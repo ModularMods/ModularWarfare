@@ -10,6 +10,6 @@
   ],
   "sight": {
     "scopeType": "2x",
-    "dotColorType": "green"
+    "customOverlayTexture": "prototype.scope2x"
   }
 }

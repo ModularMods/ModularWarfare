@@ -2,9 +2,10 @@
     "internalName": "prototype.sks",
     "displayName": "SKS",
     "weaponType": "dmr",
-    "gunDamage": 9.7,
-    "moveSpeedModifier": 1.0,
-    "roundsPerMin": 200,
+    "gunDamage": 10,
+    "customFlashTexture": "prototype.flash",
+    "moveSpeedModifier": 1,
+    "roundsPerMin": 300,
     "reloadTime": 40,
     "gunDamageHeadshotBonus": 2,
     "fireModes": [
@@ -13,8 +14,8 @@
     "accuracySneakFactor": 0.3,
     "allowEmptyMagazines": true,
     "allowSprintFiring": true,
-    "recoilPitch": 4.0,
-    "recoilYaw": 1.0,
+    "recoilPitch": 1.5,
+    "recoilYaw": 0.5,
     "randomRecoilPitch": 0.8,
     "randomRecoilYaw": 0.8,
     "acceptedAttachments": {
@@ -22,12 +23,11 @@
             "prototype.sr_suppressor"
         ]
     },
-
     "dropBulletCasing": true,
     "shellEjectOffsetNormal": {
-        "x": -1.0,
-        "y": 0.0,
-        "z": 1.0
+        "x": -1,
+        "y": 0,
+        "z": 1
     },
     "shellEjectOffsetAiming": {
         "x": -0.2,
@@ -61,7 +61,7 @@
                 "soundName": "prototype.sks.shoot.sup",
                 "soundNameDistant": "prototype.sks.sup",
                 "soundRange": 20,
-                "soundMaxRange": 32,
+                "soundMaxRange": 50,
                 "soundFadeMultiplier": 1
             }
         ],

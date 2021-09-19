@@ -59,7 +59,7 @@ public class RenderGrenadeEntity extends Render<EntityGrenade> {
         if (ModularWarfare.grenadeTypes.containsKey(entityIn.getGrenadeName())) {
             ItemGrenade itemGrenade = ModularWarfare.grenadeTypes.get(entityIn.getGrenadeName());
             ModelGrenade grenade = (ModelGrenade) (ModularWarfare.grenadeTypes.get(entityIn.getGrenadeName()).type.model);
-            ClientRenderHooks.customRenderers[0].bindTexture("grenades", itemGrenade.type.internalName);
+            ClientRenderHooks.customRenderers[1].bindTexture("grenades", itemGrenade.type.internalName);
             grenade.renderPart("grenadeModel", worldScale);
         }
 

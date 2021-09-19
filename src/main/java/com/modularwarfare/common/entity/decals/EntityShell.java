@@ -39,26 +39,25 @@ public class EntityShell extends Entity implements IProjectile {
 
     public EntityShell(World worldIn, EntityPlayer throwerIn, ItemGun gun, ItemBullet bullet) {
         super(worldIn);
-        if (!worldIn.isRemote) {
 
-            this.setBulletType(bullet.type.internalName);
+        this.setBulletType(bullet.type.internalName);
 
-            Vec3d rotateYaw = new Vec3d(0, 0, 0);
+        Vec3d rotateYaw = new Vec3d(0, 0, 0);
 
-            if (ServerTickHandler.playerAimInstant.get(throwerIn.getDisplayNameString()) != null || ServerTickHandler.playerReloadCooldown.get(throwerIn.getDisplayNameString()) != null) {
-                if (ServerTickHandler.playerAimInstant.get(throwerIn.getDisplayNameString())) {
-                    rotateYaw = gun.type.shellEjectOffsetAiming.rotatePitch(-(float) Math.toRadians(throwerIn.rotationPitch)).rotateYaw(-(float) Math.toRadians(throwerIn.rotationYaw));
-                } else {
-                    rotateYaw = gun.type.shellEjectOffsetNormal.rotatePitch(-(float) Math.toRadians(throwerIn.rotationPitch)).rotateYaw(-(float) Math.toRadians(throwerIn.rotationYaw));
-                }
+        if (ServerTickHandler.playerAimInstant.get(throwerIn.getDisplayNameString()) != null || ServerTickHandler.playerReloadCooldown.get(throwerIn.getDisplayNameString()) != null) {
+            if (ServerTickHandler.playerAimInstant.get(throwerIn.getDisplayNameString())) {
+                rotateYaw = gun.type.shellEjectOffsetAiming.rotatePitch(-(float) Math.toRadians(throwerIn.rotationPitch)).rotateYaw(-(float) Math.toRadians(throwerIn.rotationYaw));
+            } else {
+                rotateYaw = gun.type.shellEjectOffsetNormal.rotatePitch(-(float) Math.toRadians(throwerIn.rotationPitch)).rotateYaw(-(float) Math.toRadians(throwerIn.rotationYaw));
             }
-
-            Vec3d source = new Vec3d(throwerIn.posX + throwerIn.motionX + rotateYaw.x, throwerIn.posY + (double) throwerIn.getEyeHeight() - 0.10000000149011612D + throwerIn.motionY + rotateYaw.y, throwerIn.posZ + throwerIn.motionZ + rotateYaw.z);
-            this.setPosition(source.x, source.y, source.z);
         }
+
+        Vec3d source = new Vec3d(throwerIn.posX + throwerIn.motionX + rotateYaw.x, throwerIn.posY + (double) throwerIn.getEyeHeight() - 0.10000000149011612D + throwerIn.motionY + rotateYaw.y, throwerIn.posZ + throwerIn.motionZ + rotateYaw.z);
+        this.setPosition(source.x, source.y, source.z);
         this.setSize(0.25F, 0.25F);
         maxTimeAlive = 20 * ModConfig.INSTANCE.despawnTimeShellCasing;
     }
+
 
     @Override
     protected void entityInit() {

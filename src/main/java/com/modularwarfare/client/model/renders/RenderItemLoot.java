@@ -113,7 +113,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
             if (model != null) {
                 int skinId = 0;
                 String path = skinId > 0 ? gunType.modelSkins[skinId].getSkin() : gunType.modelSkins[0].getSkin();
-                ClientRenderHooks.customRenderers[0].bindTexture("guns", path);
+                ClientRenderHooks.customRenderers[1].bindTexture("guns", path);
                 model.renderPart("gunModel", worldScale);
                 model.renderPart("slideModel", worldScale);
                 model.renderPart("boltModel", worldScale);
@@ -172,7 +172,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                                 }
                             }
                             path = skinId > 0 ? attachmentType.modelSkins[skinId].getSkin() : attachmentType.modelSkins[0].getSkin();
-                            ClientRenderHooks.customRenderers[2].bindTexture("attachments", path);
+                            ClientRenderHooks.customRenderers[3].bindTexture("attachments", path);
                             attachmentModel.renderAttachment(worldScale);
                         }
                     }

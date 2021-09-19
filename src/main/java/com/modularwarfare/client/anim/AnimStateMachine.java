@@ -222,8 +222,8 @@ public class AnimStateMachine {
         timeUntilPullback = model.hammerDelay;
         muzzleFlashTime = 2;
 
-        int Low = 1;
-        int High = 6;
+        int Low = 0;
+        int High = gunType.flashType.resourceLocations.size()-1;
         int result = r.nextInt(High - Low) + Low;
         flashInt = result;
 

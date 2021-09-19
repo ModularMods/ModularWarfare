@@ -12,6 +12,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -86,18 +87,18 @@ public class ObjModelRenderer {
         }
         if (!this.isHidden) {
             if (!this.compiled) {
-                if(ModConfig.INSTANCE.model_optimization){
-                    this.compileVAO(scale);
-                } else {
+                if(!ModConfig.INSTANCE.model_optimization || !GLContext.getCapabilities().OpenGL30){
                     this.compileDisplayList(scale);
+                } else {
+                    this.compileVAO(scale);
                 }
             }
 
             if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F) {
-                if(ModConfig.INSTANCE.model_optimization) {
-                    callVAO();
-                } else {
+                if(!ModConfig.INSTANCE.model_optimization || !GLContext.getCapabilities().OpenGL30){
                     GlStateManager.callList(this.displayList);
+                } else {
+                    this.callVAO();
                 }
                 if (this.childModels != null) {
                     for (ObjModelRenderer childModel : this.childModels) {
@@ -126,11 +127,12 @@ public class ObjModelRenderer {
                 GlStateManager.translate(-this.rotationPointX * scale, -this.rotationPointY * scale,
                         -this.rotationPointZ * scale);
 
-                if(ModConfig.INSTANCE.model_optimization) {
-                    callVAO();
-                } else {
+                if(!ModConfig.INSTANCE.model_optimization || !GLContext.getCapabilities().OpenGL30){
                     GlStateManager.callList(this.displayList);
+                } else {
+                    this.callVAO();
                 }
+
 
                 if (this.childModels != null) {
                     for (ObjModelRenderer childModel : this.childModels) {
@@ -152,10 +154,10 @@ public class ObjModelRenderer {
     public void renderWithRotation(float scale) {
         if (!this.isHidden) {
             if (!this.compiled) {
-                if(ModConfig.INSTANCE.model_optimization){
-                    this.compileVAO(scale);
-                } else {
+                if(!ModConfig.INSTANCE.model_optimization || !GLContext.getCapabilities().OpenGL30){
                     this.compileDisplayList(scale);
+                } else {
+                    this.compileVAO(scale);
                 }
             }
 
@@ -178,10 +180,10 @@ public class ObjModelRenderer {
             GlStateManager.translate(-this.rotationPointX * scale, -this.rotationPointY * scale,
                     -this.rotationPointZ * scale);
 
-            if(ModConfig.INSTANCE.model_optimization) {
-                callVAO();
-            } else {
+            if(!ModConfig.INSTANCE.model_optimization || !GLContext.getCapabilities().OpenGL30){
                 GlStateManager.callList(this.displayList);
+            } else {
+                this.callVAO();
             }
 
             if (this.childModels != null) {
@@ -200,10 +202,10 @@ public class ObjModelRenderer {
     public void postRender(float scale) {
         if (!this.isHidden) {
             if (!this.compiled) {
-                if(ModConfig.INSTANCE.model_optimization){
-                    this.compileVAO(scale);
-                } else {
+                if(!ModConfig.INSTANCE.model_optimization || !GLContext.getCapabilities().OpenGL30){
                     this.compileDisplayList(scale);
+                } else {
+                    this.compileVAO(scale);
                 }
             }
 

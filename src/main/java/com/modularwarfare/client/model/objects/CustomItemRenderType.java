@@ -5,5 +5,5 @@ public enum CustomItemRenderType {
     EQUIPPED,
     BACK,
     EQUIPPED_FIRST_PERSON,
-    INVENTORY,
+    INVENTORY
 }

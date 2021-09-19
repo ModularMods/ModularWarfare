@@ -57,9 +57,9 @@ public class RenderShell extends Render<EntityShell> {
             ItemBullet itemBullet = ModularWarfare.bulletTypes.get(entityIn.getBulletName());
             ModelShell shell = (ModelShell) (ModularWarfare.bulletTypes.get(entityIn.getBulletName()).type.shell);
             if (itemBullet.type.shellModelFileName.equals(itemBullet.type.defaultModel)) {
-                ClientRenderHooks.customRenderers[0].bindTexture("bullets", "default");
+                ClientRenderHooks.customRenderers[1].bindTexture("bullets", "default");
             } else {
-                ClientRenderHooks.customRenderers[0].bindTexture("bullets", entityIn.getBulletName());
+                ClientRenderHooks.customRenderers[1].bindTexture("bullets", entityIn.getBulletName());
             }
             shell.renderShell(worldScale);
         }

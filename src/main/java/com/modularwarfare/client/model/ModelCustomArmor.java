@@ -2,8 +2,10 @@ package com.modularwarfare.client.model;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.RenderBonesEvent;
+import com.modularwarfare.api.RenderMWArmorEvent;
 import com.modularwarfare.client.config.ArmorRenderConfig;
 import com.modularwarfare.client.model.ModelCustomArmor.Bones.BonePart.EnumBoneType;
+import com.modularwarfare.client.model.objects.CustomItemRenderer;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.loader.MWModelBipedBase;
 import com.modularwarfare.loader.api.ObjModelLoader;
@@ -24,8 +26,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 public class ModelCustomArmor extends MWModelBipedBase {
+    private static CustomItemRenderer customItemRenderer = new CustomItemRenderer();
     public static Bones bones = new Bones(0, false);
     public static Bones bonesSmall = new Bones(0, true);
+    private BaseType type;
     public Entity renderingEntity;
 
     public ArmorRenderConfig config;
@@ -43,6 +47,7 @@ public class ModelCustomArmor extends MWModelBipedBase {
         } else {
             ModularWarfare.LOGGER.info("Internal error: " + this.config.modelFileName + " is not a valid format.");
         }
+        this.type = type;
     }
 
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -102,8 +107,8 @@ public class ModelCustomArmor extends MWModelBipedBase {
         GlStateManager.color(1.0F, 1.0F, 1.0F);
         float f1 = 0.0625F;
         ModelPlayer modelplayer = bones;
-        modelplayer.bipedRightArm.isHidden = false;
-        modelplayer.bipedRightArm.showModel = true;
+        modelplayer.bipedLeftArm.isHidden = false;
+        modelplayer.bipedLeftArm.showModel = true;
         GlStateManager.enableBlend();
         modelplayer.isSneak = false;
         modelplayer.swingProgress = 0.0F;
@@ -125,12 +130,9 @@ public class ModelCustomArmor extends MWModelBipedBase {
             GlStateManager.pushMatrix();
             ObjModelRenderer part = this.staticModel.getPart(modelPart);
             if (part != null) {
-                if (part != null) {
-                    part.render(f5);
-                }
+                part.render(f5);
+                GlStateManager.popMatrix();
             }
-
-            GlStateManager.popMatrix();
         }
     }
 
@@ -225,13 +227,14 @@ public class ModelCustomArmor extends MWModelBipedBase {
             if (entityIn.isSneaking()) {
                 GlStateManager.translate(0.0F, 0.2F, 0.0F);
             }
-
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
             this.bipedHead.render(scale);
             this.bipedBody.render(scale);
             this.bipedRightArm.render(scale);
             this.bipedLeftArm.render(scale);
             this.bipedRightLeg.render(scale);
             this.bipedLeftLeg.render(scale);
+            GlStateManager.shadeModel(GL11.GL_FLAT);
             GlStateManager.popMatrix();
         }
 
@@ -278,6 +281,7 @@ public class ModelCustomArmor extends MWModelBipedBase {
                 GlStateManager.translate(customOffestX, customOffestY, customOffestZ);
                 int texture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
                 MinecraftForge.EVENT_BUS.post(new RenderBonesEvent.Pre(this.baseModel.armor, type, scale));
+                MinecraftForge.EVENT_BUS.post(new RenderMWArmorEvent.Pre(this.baseModel.armor, type, scale));
                 if (!this.isHidden) {
                     if (this.showModel) {
                         switch (type) {
@@ -309,24 +313,11 @@ public class ModelCustomArmor extends MWModelBipedBase {
                     }
                 }
                 MinecraftForge.EVENT_BUS.post(new RenderBonesEvent.Post(this.baseModel.armor, type, scale));
+                MinecraftForge.EVENT_BUS.post(new RenderMWArmorEvent.Post(this.baseModel.armor, type, scale));
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
                 GlStateManager.popMatrix();
                 GlStateManager.translate(-this.offsetX, -this.offsetY, -this.offsetZ);
 
-            }
-
-            @SideOnly(Side.CLIENT)
-            private void compileDisplayList(float scale) {
-                this.displayList = GLAllocation.generateDisplayLists(1);
-                GlStateManager.glNewList(this.displayList, 4864);
-                BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
-
-                for (int i = 0; i < this.cubeList.size(); ++i) {
-                    ((ModelBox) this.cubeList.get(i)).render(bufferbuilder, scale);
-                }
-
-                GlStateManager.glEndList();
-                this.compiled = true;
             }
 
             public static enum EnumBoneType {

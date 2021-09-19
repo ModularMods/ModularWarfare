@@ -20,6 +20,7 @@ import com.modularwarfare.client.scope.ScopeUtils;
 import com.modularwarfare.common.armor.ItemMWArmor;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.network.PacketAimingRequest;
+import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.utility.ModUtil;
 import com.modularwarfare.utility.OptifineHelper;
 import net.minecraft.client.Minecraft;
@@ -51,7 +52,6 @@ import org.lwjgl.util.vector.Vector3f;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
 import static com.modularwarfare.client.model.objects.CustomItemRenderType.BACK;
 import static com.modularwarfare.client.model.renders.RenderParameters.*;
 
@@ -484,6 +484,7 @@ public class RenderGunStatic extends CustomItemRenderer {
 
                 model.renderPart("gunModel", worldScale);
 
+
                 //Render any attachments
                 if (GunType.getAttachment(item, AttachmentEnum.Sight) == null && !model.config.attachments.scopeIsOnSlide)
                     model.renderPart("defaultScopeModel", worldScale);
@@ -875,6 +876,8 @@ public class RenderGunStatic extends CustomItemRenderer {
                     }
                 }
 
+                TextureType flashType = gunType.flashType;
+
                 if (anim.muzzleFlashTime > 0 && model.staticModel.getPart("flashModel") != null && !mc.player.isInWater() && renderType != BACK && shouldRenderFlash) {
                     GlStateManager.pushMatrix();
                     {
@@ -883,17 +886,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                         GL11.glEnable(2832);
                         GL11.glHint(3153, 4353);
 
-                        boolean punched = false;
-                        if (item.hasTagCompound()) {
-                            if (item.getTagCompound().hasKey("punched")) {
-                                punched = item.getTagCompound().getBoolean("punched");
-                            }
-                        }
-                        if (!punched) {
-                            RenderGunStatic.renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "skins/flash/" + anim.flashInt + ".png"));
-                        } else {
-                            RenderGunStatic.renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "skins/flash/" + +ThreadLocalRandom.current().nextInt(1, 5 + 1) + "_punched.png"));
-                        }
+                        RenderGunStatic.renderEngine.bindTexture(flashType.resourceLocations.get(anim.flashInt));
 
                         float lastBrightnessX = OpenGlHelper.lastBrightnessX;
                         float lastBrightnessY = OpenGlHelper.lastBrightnessY;

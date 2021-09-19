@@ -19,11 +19,11 @@ public class CommandClear extends CommandBase {
     }
 
     public String getName() {
-        return "mwclear";
+        return "mw-clear";
     }
 
     public String getUsage(ICommandSender sender) {
-        return "/mwclear <player>";
+        return "/mw-clear <player>";
     }
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {

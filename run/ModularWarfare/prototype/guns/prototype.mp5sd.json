@@ -2,33 +2,32 @@
     "internalName": "prototype.mp5sd",
     "displayName": "MP5-SD",
     "weaponType": "smg",
-
+    "customFlashTexture": "prototype.flash",
     "gunDamage": 6.5,
-    "gunDamageHeadshotBonus": 2.0,
-
+    "gunDamageHeadshotBonus": 2,
     "roundsPerMin": 500,
-
     "allowEmptyMagazines": true,
-
     "recoilPitch": 3,
     "recoilYaw": 1.5,
     "randomRecoilPitch": 0.8,
     "randomRecoilYaw": 0.8,
     "bulletSpread": 1.5,
-
     "accuracySneakFactor": 0.5,
-    "moveSpeedModifier": 1.0,
+    "moveSpeedModifier": 1,
     "allowSprintFiring": true,
-
     "dropBulletCasing": true,
-
-    "fireModes": ["full", "burst","semi"],
-    "acceptedAmmo": ["prototype.mp5ammo"],
-
+    "fireModes": [
+        "full",
+        "burst",
+        "semi"
+    ],
+    "acceptedAmmo": [
+        "prototype.mp5ammo"
+    ],
     "shellEjectOffsetNormal": {
-        "x": -1.0,
-        "y": 0.0,
-        "z": 1.0
+        "x": -1,
+        "y": 0,
+        "z": 1
     },
     "shellEjectOffsetAiming": {
         "x": -0.2,

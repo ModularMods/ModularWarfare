@@ -6,6 +6,12 @@ import com.modularwarfare.client.model.ModelCustomArmor.Bones.BonePart.EnumBoneT
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+/**
+ * 
+ * @see RenderMWArmorEvent
+ *
+ */
+@Deprecated
 public class RenderBonesEvent extends Event {
     public final ModelCustomArmor modelCustomArmor;
     public final EnumBoneType type;

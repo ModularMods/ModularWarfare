@@ -43,17 +43,9 @@ public class ClientTickHandler extends ForgeEvent {
     public static ConcurrentHashMap<UUID, Integer> playerShootCooldown = new ConcurrentHashMap<UUID, Integer>();
     public static ConcurrentHashMap<UUID, Integer> playerReloadCooldown = new ConcurrentHashMap<UUID, Integer>();
     private static Item oldItem;
-    private static Field sprintToggleTimer = null;
     int i = 0;
 
     public ClientTickHandler() {
-        super();
-        try {
-            sprintToggleTimer = ReflectionHelper.findField(EntityPlayerSP.class, "sprintToggleTimer", "field_71156_d");
-        } catch (Exception e) {
-            ModularWarfare.LOGGER.error("Unable to find field 'sprintToggleTimer'");
-            e.printStackTrace();
-        }
     }
 
     @SubscribeEvent
@@ -158,10 +150,9 @@ public class ClientTickHandler extends ForgeEvent {
             double dy = player.getLookVec().y * 1;
             double dz = player.getLookVec().z * 1;
 
-            Vec3d vecStart = new Vec3d((float) player.posX, (float) (player.getEntityBoundingBox().minY + player.getEyeHeight() - 0.10000000149011612), (float) player.posZ);
-            Vec3d vedEnd = new Vec3d((float) (player.posX + dx + player.motionX), (float) (player.posY + dy + player.motionY), (float) (player.posZ + dz + player.motionZ));
+            Vec3d vecStart = player.getPositionEyes(1.0f);
 
-            RayTraceResult rayTraceResult = world.rayTraceBlocks(vecStart, vedEnd, false, true, false);
+            RayTraceResult rayTraceResult = RayUtil.rayTrace(player,1.0, 1.0f);
             if(rayTraceResult != null) {
                 if (rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
                     if (rayTraceResult.hitVec != null) {
@@ -190,6 +181,7 @@ public class ClientTickHandler extends ForgeEvent {
             RenderParameters.resetRenderMods();
         }
     }
+
 
     public void onClientTickStart(Minecraft minecraft) {
         if (minecraft.player == null || minecraft.world == null)
@@ -271,15 +263,6 @@ public class ClientTickHandler extends ForgeEvent {
             stateMachine.onTickUpdate();
         }
 
-        AnimStateMachine anim = ClientRenderHooks.getAnimMachine(player);
-        if (anim.reloading) {
-            try {
-                sprintToggleTimer.setInt(player, 7);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
         InstantBulletRenderer.UpdateAllTrails();
     }
 
@@ -299,7 +282,6 @@ public class ClientTickHandler extends ForgeEvent {
             }
         }
         if (this.oldItem != player.getHeldItemMainhand().getItem()) {
-            ClientRenderHooks.getAnimMachine(player).attachmentMode = false;
             this.oldItem = player.getHeldItemMainhand().getItem();
         }
     }

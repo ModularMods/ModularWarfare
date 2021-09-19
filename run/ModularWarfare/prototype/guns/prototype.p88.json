@@ -5,23 +5,23 @@
     "roundsPerMin": 350,
     "allowEmptyMagazines": true,
     "weaponType": "pistol",
-    "acceptedAmmo": ["prototype.p88ammo"],
-    "fireModes": ["semi"],
-
+    "customFlashTexture": "prototype.flash",
+    "acceptedAmmo": [
+        "prototype.p88ammo"
+    ],
+    "fireModes": [
+        "semi"
+    ],
     "recoilPitch": 0.2,
     "recoilYaw": 0.2,
     "randomRecoilPitch": 0.1,
     "randomRecoilYaw": 0.5,
-
     "armPose": "ITEM",
     "armPoseAiming": "BOW_AND_ARROW",
-
     "accuracySneakFactor": 0.75,
-    "moveSpeedModifier": 1.0,
+    "moveSpeedModifier": 1,
     "allowSprintFiring": true,
-
     "dropBulletCasing": true,
-
     "weaponSoundMap": {
         "weaponFire": [
             {
@@ -56,7 +56,7 @@
                 "soundEvent": "weaponFireSuppressed",
                 "soundName": "prototype.p88.shoot.sup",
                 "soundRange": 30,
-                "soundMaxRange": 30,
+                "soundMaxRange": 50,
                 "soundFadeMultiplier": 1
             }
         ]

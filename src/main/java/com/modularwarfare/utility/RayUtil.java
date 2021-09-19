@@ -26,8 +26,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.*;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -113,6 +117,15 @@ public class RayUtil {
         return acc;
     }
 
+    @Nullable
+    @SideOnly(Side.CLIENT)
+    public static RayTraceResult rayTrace(Entity entity, double blockReachDistance, float partialTicks)
+    {
+        Vec3d vec3d = entity.getPositionEyes(partialTicks);
+        Vec3d vec3d1 = entity.getLook(partialTicks);
+        Vec3d vec3d2 = vec3d.addVector(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+        return entity.world.rayTraceBlocks(vec3d, vec3d2, false, true, false);
+    }
 
     /**
      * Attacks the given entity with the given damage source and amount, but
@@ -231,6 +244,7 @@ public class RayUtil {
                         snapshotToTry = data.snapshots.length - 1;
 
                     PlayerSnapshot snapshot = data.snapshots[snapshotToTry];
+
                     if (snapshot == null)
                         snapshot = data.snapshots[0];
 
@@ -238,6 +252,14 @@ public class RayUtil {
                         RayTraceResult intercept = hitbox.getAxisAlignedBB(snapshot.pos).calculateIntercept(startVec, realVecEnd);
                         if (intercept != null) {
                             intercept.entityHit = hitbox.player;
+
+                            if(ModConfig.INSTANCE.debug_hits) {
+                                long currentTime = System.nanoTime();
+                                FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString("Shooter's ping: " + ping / 20 + "ms | " + ping + "ticks"));
+                                FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString("Took the snapshot " + snapshotToTry + " Part: " + hitbox.type.toString()));
+                                FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString("Delta (currentTime - snapshotTime) = " + (currentTime - snapshot.time) * 1e-6 + "ms"));
+                            }
+
                             return new PlayerHit(hitbox, intercept);
                         }
                     }
@@ -271,7 +293,7 @@ public class RayUtil {
                             }
                         }
                     }
-                } else if (ent instanceof EntityGrenade){
+                } else if (ent instanceof EntityGrenade) {
                     float entBorder = ent.getCollisionBorderSize();
                     entityBb = ent.getEntityBoundingBox();
                     if (entityBb != null) {

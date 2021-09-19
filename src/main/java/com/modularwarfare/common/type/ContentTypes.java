@@ -12,9 +12,11 @@ import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.grenades.GrenadeType;
 import com.modularwarfare.common.grenades.ItemGrenade;
 import com.modularwarfare.common.guns.*;
+import com.modularwarfare.common.textures.TextureType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
+import javax.xml.soap.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
@@ -26,6 +28,10 @@ public class ContentTypes {
     private static int typeId = 0;
 
     public static void registerTypes() {
+        registerType("textures", TextureType.class, (type, reload) -> {
+            ModularWarfare.textureTypes.put(type.internalName, (TextureType) type);
+        });
+
         registerType("guns", GunType.class, (type, reload) -> {
             ContentTypes.<GunType, ItemGun>assignType(ModularWarfare.gunTypes, ItemGun.factory, (GunType) type, reload);
 

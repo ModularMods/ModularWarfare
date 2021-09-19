@@ -9,6 +9,7 @@
     }
   ],
   "sight": {
-    "scopeType": "4x"
+    "scopeType": "4x",
+    "customOverlayTexture": "prototype.scope4x"
   }
 }

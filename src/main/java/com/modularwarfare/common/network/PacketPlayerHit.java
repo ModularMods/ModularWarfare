@@ -35,12 +35,15 @@ public class PacketPlayerHit extends PacketBase {
         IThreadListener mainThread = Minecraft.getMinecraft();
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                RenderParameters.playerRecoilPitch += 5F;
-                RenderParameters.playerRecoilYaw += new Random().nextFloat();
 
-                ClientProxy.gunUI.bulletSnapFade += .25f;
-                if (ClientProxy.gunUI.bulletSnapFade > 0.9F) {
-                    ClientProxy.gunUI.bulletSnapFade = 0.9F;
+                if(Minecraft.getMinecraft().player.getHealth() > 0.0f) {
+                    RenderParameters.playerRecoilPitch += 5F;
+                    RenderParameters.playerRecoilYaw += new Random().nextFloat();
+
+                    ClientProxy.gunUI.bulletSnapFade += .25f;
+                    if (ClientProxy.gunUI.bulletSnapFade > 0.9F) {
+                        ClientProxy.gunUI.bulletSnapFade = 0.9F;
+                    }
                 }
             }
         });

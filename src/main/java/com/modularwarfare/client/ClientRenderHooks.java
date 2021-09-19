@@ -48,7 +48,7 @@ import java.util.HashMap;
 public class ClientRenderHooks extends ForgeEvent {
 
     public static HashMap<EntityLivingBase, AnimStateMachine> weaponAnimations = new HashMap<EntityLivingBase, AnimStateMachine>();
-    public static CustomItemRenderer[] customRenderers = new CustomItemRenderer[8];
+    public static CustomItemRenderer[] customRenderers = new CustomItemRenderer[9];
     public static boolean isAimingScope;
     public static boolean isAiming;
     public float partialTicks;
@@ -59,10 +59,10 @@ public class ClientRenderHooks extends ForgeEvent {
 
     public ClientRenderHooks() {
         mc = Minecraft.getMinecraft();
-        customRenderers[0] = ClientProxy.gunStaticRenderer = new RenderGunStatic();
-        customRenderers[1] = ClientProxy.ammoRenderer = new RenderAmmo();
-        customRenderers[2] = ClientProxy.attachmentRenderer = new RenderAttachment();
-        customRenderers[7] = ClientProxy.grenadeRenderer = new RenderGrenade();
+        customRenderers[1] = ClientProxy.gunStaticRenderer = new RenderGunStatic();
+        customRenderers[2] = ClientProxy.ammoRenderer = new RenderAmmo();
+        customRenderers[3] = ClientProxy.attachmentRenderer = new RenderAttachment();
+        customRenderers[4] = ClientProxy.grenadeRenderer = new RenderGrenade();
     }
 
     public static AnimStateMachine getAnimMachine(EntityPlayer entityPlayer) {

@@ -2,36 +2,33 @@
     "internalName": "prototype.uzi",
     "displayName": "Mini-Uzi",
     "weaponType": "smg",
-
+    "customFlashTexture": "prototype.flash",
     "gunDamage": 8,
     "gunDamageHeadshotBonus": 2,
-
     "roundsPerMin": 575,
-
     "allowEmptyMagazines": true,
-
-    "recoilPitch": 5.0,
+    "recoilPitch": 2,
     "recoilYaw": 1.5,
     "randomRecoilPitch": 0.8,
     "randomRecoilYaw": 0.8,
     "bulletSpread": 2,
-
     "armPose": "ITEM",
     "armPoseAiming": "BOW_AND_ARROW",
-
     "accuracySneakFactor": 0.5,
-    "moveSpeedModifier": 1.0,
+    "moveSpeedModifier": 1,
     "allowSprintFiring": true,
-
-    "fireModes": ["full", "semi"],
-    "acceptedAmmo": ["prototype.uziammo"],
-
+    "fireModes": [
+        "full",
+        "semi"
+    ],
+    "acceptedAmmo": [
+        "prototype.uziammo"
+    ],
     "dropBulletCasing": true,
-
     "shellEjectOffsetNormal": {
-        "x": -1.0,
-        "y": 0.0,
-        "z": 1.0
+        "x": -1,
+        "y": 0,
+        "z": 1
     },
     "shellEjectOffsetAiming": {
         "x": -0.2,
@@ -60,7 +57,7 @@
                 "soundEvent": "weaponFireSuppressed",
                 "soundName": "prototype.ak74u.shoot.sup",
                 "soundRange": 30,
-                "soundMaxRange": 30,
+                "soundMaxRange": 50,
                 "soundFadeMultiplier": 1
             }
         ]

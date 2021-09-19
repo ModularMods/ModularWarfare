@@ -2,33 +2,32 @@
     "internalName": "prototype.vz68",
     "displayName": "VZ.68 Skorpion",
     "weaponType": "smg",
-
+    "customFlashTexture": "prototype.flash",
     "gunDamage": 8,
     "gunDamageHeadshotBonus": 2,
-
     "roundsPerMin": 500,
-
     "allowEmptyMagazines": true,
-
-    "recoilPitch": 3.0,
-    "recoilYaw": 1.0,
+    "recoilPitch": 2,
+    "recoilYaw": 1,
     "randomRecoilPitch": 0.8,
     "randomRecoilYaw": 0.8,
     "bulletSpread": 1.25,
-
     "accuracySneakFactor": 0.5,
-    "moveSpeedModifier": 1.0,
+    "moveSpeedModifier": 1,
     "allowSprintFiring": true,
-
     "dropBulletCasing": true,
-
-    "fireModes": ["full", "semi", "burst"],
-    "acceptedAmmo": ["prototype.vz68ammo"],
-
+    "fireModes": [
+        "full",
+        "semi",
+        "burst"
+    ],
+    "acceptedAmmo": [
+        "prototype.vz68ammo"
+    ],
     "shellEjectOffsetNormal": {
-        "x": -1.0,
-        "y": 0.0,
-        "z": 1.0
+        "x": -1,
+        "y": 0,
+        "z": 1
     },
     "shellEjectOffsetAiming": {
         "x": -0.2,

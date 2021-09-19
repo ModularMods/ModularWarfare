@@ -2,32 +2,30 @@
     "internalName": "prototype.m14",
     "displayName": "M14",
     "weaponType": "carbine",
-
+    "customFlashTexture": "prototype.flash",
     "gunDamage": 9,
     "gunDamageHeadshotBonus": 3,
-
     "roundsPerMin": 350,
-
     "allowEmptyMagazines": true,
-
-    "recoilPitch": 6.0,
+    "recoilPitch": 3,
     "recoilYaw": 1.5,
     "randomRecoilPitch": 0.8,
     "randomRecoilYaw": 0.8,
-    "bulletSpread": 1.0,
-
+    "bulletSpread": 1,
     "accuracySneakFactor": 0.5,
-    "moveSpeedModifier": 1.0,
+    "moveSpeedModifier": 1,
     "allowSprintFiring": true,
-
-    "fireModes": ["semi"],
-    "acceptedAmmo": ["prototype.m14ammo"],
-
+    "fireModes": [
+        "semi"
+    ],
+    "acceptedAmmo": [
+        "prototype.m14ammo"
+    ],
     "dropBulletCasing": true,
     "shellEjectOffsetNormal": {
-        "x": -1.0,
-        "y": 0.0,
-        "z": 1.0
+        "x": -1,
+        "y": 0,
+        "z": 1
     },
     "shellEjectOffsetAiming": {
         "x": -0.2,
@@ -56,13 +54,12 @@
                 "soundEvent": "weaponFireSuppressed",
                 "soundName": "prototype.ak47.shoot.sup",
                 "soundRange": 30,
-                "soundMaxRange": 30,
+                "soundMaxRange": 50,
                 "soundFadeMultiplier": 1
             }
         ]
     },
-    "acceptedAttachments": {
-    },
+    "acceptedAttachments": {},
     "modelSkins": [
         {
             "internalName": "prototype.m14",

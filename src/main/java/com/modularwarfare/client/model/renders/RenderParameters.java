@@ -29,8 +29,6 @@ public class RenderParameters {
 
     public static float collideFrontDistance;
 
-
-
     // Recoil variables
     /**
      * The recoil applied to the player view by shooting

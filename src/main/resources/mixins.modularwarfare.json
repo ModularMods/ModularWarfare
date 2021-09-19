@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.modularwarfare.mixin",
+  "refmap": "mixins.modularwarfare.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.7.11",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [],
+  "client": ["client.MixinEntityPlayerSP", "client.MixinInventoryPlayer", "client.MixinMinecraft"],
+  "server": []
+}

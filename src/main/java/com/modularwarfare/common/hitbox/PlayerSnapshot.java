@@ -1,6 +1,7 @@
 package com.modularwarfare.common.hitbox;
 
 import com.modularwarfare.api.AnimationUtils;
+import com.modularwarfare.api.PlayerSnapshotCreateEvent;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.handler.ServerTickHandler;
 import com.modularwarfare.common.hitbox.maths.EnumHitboxType;
@@ -8,6 +9,7 @@ import com.modularwarfare.common.hitbox.maths.RotatedAxes;
 import com.modularwarfare.common.vector.Vector3f;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,6 +43,9 @@ public class PlayerSnapshot {
         player = p;
         pos = new Vector3f(p.posX, p.posY, p.posZ);
 
+        PlayerSnapshotCreateEvent.Pre event=new PlayerSnapshotCreateEvent.Pre(p, pos);
+        MinecraftForge.EVENT_BUS.post(event);
+        pos=event.pos;
         hitboxes = new ArrayList<>();
 
         RotatedAxes bodyAxes = new RotatedAxes(p.renderYawOffset, 0F, 0F);
@@ -114,6 +119,9 @@ public class PlayerSnapshot {
             hitboxes.add(new PlayerHitbox(player, bodyAxes.findLocalAxesGlobally(leftArmAxes), new Vector3f(originXLeft, 1.3F, originZLeft), new Vector3f(-2F / 16F, -0.6F, -2F / 16F), new Vector3f(0.25F, 0.7F, 0.25F), EnumHitboxType.LEFTARM));
             hitboxes.add(new PlayerHitbox(player, bodyAxes.findLocalAxesGlobally(rightArmAxes), new Vector3f(originXRight, 1.3F, originZRight), new Vector3f(-2F / 16F, -0.6F, -2F / 16F), new Vector3f(0.25F, 0.7F, 0.25F), EnumHitboxType.RIGHTARM));
         }
+        MinecraftForge.EVENT_BUS.post(new PlayerSnapshotCreateEvent.Post(p, pos, hitboxes));
+
+        this.time = System.nanoTime();
     }
 
     /*

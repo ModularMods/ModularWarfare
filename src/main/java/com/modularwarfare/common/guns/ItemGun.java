@@ -6,6 +6,7 @@ import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.WeaponFireEvent;
 import com.modularwarfare.api.WeaponHitEvent;
 import com.modularwarfare.client.ClientRenderHooks;
+import com.modularwarfare.client.anim.AnimStateMachine;
 import com.modularwarfare.client.handler.ClientTickHandler;
 import com.modularwarfare.client.model.renders.RenderParameters;
 import com.modularwarfare.common.armor.ArmorType;
@@ -24,10 +25,12 @@ import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.utility.ModularDamageSource;
 import com.modularwarfare.utility.RayUtil;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,6 +40,7 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemAir;
@@ -47,11 +51,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
@@ -276,6 +282,7 @@ public class ItemGun extends BaseItem {
 
         if (gunStack.equals(entityPlayer.getHeldItem(EnumHand.MAIN_HAND))) {
             ModularWarfare.NETWORK.sendToServer(new PacketGunFire(gunType.internalName, gunType.fireTickDelay, gunType.recoilPitch, gunType.recoilYaw, gunType.recoilAimReducer, gunType.bulletSpread, entityPlayer.rotationPitch, entityPlayer.rotationYaw));
+            consumeShot(gunStack);
         }
 
         ModularWarfare.PROXY.onShootAnimation(entityPlayer, gunType.internalName, gunType.fireTickDelay, type.recoilPitch, type.recoilYaw);
@@ -308,6 +315,24 @@ public class ItemGun extends BaseItem {
         }
 
         ClientTickHandler.playerShootCooldown.put(entityPlayer.getUniqueID(), gunType.fireTickDelay);
+
+
+        /**
+         * Drop casing
+         */
+        int numBullets = gunType.numBullets;
+        ItemBullet bulletItem = getUsedBullet(gunStack, gunType);
+        if (bulletItem != null) {
+            if (bulletItem.type.isSlug) {
+                numBullets = 1;
+            }
+        }
+
+
+        EntityShell shell = new EntityShell(world, entityPlayer, itemGun, bulletItem);
+
+        shell.setHeadingFromThrower(entityPlayer, entityPlayer.rotationPitch, entityPlayer.rotationYaw + 110, 0.0F, 0.2F, 5);
+        world.spawnEntity(shell);
     }
 
     public void fireServer(EntityPlayer entityPlayer, float rotationPitch, float rotationYaw, World world, ItemStack gunStack, ItemGun itemGun, WeaponFireMode fireMode, final int clientFireTickDelay, final float recoilPitch, final float recoilYaw, final float recoilAimReducer, final float bulletSpread) {
@@ -407,16 +432,6 @@ public class ItemGun extends BaseItem {
                             }
                         }
                     }
-                }
-            }
-
-            if (ModConfig.INSTANCE.dropBulletCasing && type.dropBulletCasing) {
-                EntityShell shell = new EntityShell(world, entityPlayer, itemGun, bulletItem);
-
-                shell.setHeadingFromThrower(entityPlayer, entityPlayer.rotationPitch, entityPlayer.rotationYaw + 110, 0.0F, 0.2F, 5);
-
-                if (!world.isRemote) {
-                    world.spawnEntity(shell);
                 }
             }
 

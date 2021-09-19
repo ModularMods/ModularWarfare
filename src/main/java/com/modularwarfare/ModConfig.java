@@ -40,6 +40,8 @@ public class ModConfig {
 
     public boolean model_optimization = true;
     public boolean dev_mode = true;
+    public boolean debug_hits = true;
+
     public String version = ModularWarfare.MOD_VERSION;
 
     public ModConfig(File configFile) {

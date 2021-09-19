@@ -1,0 +1,12 @@
+{
+  "internalName": "prototype.flash",
+  "textureType": "flash",
+  "imageLocation":
+  [
+    "prototype.flash1.png",
+    "prototype.flash2.png",
+    "prototype.flash3.png",
+    "prototype.flash4.png",
+    "prototype.flash5.png"
+  ]
+}

@@ -5,6 +5,8 @@ import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.config.GunRenderConfig;
 import com.modularwarfare.client.model.ModelGun;
 import com.modularwarfare.common.network.PacketPlaySound;
+import com.modularwarfare.common.textures.TextureEnumType;
+import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.objects.SoundEntry;
 import net.minecraft.client.Minecraft;
@@ -158,6 +160,11 @@ public class GunType extends BaseType {
     public boolean allowSprintFiring = true;
     public boolean allowDefaultSounds = true;
 
+    /**
+     * Custom flash textures
+     */
+    public String customFlashTexture;
+    public transient TextureType flashType;
 
     /**
      * Shell casing
@@ -232,6 +239,15 @@ public class GunType extends BaseType {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             armPose = ModelBiped.ArmPose.BLOCK;
             armPoseAiming = ModelBiped.ArmPose.BOW_AND_ARROW;
+
+            if(customFlashTexture != null){
+                if(ModularWarfare.textureTypes.containsKey(customFlashTexture)){
+                    flashType = ModularWarfare.textureTypes.get(customFlashTexture);
+                }
+            } else {
+                flashType = new TextureType();
+                flashType.initDefaultTextures(TextureEnumType.Flash);
+            }
         }
 
         loadBaseValues();

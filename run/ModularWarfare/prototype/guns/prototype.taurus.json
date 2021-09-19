@@ -1,28 +1,29 @@
 {
     "displayName": "Taurus Raging Bull",
     "internalName": "prototype.taurus",
-    "gunDamage": 11,
+    "gunDamage": 13,
     "roundsPerMin": 350,
     "allowEmptyMagazines": true,
     "weaponType": "revolver",
-    "fireModes": ["semi"],
-
-    "acceptedBullets": ["prototype.44magnum"],
+    "customFlashTexture": "prototype.flash",
+    "fireModes": [
+        "semi"
+    ],
+    "acceptedBullets": [
+        "prototype.44magnum"
+    ],
     "internalAmmoStorage": 6,
     "reloadTime": 120,
-
-    "recoilPitch": 15.0,
-    "recoilYaw": 3.0,
-    "randomRecoilPitch": 1.0,
-    "randomRecoilYaw": 2.0,
-
+    "bulletSpread": 0,
+    "recoilPitch": 1.5,
+    "recoilYaw": 0.5,
+    "randomRecoilPitch": 1,
+    "randomRecoilYaw": 2,
     "armPose": "ITEM",
     "armPoseAiming": "BOW_AND_ARROW",
-
     "accuracySneakFactor": 0.75,
-    "moveSpeedModifier": 1.0,
+    "moveSpeedModifier": 1,
     "allowSprintFiring": true,
-
     "dropBulletCasing": false,
     "weaponSoundMap": {
         "weaponFire": [
@@ -58,7 +59,7 @@
                 "soundEvent": "weaponFireSuppressed",
                 "soundName": "prototype.p88.shoot.sup",
                 "soundRange": 30,
-                "soundMaxRange": 30,
+                "soundMaxRange": 50,
                 "soundFadeMultiplier": 1
             }
         ],

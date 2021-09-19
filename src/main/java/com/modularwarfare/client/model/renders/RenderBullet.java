@@ -56,7 +56,6 @@ public class RenderBullet extends Render<EntityBulletClient> {
 
             GL11.glPushMatrix();
             GL11.glTranslatef((float) x, (float) y, (float) z);
-
             GL11.glDisable(GL_CULL_FACE);
             GL11.glEnable(GL_BLEND);
             GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
