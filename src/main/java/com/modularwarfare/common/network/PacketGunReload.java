@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 
 public class PacketGunReload extends PacketBase {
@@ -63,6 +64,11 @@ public class PacketGunReload extends PacketBase {
 
         if (ServerTickHandler.playerReloadCooldown.containsKey(entityPlayer.getUniqueID()))
             return;
+
+        if(entityPlayer.getHeldItemMainhand().getCount() >= 0){
+            entityPlayer.sendMessage(new TextComponentString("You can only load bullets on a single magazine."));
+            return;
+        }
 
         if (ammoType.subAmmo != null) {
             if (!unload) {
@@ -508,6 +514,11 @@ public class PacketGunReload extends PacketBase {
     public Integer unloadBullets(EntityPlayerMP entityPlayer, ItemStack targetStack) {
         NBTTagCompound nbtTagCompound = targetStack.getTagCompound();
         //boolean isAmmo = targetStack.getItem() instanceof ItemAmmo;
+
+        if(targetStack.getCount() >= 0){
+            entityPlayer.sendMessage(new TextComponentString("You can only load bullets on a single magazine."));
+            return null;
+        }
 
         if (nbtTagCompound.hasKey("bullet")) {
             ItemStack returningBullet = new ItemStack(nbtTagCompound.getCompoundTag("bullet"));

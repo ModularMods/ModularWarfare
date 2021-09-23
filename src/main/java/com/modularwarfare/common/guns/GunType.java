@@ -243,6 +243,9 @@ public class GunType extends BaseType {
             if(customFlashTexture != null){
                 if(ModularWarfare.textureTypes.containsKey(customFlashTexture)){
                     flashType = ModularWarfare.textureTypes.get(customFlashTexture);
+                } else {
+                    flashType = new TextureType();
+                    flashType.initDefaultTextures(TextureEnumType.Flash);
                 }
             } else {
                 flashType = new TextureType();
