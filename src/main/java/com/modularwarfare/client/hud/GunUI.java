@@ -156,6 +156,7 @@ public class GunUI {
                 }
             }
         }
+        GL11.glColor4f(1, 1, 1, 1);
     }
 
     private void RenderHitMarker(Tessellator tessellator, int i, int j) {

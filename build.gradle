@@ -108,7 +108,7 @@ repositories {
 idea { module { inheritOutputDirs = true } }
 
 mixin {
-    add sourceSets.main, "mixins.ravage.refmap.json"
+    add sourceSets.main, "mixins.modularwarfare.refmap.json"
 }
 sourceSets {
     main {

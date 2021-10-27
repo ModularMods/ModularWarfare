@@ -131,8 +131,8 @@ public class ModelCustomArmor extends MWModelBipedBase {
             ObjModelRenderer part = this.staticModel.getPart(modelPart);
             if (part != null) {
                 part.render(f5);
-                GlStateManager.popMatrix();
             }
+            GlStateManager.popMatrix();
         }
     }
 

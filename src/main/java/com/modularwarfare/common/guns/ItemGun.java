@@ -317,22 +317,23 @@ public class ItemGun extends BaseItem {
         ClientTickHandler.playerShootCooldown.put(entityPlayer.getUniqueID(), gunType.fireTickDelay);
 
 
-        /**
-         * Drop casing
-         */
-        int numBullets = gunType.numBullets;
-        ItemBullet bulletItem = getUsedBullet(gunStack, gunType);
-        if (bulletItem != null) {
-            if (bulletItem.type.isSlug) {
-                numBullets = 1;
+        if(ModConfig.INSTANCE.dropBulletCasing) {
+            /**
+             * Drop casing
+             */
+            int numBullets = gunType.numBullets;
+            ItemBullet bulletItem = getUsedBullet(gunStack, gunType);
+            if (bulletItem != null) {
+                if (bulletItem.type.isSlug) {
+                    numBullets = 1;
+                }
             }
+
+            EntityShell shell = new EntityShell(world, entityPlayer, itemGun, bulletItem);
+
+            shell.setHeadingFromThrower(entityPlayer, entityPlayer.rotationPitch, entityPlayer.rotationYaw + 110, 0.0F, 0.2F, 5);
+            world.spawnEntity(shell);
         }
-
-
-        EntityShell shell = new EntityShell(world, entityPlayer, itemGun, bulletItem);
-
-        shell.setHeadingFromThrower(entityPlayer, entityPlayer.rotationPitch, entityPlayer.rotationYaw + 110, 0.0F, 0.2F, 5);
-        world.spawnEntity(shell);
     }
 
     public void fireServer(EntityPlayer entityPlayer, float rotationPitch, float rotationYaw, World world, ItemStack gunStack, ItemGun itemGun, WeaponFireMode fireMode, final int clientFireTickDelay, final float recoilPitch, final float recoilYaw, final float recoilAimReducer, final float bulletSpread) {

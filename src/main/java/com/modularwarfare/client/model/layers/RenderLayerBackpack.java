@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderLayerBackpack implements LayerRenderer<EntityPlayer> {
@@ -43,7 +44,8 @@ public class RenderLayerBackpack implements LayerRenderer<EntityPlayer> {
                     GlStateManager.rotate(30.0f, 1.0f, 0.0f, 0.0f);
                 }
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                GlStateManager.scale(scale, scale, -scale);
+                GlStateManager.rotate(180, 0, 1, 0);
+                GlStateManager.scale(scale, scale, scale);
 
                 int skinId = 0;
                 if (itemstackBackpack.hasTagCompound()) {
@@ -59,7 +61,12 @@ public class RenderLayerBackpack implements LayerRenderer<EntityPlayer> {
                 ModelBackpack model = (ModelBackpack) backpack.type.model;
                 model.render("backpackModel", 1f, ((ModelBackpack) backpack.type.model).config.extra.modelScale);
 
+                GlStateManager.disableLighting();
+                GlStateManager.shadeModel(GL11.GL_SMOOTH);
+                model.render("backpackModel", 1f, ((ModelBackpack) backpack.type.model).config.extra.modelScale);
+                GlStateManager.shadeModel(GL11.GL_FLAT);
                 GlStateManager.popMatrix();
+                GlStateManager.enableLighting();
             }
         }
     }

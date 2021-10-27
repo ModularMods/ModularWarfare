@@ -62,7 +62,7 @@ public class ClientRenderHooks extends ForgeEvent {
         customRenderers[1] = ClientProxy.gunStaticRenderer = new RenderGunStatic();
         customRenderers[2] = ClientProxy.ammoRenderer = new RenderAmmo();
         customRenderers[3] = ClientProxy.attachmentRenderer = new RenderAttachment();
-        customRenderers[4] = ClientProxy.grenadeRenderer = new RenderGrenade();
+        customRenderers[8] = ClientProxy.grenadeRenderer = new RenderGrenade();
     }
 
     public static AnimStateMachine getAnimMachine(EntityPlayer entityPlayer) {
@@ -297,7 +297,7 @@ public class ClientRenderHooks extends ForgeEvent {
 
             ModelBiped biped = (ModelBiped) event.getRenderer().getMainModel();
             Entity entity = event.getEntity();
-            if (type.id == 0 && entity instanceof EntityPlayer) {
+            if (type.id == 1 && entity instanceof EntityPlayer) {
                 if (AnimationUtils.isAiming.containsKey(((EntityPlayer) entity).getName())) {
                     biped.rightArmPose = ArmPose.BOW_AND_ARROW;
                 } else {
@@ -307,41 +307,6 @@ public class ClientRenderHooks extends ForgeEvent {
             } else {
                 biped.rightArmPose = ArmPose.BLOCK;
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void renderBackGun(RenderBonesEvent.Post event) {
-        if (event.type != EnumBoneType.BODY) {
-            return;
-        }
-        if (event.modelCustomArmor.renderingEntity instanceof AbstractClientPlayer) {
-            ItemStack gun = BackWeaponsManager.INSTANCE
-                    .getItemToRender((AbstractClientPlayer) event.modelCustomArmor.renderingEntity);
-            if (gun != ItemStack.EMPTY && !gun.isEmpty()) {
-                BaseType type = ((BaseItem) gun.getItem()).baseType;
-                {
-                    GlStateManager.pushMatrix();
-                    if (customRenderers[type.id] != null) {
-                        GlStateManager.translate(0, -0.6, 0.35);
-                        boolean isSneaking = event.modelCustomArmor.renderingEntity.isSneaking();
-                        if (event.modelCustomArmor.renderingEntity instanceof EntityPlayerSP) {
-                            ((EntityPlayerSP) event.modelCustomArmor.renderingEntity).movementInput.sneak = false;
-                        } else {
-                            event.modelCustomArmor.renderingEntity.setSneaking(false);
-                        }
-                        customRenderers[type.id].renderItem(CustomItemRenderType.BACK, null, gun, mc.world,
-                                event.modelCustomArmor.renderingEntity, partialTicks);
-                        if (event.modelCustomArmor.renderingEntity instanceof EntityPlayerSP) {
-                            ((EntityPlayerSP) event.modelCustomArmor.renderingEntity).movementInput.sneak = isSneaking;
-                        } else {
-                            event.modelCustomArmor.renderingEntity.setSneaking(isSneaking);
-                        }
-                    }
-                    GlStateManager.popMatrix();
-                }
-            }
-
         }
     }
 

@@ -88,6 +88,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
     }
 
     public void doRender(final EntityItemLoot entity, final double x, final double y, final double z, final float entityYaw, final float partialTicks) {
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
         final ItemStack itemstack = entity.getItem();
         if (itemstack.getItem() instanceof ItemGun) {
             GlStateManager.alphaFunc(516, 0.1F);
@@ -108,7 +109,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
             GunType gunType = gun.type;
             ModelGun model = (ModelGun) gunType.model;
             float modelScale = model.config.extra.modelScale;
-            GlStateManager.scale(modelScale, modelScale, modelScale);
+            GlStateManager.scale(modelScale*0.8, modelScale*0.8, modelScale*0.8);
             float worldScale = 1F / 16F;
             if (model != null) {
                 int skinId = 0;
@@ -128,6 +129,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                 boolean hasScopeAttachment = false;
                 GlStateManager.pushMatrix();
                 for (AttachmentEnum attachment : AttachmentEnum.values()) {
+                    GlStateManager.pushMatrix();
                     ItemStack itemStack = GunType.getAttachment(itemstack, attachment);
                     if (itemStack != null && itemStack.getItem() != Items.AIR) {
                         AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
@@ -176,6 +178,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                             attachmentModel.renderAttachment(worldScale);
                         }
                     }
+                    GlStateManager.popMatrix();
                 }
                 if (!hasScopeAttachment)
                     model.renderPart("defaultScopeModel", worldScale);
@@ -202,8 +205,8 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
             }
             GlStateManager.enableRescaleNormal();
             GlStateManager.alphaFunc(516, 0.1f);
-            GlStateManager.enableBlend();
             RenderHelper.enableStandardItemLighting();
+            GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.pushMatrix();
             IBakedModel ibakedmodel = this.itemRenderer.getItemModelWithOverrides(itemstack, entity.world, null);
@@ -267,6 +270,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
             }
             super.doRender(entity, x, y, z, entityYaw, partialTicks);
         }
+        GlStateManager.shadeModel(GL11.GL_FLAT);
     }
 
     protected ResourceLocation getEntityTexture(final EntityItemLoot entity) {
