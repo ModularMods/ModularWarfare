@@ -81,10 +81,12 @@ import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.relauncher.CoreModManager;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistry;
 import paulscode.sound.SoundSystemConfig;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.charset.Charset;
@@ -132,48 +134,27 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void construction(FMLConstructionEvent event) {
         //Production-environment
-        File myDir = new File("ModularWarfare");
+        File modularWarfareDir = new File(getGameFolder(),"ModularWarfare");
         File modFile = null;
 
-        if (!myDir.exists()) {
-            if (myDir.getParentFile() != null) {
-                //Dev-environment
-                myDir = new File(myDir.getParentFile().getParentFile(), "ModularWarfare");
-                if (!myDir.exists()) {
-                    //first-run of the mod, in production environment
-                    myDir = new File("ModularWarfare");
-                    myDir.mkdirs();
-                }
-            } else //First run, in production environment
-                myDir.mkdirs();
-        }
-
-
         // Creates directory if doesn't exist
-        ModularWarfare.MOD_DIR = myDir;
+        ModularWarfare.MOD_DIR = modularWarfareDir;
         if (!ModularWarfare.MOD_DIR.exists()) {
             ModularWarfare.MOD_DIR.mkdir();
-            ModularWarfare.DEV_ENV = ModConfig.INSTANCE.dev_mode;
         }
         new ModConfig(new File(ModularWarfare.MOD_DIR, "mod_config.json"));
 
-        List<String> knownLibraries = ImmutableList.<String>builder()
-                // skip default libs
-                .addAll(event.getModClassLoader().getDefaultLibraries())
-                // skip loaded coremods
-                .addAll(CoreModManager.getIgnoredMods())
-                // skip reparse coremods here
-                .addAll(CoreModManager.getReparseableCoremods())
-                .build();
+        ModularWarfare.DEV_ENV = ModConfig.INSTANCE.dev_mode;
 
         for (File source : new File(Minecraft.getMinecraft().mcDataDir, "mods").listFiles()) {
+            System.out.println(source.getName());
             if(source.getName().contains("modularwarfare")){
                 modFile = source;
             }
         }
 
         boolean needPrototypeExtract = ModConfig.INSTANCE.autoExtractContentpack;
-        for (File file : myDir.listFiles()) {
+        for (File file : modularWarfareDir.listFiles()) {
             if (file.getName().matches("prototype-" + MOD_VERSION + "-contentpack.zip")) {
                 needPrototypeExtract = false;
             } else if (file.getName().contains("prototype") && !file.getName().contains(MOD_VERSION) && file.getName().contains(".zip") && !file.getName().endsWith(".bak")) {
@@ -184,16 +165,14 @@ public class ClientProxy extends CommonProxy {
         if (needPrototypeExtract) {
             try {
                 ZipFile zipFile = new ZipFile(modFile);
-                if (zipFile.isValidZipFile()) {
-                    zipFile.extractFile("prototype-" + MOD_VERSION + "-contentpack.zip", myDir.getAbsolutePath());
-                }
+                zipFile.extractFile("prototype-" + MOD_VERSION + "-contentpack.zip", modularWarfareDir.getAbsolutePath());
             } catch (ZipException e) {
                 e.printStackTrace();
             }
         }
 
 
-        for (File file : myDir.listFiles()) {
+        for (File file : modularWarfareDir.listFiles()) {
             if (!file.getName().contains("cache") && !file.getName().contains("officialmw") && !file.getName().contains("highres")) {
                 if (zipJar.matcher(file.getName()).matches()) {
                     try {
@@ -246,6 +225,11 @@ public class ClientProxy extends CommonProxy {
                 }
             }
         }
+    }
+
+    @Nonnull
+    public static String getGameFolder() {
+        return ((File) (FMLInjectionData.data()[6])).getAbsolutePath();
     }
 
     @Override

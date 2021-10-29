@@ -54,7 +54,7 @@ public class AttachmentType extends BaseType {
         public WeaponDotColorType dotColorType = WeaponDotColorType.RED;
 
         public String customOverlayTexture;
-        public transient TextureType overlayType;
+        public transient TextureType overlayType = new TextureType();
     }
 
     public static class Barrel {
