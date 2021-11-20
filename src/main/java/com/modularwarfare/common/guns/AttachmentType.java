@@ -28,14 +28,15 @@ public class AttachmentType extends BaseType {
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             if (sight.customOverlayTexture != null) {
+                ModularWarfare.LOGGER.info("Trying to read scope: "+sight.customOverlayTexture);
                 if (ModularWarfare.textureTypes.containsKey(sight.customOverlayTexture)) {
+                    ModularWarfare.LOGGER.info("Exist: "+sight.customOverlayTexture);
                     sight.overlayType = ModularWarfare.textureTypes.get(sight.customOverlayTexture);
                 }
             } else {
                 sight.overlayType = new TextureType();
                 sight.overlayType.initDefaultTextures(TextureEnumType.Overlay);
             }
-
         }
     }
 
@@ -54,7 +55,7 @@ public class AttachmentType extends BaseType {
         public WeaponDotColorType dotColorType = WeaponDotColorType.RED;
 
         public String customOverlayTexture;
-        public transient TextureType overlayType = new TextureType();
+        public transient TextureType overlayType;
     }
 
     public static class Barrel {

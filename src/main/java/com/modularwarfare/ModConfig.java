@@ -17,6 +17,7 @@ public class ModConfig {
     public boolean enableDynamicCrosshair = true;
     public boolean enable3DModelsDrops = true;
     public boolean disableGunInteraction = true;
+    public boolean enable_client_hit_reg = false;
 
     public boolean UIshowAmmoCount = true;
 
@@ -40,7 +41,7 @@ public class ModConfig {
 
     public boolean model_optimization = true;
     public boolean dev_mode = true;
-    public boolean debug_hits = true;
+    public boolean debug_hits = false;
 
     public String version = ModularWarfare.MOD_VERSION;
 

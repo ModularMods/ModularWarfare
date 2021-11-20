@@ -329,6 +329,17 @@ public class RenderGunStatic extends CustomItemRenderer {
                     GL11.glRotatef(gunRotX, 0, -1, 0);
                     GL11.glRotatef(gunRotY, 0, 0, -1);
 
+                    GL11.glRotatef((GUN_BALANCING_X * 4F) * (1F - adsSwitch), -1, 0, 0);
+                    GL11.glRotatef((float) Math.sin(Math.PI * GUN_BALANCING_X) * (1F - adsSwitch), -1, 0, 0);
+                    GL11.glRotatef((GUN_BALANCING_X) * adsSwitch * 0.4F, -1, 0, 0);
+
+                    GL11.glRotatef((GUN_BALANCING_Y * 2F) * (1F - adsSwitch), 0, 0, -1);
+                    GL11.glRotatef((GUN_BALANCING_Y) * adsSwitch * 0.4F, 0, 0, -1);
+
+                    GL11.glTranslatef(0F, (float) Math.sin(Math.PI* -GUN_CHANGE_Y), 0F);
+                    GL11.glRotatef(80 * (float) Math.sin(Math.PI* -GUN_CHANGE_Y), 0, 0, -1);
+                    GL11.glRotatef(-120 * (float) Math.sin(Math.PI* -GUN_CHANGE_Y), -1, 0, 0);
+
                     //Render Scope
                     WeaponScopeType scopeType = gunType.scopeType;
 

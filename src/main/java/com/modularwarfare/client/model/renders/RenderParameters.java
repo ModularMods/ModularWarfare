@@ -10,14 +10,17 @@ public class RenderParameters {
     public static float reloadSwitch = 1f;
     public static float attachmentSwitch = 0f;
 
-    public static int switchDelay = 20;
-
     public static float triggerPullSwitch;
 
     public static String lastModel = "";
 
     //Default minecraft smoothing tick
     public static float smoothing;
+
+    public static float GUN_BALANCING_X = 0;
+    public static float GUN_BALANCING_Y = 0;
+
+    public static float GUN_CHANGE_Y = 0;
 
     public static float GUN_ROT_X = 0;
     public static float GUN_ROT_Y = 0;

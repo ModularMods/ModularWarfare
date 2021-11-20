@@ -145,31 +145,60 @@ public class ClientTickHandler extends ForgeEvent {
             float modeSwitchValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
             RenderParameters.triggerPullSwitch = Math.max(0, Math.min(model.triggerDistance, triggerPullValue));
 
-            World world = Minecraft.getMinecraft().world;
-            double dx = player.getLookVec().x * 1;
-            double dy = player.getLookVec().y * 1;
-            double dz = player.getLookVec().z * 1;
+            float balancing_speed_x = 0.08f * renderTick;
+            if(player.moveStrafing > 0){
+                RenderParameters.GUN_BALANCING_X = Math.min(1.0F, RenderParameters.GUN_BALANCING_X + balancing_speed_x);
+            } else if(player.moveStrafing < 0){
+                RenderParameters.GUN_BALANCING_X = Math.max(-1.0F, RenderParameters.GUN_BALANCING_X - balancing_speed_x);
+            } else if(player.moveStrafing == 0 && RenderParameters.GUN_BALANCING_X != 0F){
+                if(RenderParameters.GUN_BALANCING_X > 0F){
+                    RenderParameters.GUN_BALANCING_X = Math.max(0, RenderParameters.GUN_BALANCING_X - balancing_speed_x);
+                } else if(RenderParameters.GUN_BALANCING_X < 0F){
+                    RenderParameters.GUN_BALANCING_X = Math.min(0, RenderParameters.GUN_BALANCING_X + balancing_speed_x);
+                }
+            }
+
+            float balancing_speed_y = 0.08f * renderTick;
+            if(player.moveForward > 0){
+                RenderParameters.GUN_BALANCING_Y = Math.min((player.isSprinting() ? 3.0F : 1.0F), RenderParameters.GUN_BALANCING_Y + balancing_speed_y);
+            } else if(player.moveForward < 0){
+                RenderParameters.GUN_BALANCING_Y = Math.max(-1.0F, RenderParameters.GUN_BALANCING_Y - balancing_speed_y);
+            } else if(player.moveForward == 0 && RenderParameters.GUN_BALANCING_Y != 0F){
+                if(RenderParameters.GUN_BALANCING_Y > 0F){
+                    RenderParameters.GUN_BALANCING_Y = Math.max(0, RenderParameters.GUN_BALANCING_Y - balancing_speed_y*2);
+                } else if(RenderParameters.GUN_BALANCING_Y < 0F){
+                    RenderParameters.GUN_BALANCING_Y = Math.min(0, RenderParameters.GUN_BALANCING_Y + balancing_speed_y*2);
+                }
+            }
+
+
+            //Gun change animation
+            if(player.getHeldItemMainhand().getItem() != oldItem){
+                RenderParameters.GUN_CHANGE_Y = 1.0f;
+            }
+            float change_speed_y = 0.04f * renderTick;
+            RenderParameters.GUN_CHANGE_Y = Math.max(0, RenderParameters.GUN_CHANGE_Y - change_speed_y);
+
 
             Vec3d vecStart = player.getPositionEyes(1.0f);
-
             RayTraceResult rayTraceResult = RayUtil.rayTrace(player,1.0, 1.0f);
             if(rayTraceResult != null) {
                 if (rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
                     if (rayTraceResult.hitVec != null) {
                         double d = vecStart.distanceTo(rayTraceResult.hitVec);
                         if (d <= 1.0f) {
-                            RenderParameters.collideFrontDistance = (float) (RenderParameters.collideFrontDistance + ((1.0f - d) - RenderParameters.collideFrontDistance) * renderTick);
+                            RenderParameters.collideFrontDistance = (float) (RenderParameters.collideFrontDistance + ((1.0f - d) - RenderParameters.collideFrontDistance) * renderTick * 0.5f);
                         } else {
-                            RenderParameters.collideFrontDistance = 0.0f;
+                            RenderParameters.collideFrontDistance = Math.max(0f, RenderParameters.collideFrontDistance - renderTick * 0.1f);
                         }
                     } else {
-                        RenderParameters.collideFrontDistance = 0.0f;
+                        RenderParameters.collideFrontDistance = Math.max(0f, RenderParameters.collideFrontDistance - renderTick * 0.1f);
                     }
                 } else {
-                    RenderParameters.collideFrontDistance = 0.0f;
+                    RenderParameters.collideFrontDistance = Math.max(0f, RenderParameters.collideFrontDistance - renderTick * 0.1f);
                 }
             } else {
-                RenderParameters.collideFrontDistance = 0.0f;
+                RenderParameters.collideFrontDistance = Math.max(0f, RenderParameters.collideFrontDistance - renderTick * 0.1f);
             }
 
 
@@ -187,6 +216,8 @@ public class ClientTickHandler extends ForgeEvent {
         if (minecraft.player == null || minecraft.world == null)
             return;
 
+        ModularWarfare.PLAYERHANDLER.clientTick();
+
         GUN_ROT_X_LAST = GUN_ROT_X;
         GUN_ROT_Y_LAST = GUN_ROT_Y;
         GUN_ROT_Z_LAST = GUN_ROT_Z;
@@ -200,9 +231,9 @@ public class ClientTickHandler extends ForgeEvent {
                 GUN_ROT_X -= (mc.getRenderViewEntity().prevRotationYaw - mc.getRenderViewEntity().getRotationYawHead()) / 1.5;
             }
             if (mc.getRenderViewEntity().rotationPitch > prevPitch) {
-                GUN_ROT_Y += (mc.getRenderViewEntity().rotationPitch - prevPitch) / 1.5;
+                GUN_ROT_Y += (mc.getRenderViewEntity().rotationPitch - prevPitch) / 5;
             } else if (mc.getRenderViewEntity().rotationPitch < prevPitch) {
-                GUN_ROT_Y -= (prevPitch - mc.getRenderViewEntity().rotationPitch) / 1.5;
+                GUN_ROT_Y -= (prevPitch - mc.getRenderViewEntity().rotationPitch) / 5;
             }
             prevPitch = mc.getRenderViewEntity().rotationPitch;
         }
@@ -272,13 +303,10 @@ public class ClientTickHandler extends ForgeEvent {
         if (player.getHeldItemMainhand().getItem() != this.oldItem) {
             if (player.getHeldItemMainhand().getItem() instanceof ItemGun) {
                 ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), "human.equip.gun", 1f, 1f));
-                RenderParameters.switchDelay = 20;
             } else if (player.getHeldItemMainhand().getItem() instanceof ItemSpray) {
                 ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), "shake", 1f, 1f));
-                RenderParameters.switchDelay = 20;
             } else if (player.getHeldItemMainhand().getItem() instanceof ItemGrenade) {
                 ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), "human.equip.extra", 1f, 1f));
-                RenderParameters.switchDelay = 20;
             }
         }
         if (this.oldItem != player.getHeldItemMainhand().getItem()) {

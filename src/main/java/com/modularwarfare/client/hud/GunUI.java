@@ -84,7 +84,7 @@ public class GunUI {
                                             float alpha = gunRotX;
                                             alpha = Math.abs(alpha);
 
-                                            if (gunRotX > -1.5 && gunRotX < 1.5 && gunRotY > -0.75 && gunRotY < 0.75) {
+                                            if (gunRotX > -1.5 && gunRotX < 1.5 && gunRotY > -0.75 && gunRotY < 0.75 && RenderParameters.GUN_CHANGE_Y == 0F) {
                                                 GL11.glPushMatrix();
 
                                                 GL11.glRotatef(gunRotX, 0, -1, 0);

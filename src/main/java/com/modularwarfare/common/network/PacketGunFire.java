@@ -1,9 +1,11 @@
 package com.modularwarfare.common.network;
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.guns.WeaponFireMode;
+import com.modularwarfare.common.guns.manager.ShotManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,13 +75,15 @@ public class PacketGunFire extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if (entityPlayer != null) {
-                    if (ModularWarfare.gunTypes.get(internalname) != null) {
-                        ItemGun itemGun = ModularWarfare.gunTypes.get(internalname);
-                        WeaponFireMode fireMode = GunType.getFireMode(entityPlayer.getHeldItemMainhand());
-                        if (fireMode == null)
-                            return;
-                        itemGun.fireServer(entityPlayer, rotationPitch, rotationYaw, entityPlayer.world, entityPlayer.getHeldItemMainhand(), itemGun, fireMode, fireTickDelay, recoilPitch, recoilYaw, recoilAimReducer, bulletSpread);
+                if(!ModConfig.INSTANCE.enable_client_hit_reg) {
+                    if (entityPlayer != null) {
+                        if (ModularWarfare.gunTypes.get(internalname) != null) {
+                            ItemGun itemGun = ModularWarfare.gunTypes.get(internalname);
+                            WeaponFireMode fireMode = GunType.getFireMode(entityPlayer.getHeldItemMainhand());
+                            if (fireMode == null)
+                                return;
+                            ShotManager.fireServer(entityPlayer, rotationPitch, rotationYaw, entityPlayer.world, entityPlayer.getHeldItemMainhand(), itemGun, fireMode, fireTickDelay, recoilPitch, recoilYaw, recoilAimReducer, bulletSpread);
+                        }
                     }
                 }
             }

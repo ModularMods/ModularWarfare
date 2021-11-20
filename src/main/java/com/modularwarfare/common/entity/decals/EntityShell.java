@@ -102,7 +102,7 @@ public class EntityShell extends Entity implements IProjectile {
             this.motionZ *= 0.699999988079071D;
             this.motionY *= -0.5D;
             if (!playedSound) {
-                ModularWarfare.NETWORK.sendToAllAround(new PacketPlaySound(this.getPosition(), "casing", 0.1f, 1f), new NetworkRegistry.TargetPoint(dimension, this.posX, this.posY, this.posZ, 3f));
+                ModularWarfare.NETWORK.sendToAllAround(new PacketPlaySound(this.getPosition(), "casing", 0.8f, 1f), new NetworkRegistry.TargetPoint(dimension, this.posX, this.posY, this.posZ, 3f));
                 playedSound = true;
             }
         }

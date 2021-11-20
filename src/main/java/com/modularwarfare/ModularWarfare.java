@@ -72,7 +72,7 @@ public class ModularWarfare {
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
-    public static final String MOD_VERSION = "1.0.15f";
+    public static final String MOD_VERSION = "1.0.17f";
     // Main instance
     @Instance(ModularWarfare.MOD_ID)
     public static ModularWarfare INSTANCE;

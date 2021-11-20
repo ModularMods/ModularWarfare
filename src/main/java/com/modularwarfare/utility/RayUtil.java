@@ -44,7 +44,6 @@ public class RayUtil {
         return entity instanceof EntityLivingBase && !(entity instanceof EntityArmorStand);
     }
 
-
     public static Vec3d getGunAccuracy(float pitch, float yaw, final float accuracy, final Random rand) {
         final float randAccPitch = rand.nextFloat() * accuracy;
         final float randAccYaw = rand.nextFloat() * accuracy;
@@ -161,7 +160,7 @@ public class RayUtil {
      * @return
      */
     @Nullable
-    public static BulletHit standardEntityRayTrace(World world, float rotationPitch, float rotationYaw, EntityLivingBase player, double range, ItemGun item, boolean isPunched) {
+    public static BulletHit standardEntityRayTrace(Side side, World world, float rotationPitch, float rotationYaw, EntityLivingBase player, double range, ItemGun item, boolean isPunched) {
 
         HashSet<Entity> hashset = new HashSet<Entity>(1);
         hashset.add(player);
@@ -174,7 +173,9 @@ public class RayUtil {
         double dy = dir.y * range;
         double dz = dir.z * range;
 
-        ModularWarfare.NETWORK.sendToDimension(new PacketGunTrail(player.posX, player.getEntityBoundingBox().minY + player.getEyeHeight() - 0.10000000149011612, player.posZ, player.motionX, player.motionZ, dir.x, dir.y, dir.z, range, 10, isPunched), player.world.provider.getDimension());
+        if(side.isServer()) {
+            ModularWarfare.NETWORK.sendToDimension(new PacketGunTrail(player.posX, player.getEntityBoundingBox().minY + player.getEyeHeight() - 0.10000000149011612, player.posZ, player.motionX, player.motionZ, dir.x, dir.y, dir.z, range, 10, isPunched), player.world.provider.getDimension());
+        }
 
         int ping = 0;
         if (player instanceof EntityPlayerMP) {
@@ -255,9 +256,9 @@ public class RayUtil {
 
                             if(ModConfig.INSTANCE.debug_hits) {
                                 long currentTime = System.nanoTime();
-                                FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString("Shooter's ping: " + ping / 20 + "ms | " + ping + "ticks"));
-                                FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString("Took the snapshot " + snapshotToTry + " Part: " + hitbox.type.toString()));
-                                FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString("Delta (currentTime - snapshotTime) = " + (currentTime - snapshot.time) * 1e-6 + "ms"));
+                                ModularWarfare.LOGGER.info("Shooter's ping: " + ping / 20 + "ms | " + ping + "ticks");
+                                ModularWarfare.LOGGER.info("Took the snapshot " + snapshotToTry + " Part: " + hitbox.type.toString());
+                                ModularWarfare.LOGGER.info("Delta (currentTime - snapshotTime) = " + (currentTime - snapshot.time) * 1e-6 + "ms");
                             }
 
                             return new PlayerHit(hitbox, intercept);
