@@ -4,7 +4,7 @@
   "enableDynamicCrosshair": true,
   "enable3DModelsDrops": true,
   "disableGunInteraction": true,
-  "enable_client_hit_reg": false,
+  "enable_client_hit_reg": true,
   "UIshowAmmoCount": true,
   "dropBulletCasing": true,
   "despawnTimeShellCasing": 10,

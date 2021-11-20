@@ -166,7 +166,6 @@ public class ModularWarfare {
         }
 
         for(TextureType type : textureTypes.values()){
-            System.out.println("[DEB] type "+type.textureType.typeName);
             type.loadExtraValues();
         }
 

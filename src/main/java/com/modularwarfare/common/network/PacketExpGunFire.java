@@ -49,7 +49,6 @@ public class PacketExpGunFire extends PacketBase {
     private double posY;
     private double posZ;
 
-
     public PacketExpGunFire() {
     }
 
@@ -131,6 +130,8 @@ public class PacketExpGunFire extends PacketBase {
                                         itemGun.type.playSound(entityPlayer, WeaponSoundType.Fire, entityPlayer.getHeldItemMainhand(), entityPlayer);
                                     }
 
+
+
                                     if (entityId != -1) {
                                         Entity target = entityPlayer.world.getEntityByID(entityId);
                                         WeaponFireMode fireMode = GunType.getFireMode(entityPlayer.getHeldItemMainhand());
@@ -141,7 +142,7 @@ public class PacketExpGunFire extends PacketBase {
                                             if (target != null) {
                                                 float damage = itemGun.type.gunDamage;
                                                 if (target instanceof EntityPlayer && hitboxType != null) {
-                                                    if (hitboxType.equals(EnumHitboxType.BODY)) {
+                                                    if (EnumHitboxType.valueOf(hitboxType).equals(EnumHitboxType.BODY)) {
                                                         EntityPlayer player = (EntityPlayer) target;
                                                         if (player.hasCapability(CapabilityExtra.CAPABILITY, null)) {
                                                             final IExtraItemHandler extraSlots = player.getCapability(CapabilityExtra.CAPABILITY, null);
@@ -160,11 +161,10 @@ public class PacketExpGunFire extends PacketBase {
                                                 } else {
                                                     target.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setProjectile(), damage);
                                                 }
-
                                                 target.hurtResistantTime = 0;
 
                                                 if (entityPlayer instanceof EntityPlayerMP) {
-                                                    ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(hitboxType.equals(EnumHitboxType.HEAD)), entityPlayer);
+                                                    ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(hitboxType.valueOf(hitboxType).equals(EnumHitboxType.HEAD)), entityPlayer);
                                                     ModularWarfare.NETWORK.sendTo(new PacketPlaySound(target.getPosition(), "flyby", 1f, 1f), (EntityPlayerMP) target);
 
                                                     ModularWarfare.NETWORK.sendTo(new PacketPlayerHit(), (EntityPlayerMP) target);

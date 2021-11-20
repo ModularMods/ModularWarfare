@@ -336,7 +336,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                     GL11.glRotatef((GUN_BALANCING_Y * 2F) * (1F - adsSwitch), 0, 0, -1);
                     GL11.glRotatef((GUN_BALANCING_Y) * adsSwitch * 0.4F, 0, 0, -1);
 
-                    GL11.glTranslatef(0F, (float) Math.sin(Math.PI* -GUN_CHANGE_Y), 0F);
+                    GL11.glTranslatef(0F, (float) Math.sin(Math.PI* -GUN_CHANGE_Y) * 1.5F, 0F);
                     GL11.glRotatef(80 * (float) Math.sin(Math.PI* -GUN_CHANGE_Y), 0, 0, -1);
                     GL11.glRotatef(-120 * (float) Math.sin(Math.PI* -GUN_CHANGE_Y), -1, 0, 0);
 
