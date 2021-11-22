@@ -1,7 +1,5 @@
 package com.modularwarfare.client.killchat;
 
-import com.modularwarfare.ModularWarfare;
-
 public class KillFeedEntry {
     private String text;
     private boolean causeIsGun = false;
@@ -16,7 +14,6 @@ public class KillFeedEntry {
         if (weaponInternalName != null) {
             this.weaponInternalName = weaponInternalName;
             this.causeIsGun = true;
-            ModularWarfare.LOGGER.info(weaponInternalName);
         }
     }
 

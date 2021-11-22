@@ -330,6 +330,8 @@ public class ShotManager {
                 rayTraceList.add(rayTrace);
             }
 
+            ModularWarfare.NETWORK.sendToServer(new PacketExpShot(entityPlayer.getEntityId(), itemGun.type.internalName));
+
             boolean headshot = false;
             for (BulletHit rayTrace : rayTraceList) {
                 if (rayTrace instanceof PlayerHit) {

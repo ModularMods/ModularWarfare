@@ -8,6 +8,7 @@ import com.modularwarfare.common.capability.extraslots.CapabilityExtra;
 import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.guns.manager.ShotValidation;
+import com.modularwarfare.common.handler.ServerTickHandler;
 import com.modularwarfare.common.hitbox.PlayerHitbox;
 import com.modularwarfare.common.hitbox.hits.PlayerHit;
 import com.modularwarfare.common.hitbox.maths.EnumHitboxType;
@@ -122,15 +123,6 @@ public class PacketExpGunFire extends PacketBase {
 
                                 if (ModularWarfare.gunTypes.get(internalname) != null) {
                                     ItemGun itemGun = ModularWarfare.gunTypes.get(internalname);
-                                    itemGun.consumeShot(entityPlayer.getHeldItemMainhand());
-                                    // Sound
-                                    if (GunType.getAttachment(entityPlayer.getHeldItemMainhand(), AttachmentEnum.Barrel) != null) {
-                                        itemGun.type.playSound(entityPlayer, WeaponSoundType.FireSuppressed, entityPlayer.getHeldItemMainhand(), entityPlayer);
-                                    } else {
-                                        itemGun.type.playSound(entityPlayer, WeaponSoundType.Fire, entityPlayer.getHeldItemMainhand(), entityPlayer);
-                                    }
-
-
 
                                     if (entityId != -1) {
                                         Entity target = entityPlayer.world.getEntityByID(entityId);
