@@ -5,7 +5,7 @@
     "customFlashTexture": "prototype.flash",
     "gunDamage": 8,
     "gunDamageHeadshotBonus": 2,
-    "roundsPerMin": 500,
+    "roundsPerMin": 400,
     "allowEmptyMagazines": true,
     "recoilPitch": 3,
     "recoilYaw": 1.5,

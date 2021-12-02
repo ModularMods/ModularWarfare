@@ -8,10 +8,6 @@ import com.modularwarfare.common.capability.extraslots.CapabilityExtra;
 import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.guns.manager.ShotValidation;
-import com.modularwarfare.common.handler.ServerTickHandler;
-import com.modularwarfare.common.hitbox.PlayerHitbox;
-import com.modularwarfare.common.hitbox.hits.PlayerHit;
-import com.modularwarfare.common.hitbox.maths.EnumHitboxType;
 import com.modularwarfare.utility.RayUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,9 +22,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class PacketExpGunFire extends PacketBase {
 
@@ -53,14 +46,10 @@ public class PacketExpGunFire extends PacketBase {
     public PacketExpGunFire() {
     }
 
-    public PacketExpGunFire(int entityId, String internalname, EnumHitboxType type, int fireTickDelay, float recoilPitch, float recoilYaw, float recoilAimReducer, float bulletSpread, double x, double y, double z) {
+    public PacketExpGunFire(int entityId, String internalname, String hitboxType, int fireTickDelay, float recoilPitch, float recoilYaw, float recoilAimReducer, float bulletSpread, double x, double y, double z) {
         this.entityId = entityId;
         this.internalname = internalname;
-        if(this.hitboxType != null) {
-            this.hitboxType = type.name();
-        } else {
-            this.hitboxType = "";
-        }
+        this.hitboxType = hitboxType;
 
         this.fireTickDelay = fireTickDelay;
         this.recoilPitch = recoilPitch;
@@ -112,7 +101,7 @@ public class PacketExpGunFire extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if(ModConfig.INSTANCE.enable_client_hit_reg) {
+                if(ModConfig.INSTANCE.experimental_hit_reg) {
                     if (entityPlayer.ping > 100 * 20) {
                         entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
                         return;
@@ -127,14 +116,13 @@ public class PacketExpGunFire extends PacketBase {
                                     if (entityId != -1) {
                                         Entity target = entityPlayer.world.getEntityByID(entityId);
                                         WeaponFireMode fireMode = GunType.getFireMode(entityPlayer.getHeldItemMainhand());
+                                        if (fireMode == null)
+                                            return;
                                         if (ShotValidation.verifShot(entityPlayer, entityPlayer.getHeldItemMainhand(), itemGun, fireMode, fireTickDelay, recoilPitch, recoilYaw, recoilAimReducer, bulletSpread)) {
-                                            if (fireMode == null)
-                                                return;
-
                                             if (target != null) {
                                                 float damage = itemGun.type.gunDamage;
                                                 if (target instanceof EntityPlayer && hitboxType != null) {
-                                                    if (EnumHitboxType.valueOf(hitboxType).equals(EnumHitboxType.BODY)) {
+                                                    if (hitboxType.contains("BODY")) {
                                                         EntityPlayer player = (EntityPlayer) target;
                                                         if (player.hasCapability(CapabilityExtra.CAPABILITY, null)) {
                                                             final IExtraItemHandler extraSlots = player.getCapability(CapabilityExtra.CAPABILITY, null);
@@ -156,7 +144,7 @@ public class PacketExpGunFire extends PacketBase {
                                                 target.hurtResistantTime = 0;
 
                                                 if (entityPlayer instanceof EntityPlayerMP) {
-                                                    ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(hitboxType.valueOf(hitboxType).equals(EnumHitboxType.HEAD)), entityPlayer);
+                                                    ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(hitboxType.contains("HEAD")), entityPlayer);
                                                     ModularWarfare.NETWORK.sendTo(new PacketPlaySound(target.getPosition(), "flyby", 1f, 1f), (EntityPlayerMP) target);
 
                                                     ModularWarfare.NETWORK.sendTo(new PacketPlayerHit(), (EntityPlayerMP) target);

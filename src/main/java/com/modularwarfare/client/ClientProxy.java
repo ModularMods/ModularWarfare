@@ -133,44 +133,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void construction(FMLConstructionEvent event) {
-        //Production-environment
-        File modularWarfareDir = new File(getGameFolder(),"ModularWarfare");
-        File modFile = null;
-
-        // Creates directory if doesn't exist
-        ModularWarfare.MOD_DIR = modularWarfareDir;
-        if (!ModularWarfare.MOD_DIR.exists()) {
-            ModularWarfare.MOD_DIR.mkdir();
-        }
-        new ModConfig(new File(ModularWarfare.MOD_DIR, "mod_config.json"));
-
-        ModularWarfare.DEV_ENV = ModConfig.INSTANCE.dev_mode;
-
-        for (File source : new File(Minecraft.getMinecraft().mcDataDir, "mods").listFiles()) {
-            System.out.println(source.getName());
-            if(source.getName().contains("modularwarfare")){
-                modFile = source;
-            }
-        }
-
-        boolean needPrototypeExtract = ModConfig.INSTANCE.autoExtractContentpack;
-        for (File file : modularWarfareDir.listFiles()) {
-            if (file.getName().matches("prototype-" + MOD_VERSION + "-contentpack.zip")) {
-                needPrototypeExtract = false;
-            } else if (file.getName().contains("prototype") && !file.getName().contains(MOD_VERSION) && file.getName().contains(".zip") && !file.getName().endsWith(".bak")) {
-                file.renameTo(new File(file.getAbsolutePath() + ".bak"));
-            }
-        }
-
-        if (needPrototypeExtract) {
-            try {
-                ZipFile zipFile = new ZipFile(modFile);
-                zipFile.extractFile("prototype-" + MOD_VERSION + "-contentpack.zip", modularWarfareDir.getAbsolutePath());
-            } catch (ZipException e) {
-                e.printStackTrace();
-            }
-        }
-
+        super.construction(event);
 
         for (File file : modularWarfareDir.listFiles()) {
             if (!file.getName().contains("cache") && !file.getName().contains("officialmw") && !file.getName().contains("highres")) {
@@ -227,10 +190,6 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    @Nonnull
-    public static String getGameFolder() {
-        return ((File) (FMLInjectionData.data()[6])).getAbsolutePath();
-    }
 
     @Override
     public void preload() {

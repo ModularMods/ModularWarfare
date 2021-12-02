@@ -111,7 +111,7 @@
       "z": 0.0
     },
     "translateAimPosition": {
-      "x": 0.0,
+      "x": 0.1,
       "y": 0.04,
       "z": 0.0
     }
@@ -239,7 +239,7 @@
     "crouchZoom": -0.035,
     "adsSpeed": 0.02,
     "gunSlideDistance": 0.25,
-    "modelRecoilBackwards": 0.15,
+    "modelRecoilBackwards": 0.05,
     "modelRecoilUpwards": 1.0,
     "modelRecoilShake": 0.5
   }

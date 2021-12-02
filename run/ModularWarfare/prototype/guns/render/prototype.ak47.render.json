@@ -110,7 +110,7 @@
       "z": 0.0
     },
     "translateAimPosition": {
-      "x": 0.2,
+      "x": 0.4,
       "y": 0.0,
       "z": 0.0
     }
@@ -163,6 +163,6 @@
     "gunSlideDistance": 0.15,
     "modelRecoilBackwards": 0.15,
     "modelRecoilUpwards": 1.0,
-    "modelRecoilShake": 0.5
+    "modelRecoilShake": 0.3
   }
 }

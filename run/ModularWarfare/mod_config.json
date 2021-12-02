@@ -4,7 +4,7 @@
   "enableDynamicCrosshair": true,
   "enable3DModelsDrops": true,
   "disableGunInteraction": true,
-  "enable_client_hit_reg": true,
+  "experimental_hit_reg": true,
   "UIshowAmmoCount": true,
   "dropBulletCasing": true,
   "despawnTimeShellCasing": 10,
@@ -29,5 +29,5 @@
   "model_optimization": true,
   "dev_mode": true,
   "debug_hits": false,
-  "version": "1.0.17f"
+  "version": "1.0.18f"
 }

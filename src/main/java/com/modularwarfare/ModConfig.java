@@ -17,7 +17,7 @@ public class ModConfig {
     public boolean enableDynamicCrosshair = true;
     public boolean enable3DModelsDrops = true;
     public boolean disableGunInteraction = true;
-    public boolean enable_client_hit_reg = false;
+    public boolean experimental_hit_reg = true;
 
     public boolean UIshowAmmoCount = true;
 

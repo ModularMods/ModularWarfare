@@ -75,7 +75,7 @@ public class PacketGunFire extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if(!ModConfig.INSTANCE.enable_client_hit_reg) {
+                if(!ModConfig.INSTANCE.experimental_hit_reg) {
                     if (entityPlayer != null) {
                         if (ModularWarfare.gunTypes.get(internalname) != null) {
                             ItemGun itemGun = ModularWarfare.gunTypes.get(internalname);

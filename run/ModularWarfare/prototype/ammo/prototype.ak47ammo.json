@@ -1,6 +1,6 @@
 {
     "internalName": "prototype.ak47ammo",
-    "displayName": "AK47 Mag 30rnd",
+    "displayName": "AKM Mag 30rnd",
     "ammoCapacity": 30,
     "magazineCount": 1,
     "subAmmo": [

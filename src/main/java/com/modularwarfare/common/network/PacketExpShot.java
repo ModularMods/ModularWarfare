@@ -2,24 +2,13 @@ package com.modularwarfare.common.network;
 
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.common.armor.ArmorType;
-import com.modularwarfare.common.armor.ItemSpecialArmor;
-import com.modularwarfare.common.capability.extraslots.CapabilityExtra;
-import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
 import com.modularwarfare.common.guns.*;
-import com.modularwarfare.common.guns.manager.ShotValidation;
 import com.modularwarfare.common.handler.ServerTickHandler;
-import com.modularwarfare.common.hitbox.maths.EnumHitboxType;
-import com.modularwarfare.utility.RayUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.IThreadListener;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldServer;
@@ -55,7 +44,7 @@ public class PacketExpShot extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if(ModConfig.INSTANCE.enable_client_hit_reg) {
+                if(ModConfig.INSTANCE.experimental_hit_reg) {
                     if (entityPlayer.ping > 100 * 20) {
                         entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
                         return;
