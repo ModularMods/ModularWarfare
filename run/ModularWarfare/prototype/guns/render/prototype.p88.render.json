@@ -70,14 +70,14 @@
   },
   "sprint": {
     "sprintRotate": {
-      "x": -20.0,
-      "y": 30.0,
-      "z": -0.0
+      "x": 0.0,
+      "y": 0.0,
+      "z": 20.0
     },
     "sprintTranslate": {
-      "x": 0.5,
-      "y": -0.15,
-      "z": -0.65
+      "x": 0.3,
+      "y": 0.4,
+      "z": 0.15
     }
   },
   "thirdPerson": {
@@ -95,14 +95,14 @@
   },
   "aim": {
     "rotateHipPosition": {
-      "x": 0.0,
+      "x": -5.0,
       "y": 0.0,
       "z": 0.0
     },
     "translateHipPosition": {
-      "x": 0.0,
-      "y": 0.0,
-      "z": 0.0
+      "x": 0.1,
+      "y": -0.1,
+      "z": -0.1
     },
     "rotateAimPosition": {
       "x": 0.0,
@@ -111,7 +111,7 @@
     },
     "translateAimPosition": {
       "x": 0.0,
-      "y": 0.01,
+      "y": 0.005,
       "z": 0.0
     }
   },
@@ -135,7 +135,7 @@
       "prototype.docter_sight_mini": [
         {
           "x": 0.0,
-          "y": -0.2,
+          "y": -0.25,
           "z": 0.0
         },
         {

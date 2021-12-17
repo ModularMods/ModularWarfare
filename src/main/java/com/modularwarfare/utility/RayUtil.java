@@ -14,6 +14,7 @@ import com.modularwarfare.common.hitbox.playerdata.PlayerData;
 import com.modularwarfare.common.network.PacketGunTrail;
 import com.modularwarfare.common.network.PacketGunTrailAskServer;
 import com.modularwarfare.common.network.PacketPlaySound;
+import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -27,9 +28,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -54,7 +54,7 @@ public class RayUtil {
         final float f2 = MathHelper.sin(-yaw * 0.017453292f - 3.1415927f);
         final float f3 = -MathHelper.cos(-pitch * 0.017453292f);
         final float f4 = MathHelper.sin(-pitch * 0.017453292f);
-        return new Vec3d((double) (f2 * f3), (double) f4, (double) (f * f3));
+        return new Vec3d((f2 * f3), f4, (f * f3));
     }
 
     public static float calculateAccuracyServer(final ItemGun item, final EntityLivingBase player) {
@@ -168,7 +168,7 @@ public class RayUtil {
 
         final float accuracy = calculateAccuracyServer(item, player);
 
-        final Vec3d dir = getGunAccuracy(rotationPitch, rotationYaw, accuracy, player.world.rand);
+        Vec3d dir = getGunAccuracy(rotationPitch, rotationYaw, accuracy, player.world.rand);
 
         double dx = dir.x * range;
         double dy = dir.y * range;
@@ -186,7 +186,14 @@ public class RayUtil {
             ping = entityPlayerMP.ping;
         }
 
-        return RayUtil.tracePath(world, (float) player.posX, (float) (player.getEntityBoundingBox().minY + player.getEyeHeight() - 0.10000000149011612), (float) player.posZ, (float) (player.posX + dx + player.motionX), (float) (player.posY + dy + player.motionY), (float) (player.posZ + dz + player.motionZ), 0.001f, hashset, false, ping);
+        Vec3d offsetVec = player.getPositionEyes(1.0f);
+
+        if(Loader.isModLoaded("modularmovements")) {
+            if (player instanceof EntityPlayer) {
+                offsetVec = ClientLitener.onGetPositionEyes((EntityPlayer) player, 1.0f, offsetVec);
+            }
+        }
+        return RayUtil.tracePath(world, (float) offsetVec.x, (float) offsetVec.y, (float) offsetVec.z, (float) (player.posX + dx + player.motionX), (float) (player.posY + dy + player.motionY), (float) (player.posZ + dz + player.motionZ), 0.001f, hashset, false, ping);
     }
 
     /**

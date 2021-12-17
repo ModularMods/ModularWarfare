@@ -1205,36 +1205,31 @@ public class RenderGunStatic extends CustomItemRenderer {
             if (Minecraft.getMinecraft().world != null) {
                 float gunRotX = RenderParameters.GUN_ROT_X_LAST + (RenderParameters.GUN_ROT_X - RenderParameters.GUN_ROT_X_LAST) * this.timer.renderPartialTicks;
                 if (isAiming) {
-                    if (!OptifineHelper.isShadersEnabled()) {
-                        GL11.glPushMatrix();
-                        renderWorldOntoScope(attachmentType, modelAttachment);
+                    GL11.glPushMatrix();
+                    renderWorldOntoScope(attachmentType, modelAttachment);
 
-                        /** Render Overlay when moving too fast **/
-                        float alpha = 1f;
-                        if (adsSwitch < 1.0f) {
-                            alpha = 1 - adsSwitch;
-                        } else {
-                            alpha = gunRotX;
-                            alpha = Math.abs(alpha / 8);
-                        }
-
-                        GlStateManager.disableLighting();
-                        GlStateManager.depthMask(false);
-                        GlStateManager.enableBlend();
-                        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-
-                        GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
-                        renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
-                        modelAttachment.renderOverlay(0.0625f);
-                        GlStateManager.disableBlend();
-                        GlStateManager.depthMask(true);
-                        GlStateManager.enableLighting();
-
-                        GL11.glPopMatrix();
+                    /** Render Overlay when moving too fast **/
+                    float alpha = 1f;
+                    if (adsSwitch < 1.0f) {
+                        alpha = 1 - adsSwitch;
                     } else {
-                        renderEngine.bindTexture(ScopeUtils.NOT_COMPATIBLE);
-                        modelAttachment.renderOverlay(0.0625f);
+                        alpha = gunRotX;
+                        alpha = Math.abs(alpha / 8);
                     }
+
+                    GlStateManager.disableLighting();
+                    GlStateManager.depthMask(false);
+                    GlStateManager.enableBlend();
+                    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
+                    GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
+                    renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
+                    modelAttachment.renderOverlay(0.0625f);
+                    GlStateManager.disableBlend();
+                    GlStateManager.depthMask(true);
+                    GlStateManager.enableLighting();
+
+                    GL11.glPopMatrix();
                 } else {
                     GL11.glPushMatrix();
                     renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
