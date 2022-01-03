@@ -835,7 +835,7 @@ public class ClientProxy extends CommonProxy {
                 recoilYawBarrelFactor = barrelAttachment.type.barrel.recoilYawFactor;
             }
 
-            if (!ClientRenderHooks.isAiming) {
+            if (! (ClientRenderHooks.isAiming || ClientRenderHooks.isAimingScope)) {
                 RenderParameters.playerRecoilPitch += (gunType.recoilPitch + (new Random().nextFloat() * (gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch)) * (recoilPitchGripFactor * recoilPitchBarrelFactor);
 
                 RenderParameters.playerRecoilYaw += gunType.recoilYaw + (new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw) * (recoilYawGripFactor * recoilYawBarrelFactor);

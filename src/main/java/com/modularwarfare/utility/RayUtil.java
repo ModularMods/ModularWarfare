@@ -14,6 +14,7 @@ import com.modularwarfare.common.hitbox.playerdata.PlayerData;
 import com.modularwarfare.common.network.PacketGunTrail;
 import com.modularwarfare.common.network.PacketGunTrailAskServer;
 import com.modularwarfare.common.network.PacketPlaySound;
+import mchhui.modularmovements.coremod.ModularMovementsHooks;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -124,6 +125,13 @@ public class RayUtil {
         Vec3d vec3d = entity.getPositionEyes(partialTicks);
         Vec3d vec3d1 = entity.getLook(partialTicks);
         Vec3d vec3d2 = vec3d.addVector(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+
+        if(Loader.isModLoaded("modularmovements")) {
+            if (entity instanceof EntityPlayer) {
+                vec3d = ModularMovementsHooks.onGetPositionEyes((EntityPlayer) entity, partialTicks);
+            }
+        }
+
         return entity.world.rayTraceBlocks(vec3d, vec3d2, false, true, false);
     }
 
@@ -187,12 +195,12 @@ public class RayUtil {
         }
 
         Vec3d offsetVec = player.getPositionEyes(1.0f);
-
         if(Loader.isModLoaded("modularmovements")) {
             if (player instanceof EntityPlayer) {
-                offsetVec = ClientLitener.onGetPositionEyes((EntityPlayer) player, 1.0f, offsetVec);
+                offsetVec = ModularMovementsHooks.onGetPositionEyes((EntityPlayer) player, 1.0f);
             }
         }
+
         return RayUtil.tracePath(world, (float) offsetVec.x, (float) offsetVec.y, (float) offsetVec.z, (float) (player.posX + dx + player.motionX), (float) (player.posY + dy + player.motionY), (float) (player.posZ + dz + player.motionZ), 0.001f, hashset, false, ping);
     }
 
