@@ -233,6 +233,12 @@
       "modularwarfare:bullet/casings/casing10"
     ]
   },
+  "casing_gauge": {
+  "category": "player",
+  "sounds": [
+    "modularwarfare:bullet/casings/gauge/shell"
+  ]
+  },
   "close": {
     "category": "player",
     "sounds": [

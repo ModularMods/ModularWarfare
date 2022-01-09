@@ -1,0 +1,18 @@
+{
+  "kits": [
+    {
+      "name": "ak",
+      "data": "{items:[{Slot:0b,id:\"modularwarfare:prototype.ak74u\",Count:1b,tag:{punched:0b,attachment_barrel:{id:\"modularwarfare:prototype.ak47_suppressor\",Count:1b,tag:{skinId:0},Damage:0s},ammo:{id:\"modularwarfare:prototype.ak74ufastmag\",Count:1b,tag:{ammocount:30,skinId:0,magcount:2,ammocount2:30,bullet:{id:\"modularwarfare:prototype.7_62x39\",Count:1b,Damage:0s},ammocount1:22},Damage:0s},firemode:\"full\",skinId:0},Damage:0s},{Slot:2b,id:\"modularwarfare:prototype.ak74ufastmag\",Count:3b,tag:{ammocount:30,skinId:0,magcount:1,ammocount2:30,bullet:{id:\"modularwarfare:prototype.7_62x39\",Count:1b,Damage:0s},ammocount1:30},Damage:0s},{Slot:101b,id:\"modularwarfare:prototype.uniform_legs\",Count:1b,tag:{skinId:0},Damage:0s},{Slot:102b,id:\"modularwarfare:prototype.uniform_chest\",Count:1b,tag:{skinId:0},Damage:0s},{Slot:103b,id:\"modularwarfare:prototype.military_cap_tan\",Count:1b,tag:{skinId:0},Damage:0s}]}",
+      "backpack": "{ForgeCaps:{Parent:[{Slot:0,id:\"modularwarfare:prototype.ak74ufastmag\",Count:1b,tag:{ammocount:30,skinId:0,magcount:1,ammocount2:30,bullet:{id:\"modularwarfare:prototype.7_62x39\",Count:1b,Damage:0s},ammocount1:30},Damage:0s},{Slot:1,id:\"modularwarfare:prototype.ak74ufastmag\",Count:1b,tag:{ammocount:30,skinId:0,magcount:1,ammocount2:30,bullet:{id:\"modularwarfare:prototype.7_62x39\",Count:1b,Damage:0s},ammocount1:30},Damage:0s},{Slot:8,id:\"modularwarfare:prototype.uniform_feet\",Count:1b,tag:{skinId:0},Damage:0s},{Slot:15,id:\"modularwarfare:prototype.ak74ufastmag\",Count:2b,tag:{ammocount:30,skinId:0,magcount:1,ammocount2:30,bullet:{id:\"modularwarfare:prototype.7_62x39\",Count:1b,Damage:0s},ammocount1:30},Damage:0s}]},id:\"modularwarfare:prototype.hikingpack\",Count:1b,Damage:0s}",
+      "vest": "{id:\"modularwarfare:prototype.tactical_vest_lv2_black\",Count:1b,Damage:0s}",
+      "force": true
+    },
+    {
+      "name": "sks",
+      "data": "{items:[{Slot:0b,id:\"modularwarfare:prototype.sks\",Count:1b,tag:{punched:0b,firemode:\"semi\",skinId:0},Damage:0s}]}",
+      "backpack": "{id:\"minecraft:air\",Count:1b,Damage:0s}",
+      "vest": "{id:\"minecraft:air\",Count:1b,Damage:0s}",
+      "force": false
+    }
+  ]
+}

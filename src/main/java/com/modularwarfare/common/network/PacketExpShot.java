@@ -44,7 +44,7 @@ public class PacketExpShot extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if(ModConfig.INSTANCE.experimental_hit_reg) {
+                if(ModConfig.INSTANCE.shots.client_sided_hit_registration) {
                     if (entityPlayer.ping > 100 * 20) {
                         entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
                         return;
@@ -60,6 +60,15 @@ public class PacketExpShot extends PacketBase {
 
                                 if (ModularWarfare.gunTypes.get(internalname) != null) {
                                     ItemGun itemGun = ModularWarfare.gunTypes.get(internalname);
+                                    WeaponFireMode fireMode = itemGun.type.getFireMode(entityPlayer.getHeldItemMainhand());
+                                    int shotCount = fireMode == WeaponFireMode.BURST ? entityPlayer.getHeldItemMainhand().getTagCompound().getInteger("shotsremaining") > 0 ? entityPlayer.getHeldItemMainhand().getTagCompound().getInteger("shotsremaining") : itemGun.type.numBurstRounds : 1;
+
+                                    // Burst Stuff
+                                    if (fireMode == WeaponFireMode.BURST) {
+                                        shotCount = shotCount - 1;
+                                        entityPlayer.getHeldItemMainhand().getTagCompound().setInteger("shotsremaining", shotCount);
+                                    }
+
                                     itemGun.consumeShot(entityPlayer.getHeldItemMainhand());
 
                                     // Sound

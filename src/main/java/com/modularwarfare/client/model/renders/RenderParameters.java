@@ -40,6 +40,10 @@ public class RenderParameters {
     public static float playerRecoilYaw;
     public static float prevPitch = 0;
 
+    public static float rate;
+    public static boolean phase;
+
+
     /**
      * The amount of compensation applied to recoil in order to bring it back to normal
      */

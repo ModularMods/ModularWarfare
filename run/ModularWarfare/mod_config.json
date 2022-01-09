@@ -1,33 +1,49 @@
 {
-  "enableHitmarker": true,
-  "enableModifiedInventory": true,
-  "enableDynamicCrosshair": true,
-  "enable3DModelsDrops": true,
-  "disableGunInteraction": true,
-  "experimental_hit_reg": true,
-  "UIshowAmmoCount": true,
-  "dropBulletCasing": true,
-  "despawnTimeShellCasing": 10,
-  "despawnTimeItemsDrops": 120,
-  "canShotBreakGlass": false,
-  "dropExtraSlotsOnDeath": true,
-  "kickIfModifiedContentPack": true,
-  "applyKnockback": false,
-  "enableWalkSounds": true,
-  "walkSoundsVolume": 0.3,
-  "autoExtractContentpack": true,
+  "general": {
+    "customInventory": true,
+    "prototype_pack_extraction": true,
+    "modified_pack_server_kick": true,
+    "drop_extra_slots_on_death": true
+  },
+  "shots": {
+    "client_sided_hit_registration": true,
+    "shot_break_glass": false,
+    "knockback_entity_damage": false
+  },
+  "guns": {
+    "guns_interaction_hand": true
+  },
+  "drops": {
+    "advanced_drops_models": true,
+    "drops_despawn_time": 120,
+    "advanced_drops_models_everything": false
+  },
+  "hud": {
+    "hitmarkers": true,
+    "dynamic_crosshair": true,
+    "ammo_count": true,
+    "snap_fade_hit": true
+  },
+  "walks_sounds": {
+    "walk_sounds": true,
+    "volume": 0.3
+  },
+  "casings_drops": {
+    "drop_bullets_casings": true,
+    "despawn_time": 10
+  },
   "killFeed": {
     "enableKillFeed": true,
     "sendDefaultKillMessage": false,
     "messageDuration": 10,
     "messageList": [
-      "\u0026a{killer} \u00267killed \u0026c{victim}",
+      "\u0026a{killer} \u0026dkilled \u0026c{victim}",
       "\u0026a{killer} \u0026fdestroyed \u0026c{victim}",
-      "\u0026a{killer} \u0026fshoted \u0026c{victim}"
+      "\u0026a{killer} \u0026fshot \u0026c{victim}"
     ]
   },
   "model_optimization": true,
+  "debug_hits_message": false,
   "dev_mode": true,
-  "debug_hits": false,
-  "version": "1.0.19f"
+  "version": "1.0.20f"
 }

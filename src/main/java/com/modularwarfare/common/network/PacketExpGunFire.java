@@ -101,7 +101,7 @@ public class PacketExpGunFire extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if(ModConfig.INSTANCE.experimental_hit_reg) {
+                if(ModConfig.INSTANCE.shots.client_sided_hit_registration) {
                     if (entityPlayer.ping > 100 * 20) {
                         entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
                         return;
@@ -136,7 +136,7 @@ public class PacketExpGunFire extends PacketBase {
                                                         }
                                                     }
                                                 }
-                                                if (!ModConfig.INSTANCE.applyKnockback) {
+                                                if (!ModConfig.INSTANCE.shots.knockback_entity_damage) {
                                                     RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(entityPlayer).setProjectile(), damage);
                                                 } else {
                                                     target.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setProjectile(), damage);
@@ -147,7 +147,9 @@ public class PacketExpGunFire extends PacketBase {
                                                     ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(hitboxType.contains("HEAD")), entityPlayer);
                                                     ModularWarfare.NETWORK.sendTo(new PacketPlaySound(target.getPosition(), "flyby", 1f, 1f), (EntityPlayerMP) target);
 
-                                                    ModularWarfare.NETWORK.sendTo(new PacketPlayerHit(), (EntityPlayerMP) target);
+                                                    if (ModConfig.INSTANCE.hud.snap_fade_hit) {
+                                                        ModularWarfare.NETWORK.sendTo(new PacketPlayerHit(), (EntityPlayerMP) target);
+                                                    }
                                                 }
                                             }
                                         }

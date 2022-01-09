@@ -96,6 +96,12 @@ public enum WeaponSoundType {
     @SerializedName("casing") Casing("casing", 3, "casing"),
 
     /**
+     * The sound of flyby
+     */
+    @SerializedName("casing_gauge") Casing_Gauge("casing_gauge", 3, "casing_gauge"),
+
+
+    /**
      * The sound of spray
      */
     @SerializedName("spray") Spray("spray", 8, "spray"),

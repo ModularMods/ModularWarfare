@@ -7,7 +7,6 @@ import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.event.ForgeEvent;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -52,7 +51,7 @@ public class CommonProxy extends ForgeEvent {
             }
         }
 
-        boolean needPrototypeExtract = ModConfig.INSTANCE.autoExtractContentpack;
+        boolean needPrototypeExtract = ModConfig.INSTANCE.general.prototype_pack_extraction;
         for (File file : modularWarfareDir.listFiles()) {
             if (file.getName().matches("prototype-" + MOD_VERSION + "-contentpack.zip")) {
                 needPrototypeExtract = false;

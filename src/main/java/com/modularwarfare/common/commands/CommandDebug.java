@@ -1,7 +1,6 @@
 package com.modularwarfare.common.commands;
 
 import com.modularwarfare.ModConfig;
-import com.modularwarfare.ModularWarfare;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -24,8 +23,8 @@ public class CommandDebug extends CommandBase {
 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (sender instanceof EntityPlayerMP) {
-            ModConfig.INSTANCE.debug_hits = !ModConfig.INSTANCE.debug_hits;
-            sender.sendMessage(new TextComponentString("[ModularWarfare] Debugs hits set to :"+ModConfig.INSTANCE.debug_hits));
+            ModConfig.INSTANCE.debug_hits_message = !ModConfig.INSTANCE.debug_hits_message;
+            sender.sendMessage(new TextComponentString("[ModularWarfare] Debugs hits set to :"+ModConfig.INSTANCE.debug_hits_message));
         }
     }
 

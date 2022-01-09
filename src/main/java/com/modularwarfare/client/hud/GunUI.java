@@ -65,7 +65,7 @@ public class GunUI {
                         break;
                     case ALL:
                         GlStateManager.pushMatrix();
-                        if (ModConfig.INSTANCE.UIshowAmmoCount) {
+                        if (ModConfig.INSTANCE.hud.ammo_count) {
                             RenderPlayerAmmo(width, height);
                         }
                         RenderHitMarker(Tessellator.getInstance(), width, height);
@@ -133,7 +133,7 @@ public class GunUI {
                         }
 
                         GlStateManager.popMatrix();
-                        if (ModConfig.INSTANCE.enableDynamicCrosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && adsSwitch < 0.6F && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
+                        if (ModConfig.INSTANCE.hud.dynamic_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && adsSwitch < 0.6F && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
                             if(RenderParameters.collideFrontDistance <= 0.2f) {
                                 GlStateManager.pushMatrix();
                                 final float accuracy = RayUtil.calculateAccuracyClient((ItemGun) mc.player.getHeldItemMainhand().getItem(), mc.player);

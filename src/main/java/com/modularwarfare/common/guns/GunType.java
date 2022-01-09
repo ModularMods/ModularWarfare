@@ -167,6 +167,11 @@ public class GunType extends BaseType {
     public transient TextureType flashType;
 
     /**
+     * Extra Lore
+     */
+    public String extraLore;
+
+    /**
      * Shell casing
      */
     public Vec3d shellEjectOffsetNormal = new Vec3d(-1.0f, 0.0f, 1.0f);

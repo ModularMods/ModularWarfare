@@ -2,7 +2,7 @@
   "displayName": "Frag Grenade",
   "internalName": "prototype.frag_grenade",
   "grenadeType": "frag",
-  "fuseTime": 5,
+  "fuseTime": 3,
   "damageWorld": false,
   "explosionPower": 8,
   "throwStrength": 1.0,

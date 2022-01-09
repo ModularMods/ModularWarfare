@@ -30,7 +30,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onGuiLaunch(GuiOpenEvent event) {
-        if (ModConfig.INSTANCE.enableModifiedInventory) {
+        if (ModConfig.INSTANCE.general.customInventory) {
             if (event.getGui() != null && event.getGui().getClass() == GuiInventory.class) {
                 final EntityPlayer player = Minecraft.getMinecraft().player;
                 if (!player.isCreative()) {
@@ -44,8 +44,8 @@ public class ClientEventHandler {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onPlaySound(PlaySoundEvent event) {
-        if (ModConfig.INSTANCE.enableWalkSounds && !Loader.isModLoaded("dsurround")) {
-            float soundVolume = ModConfig.INSTANCE.walkSoundsVolume;
+        if (ModConfig.INSTANCE.walks_sounds.walk_sounds && !Loader.isModLoaded("dsurround")) {
+            float soundVolume = ModConfig.INSTANCE.walks_sounds.volume;
             Minecraft mc = Minecraft.getMinecraft();
             final ResourceLocation currentSound = event.getSound().getSoundLocation();
 

@@ -12,36 +12,72 @@ public class ModConfig {
 
     public transient static ModConfig INSTANCE;
 
-    public boolean enableHitmarker = true;
-    public boolean enableModifiedInventory = true;
-    public boolean enableDynamicCrosshair = true;
-    public boolean enable3DModelsDrops = true;
-    public boolean disableGunInteraction = true;
-    public boolean experimental_hit_reg = true;
+    //general
+    public General general = new General();
+    public static class General {
+        public boolean customInventory = true;
+        public boolean prototype_pack_extraction = true;
+        public boolean modified_pack_server_kick = true;
+        public boolean drop_extra_slots_on_death = true;
+    }
 
-    public boolean UIshowAmmoCount = true;
+    //shots
+    public Shots shots = new Shots();
+    public static class Shots {
+        public boolean client_sided_hit_registration = true;
+        public boolean shot_break_glass = false;
+        public boolean knockback_entity_damage = false;
+    }
 
-    public boolean dropBulletCasing = true;
+    //guns
+    public Guns guns = new Guns();
+    public static class Guns {
+        public boolean guns_interaction_hand = true;
+    }
 
-    public int despawnTimeShellCasing = 10;
-    public int despawnTimeItemsDrops = 120;
+    //drops
+    public Drops drops = new Drops();
+    public static class Drops {
+        public boolean advanced_drops_models = true;
+        public int drops_despawn_time = 120;
+        public boolean advanced_drops_models_everything = false;
+    }
 
-    public boolean canShotBreakGlass = false;
+    //hud ui
+    public Hud hud = new Hud();
+    public static class Hud {
+        public boolean hitmarkers = true;
+        public boolean dynamic_crosshair = true;
+        public boolean ammo_count = true;
+        public boolean snap_fade_hit = true;
+    }
 
-    public boolean dropExtraSlotsOnDeath = true;
-    public boolean kickIfModifiedContentPack = true;
-    public boolean applyKnockback = false;
+    //walk sounds
+    public Walk walks_sounds = new Walk();
+    public static class Walk {
+        public boolean walk_sounds = true;
+        public float volume = 0.3f;
+    }
 
-    public boolean enableWalkSounds = true;
-    public float walkSoundsVolume = 0.3f;
+    //casings
+    public Casings casings_drops = new Casings();
+    public static class Casings {
+        public boolean drop_bullets_casings = true;
+        public int despawn_time = 10;
 
-    public boolean autoExtractContentpack = true;
+    }
 
     public KillFeed killFeed = new KillFeed();
+    public static class KillFeed {
+        public boolean enableKillFeed = true;
+        public boolean sendDefaultKillMessage = false;
+        public int messageDuration = 10;
+        public List<String> messageList = Arrays.asList("&a{killer} &dkilled &c{victim}", "&a{killer} &fdestroyed &c{victim}", "&a{killer} &fshot &c{victim}");
+    }
 
     public boolean model_optimization = true;
+    public boolean debug_hits_message = false;
     public boolean dev_mode = true;
-    public boolean debug_hits = false;
 
     public String version = ModularWarfare.MOD_VERSION;
 
@@ -71,11 +107,5 @@ public class ModConfig {
         }
     }
 
-    public static class KillFeed {
-        public boolean enableKillFeed = true;
-        public boolean sendDefaultKillMessage = false;
-        public int messageDuration = 10;
-        public List<String> messageList = Arrays.asList("&a{killer} &7killed &c{victim}", "&a{killer} &fdestroyed &c{victim}", "&a{killer} &fshoted &c{victim}");
-    }
 
 }

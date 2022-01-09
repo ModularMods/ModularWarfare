@@ -80,7 +80,7 @@ public class EntityItemLoot extends EntityItemNew {
             this.motionX = MathHelper.clamp(this.motionX, -0.05, 0.05);
             this.motionZ = MathHelper.clamp(this.motionZ, -0.05, 0.05);
         }
-        if (this.getCustomAge() >= ModConfig.INSTANCE.despawnTimeItemsDrops * 20) {
+        if (this.getCustomAge() >= ModConfig.INSTANCE.drops.drops_despawn_time * 20) {
             this.setDead();
         }
     }

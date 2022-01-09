@@ -33,7 +33,7 @@ public class EntityShell extends Entity implements IProjectile {
     public EntityShell(World worldIn) {
         super(worldIn);
         this.setSize(0.1F, 0.1F);
-        maxTimeAlive = 20 * ModConfig.INSTANCE.despawnTimeShellCasing;
+        maxTimeAlive = 20 * ModConfig.INSTANCE.casings_drops.despawn_time;
         playedSound = false;
     }
 
@@ -55,7 +55,7 @@ public class EntityShell extends Entity implements IProjectile {
         Vec3d source = new Vec3d(throwerIn.posX + throwerIn.motionX + rotateYaw.x, throwerIn.posY + (double) throwerIn.getEyeHeight() - 0.10000000149011612D + throwerIn.motionY + rotateYaw.y, throwerIn.posZ + throwerIn.motionZ + rotateYaw.z);
         this.setPosition(source.x, source.y, source.z);
         this.setSize(0.25F, 0.25F);
-        maxTimeAlive = 20 * ModConfig.INSTANCE.despawnTimeShellCasing;
+        maxTimeAlive = 20 * ModConfig.INSTANCE.casings_drops.despawn_time;
     }
 
 
@@ -102,8 +102,11 @@ public class EntityShell extends Entity implements IProjectile {
             this.motionZ *= 0.699999988079071D;
             this.motionY *= -0.5D;
             if (!playedSound) {
-                ModularWarfare.NETWORK.sendToAllAround(new PacketPlaySound(this.getPosition(), "casing", 0.8f, 1f), new NetworkRegistry.TargetPoint(dimension, this.posX, this.posY, this.posZ, 3f));
-                playedSound = true;
+                if (ModularWarfare.bulletTypes.containsKey(getBulletName())) {
+                    ItemBullet itemBullet = ModularWarfare.bulletTypes.get(getBulletName());
+                    ModularWarfare.NETWORK.sendToAllAround(new PacketPlaySound(this.getPosition(), itemBullet.type.shellSound, 0.8f, 1f), new NetworkRegistry.TargetPoint(dimension, this.posX, this.posY, this.posZ, 3f));
+                    playedSound = true;
+                }
             }
         }
 

@@ -396,7 +396,6 @@ public class RenderGunStatic extends CustomItemRenderer {
                     GL11.glRotatef(((-anim.lastGunRecoil + (anim.gunRecoil - anim.lastGunRecoil) * smoothing) * randomShake * model.config.extra.modelRecoilShake), 1.0f, 0.0f, 0.0f);
 
                     GL11.glPushMatrix();
-                    GL11.glRotatef(-90, 0, 1, 0);
 
                     /** Flashlight **/
                     if (this.light == null) {
@@ -415,6 +414,8 @@ public class RenderGunStatic extends CustomItemRenderer {
 
                     if (this.isLightOn && GunType.getAttachment(item, AttachmentEnum.Flashlight) != null) {
                         final float alpha = 0.25f + this.slowDiff * 0.05f;
+                        GlStateManager.rotate(-90, 0,1,0);
+
                         GL11.glDisable(2896);
                         Minecraft.getMinecraft().entityRenderer.disableLightmap();
                         GL11.glDisable(3042);
@@ -495,12 +496,14 @@ public class RenderGunStatic extends CustomItemRenderer {
 
                 model.renderPart("gunModel", worldScale);
 
-
                 //Render any attachments
                 if (GunType.getAttachment(item, AttachmentEnum.Sight) == null && !model.config.attachments.scopeIsOnSlide)
                     model.renderPart("defaultScopeModel", worldScale);
 
-                model.renderPart("defaultBarrelModel", worldScale);
+                //Render any attachments
+                if (GunType.getAttachment(item, AttachmentEnum.Barrel) == null)
+                    model.renderPart("defaultBarrelModel", worldScale);
+
                 model.renderPart("defaultStockModel", worldScale);
                 model.renderPart("defaultGripModel", worldScale);
                 model.renderPart("defaultGadgetModel", worldScale);
@@ -917,15 +920,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                     GlStateManager.popMatrix();
                 }
 
-                // Render moving arm
-                if (!ModularWarfare.DEV_ENV && model.hasArms() && renderType == CustomItemRenderType.EQUIPPED_FIRST_PERSON) {
-                    GL11.glPushMatrix();
-                    {
-                        //GL11.glTranslatef(-model.config.extra.translateAll.x * worldScale, model.config.extra.translateAll.y * worldScale, model.config.extra.translateAll.z * worldScale);
-                        renderMovingArm(mc.player, model, anim, currentReloadState);
-                    }
-                    GL11.glPopMatrix();
-                } else if (renderType == CustomItemRenderType.EQUIPPED_FIRST_PERSON && model.hasArms()) {
+                if (renderType == CustomItemRenderType.EQUIPPED_FIRST_PERSON && model.hasArms()) {
                     renderMovingArm(mc.player, model, anim, currentReloadState);
                 }
 

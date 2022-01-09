@@ -1,6 +1,5 @@
 package com.modularwarfare.client;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.modularwarfare.ModConfig;
@@ -52,8 +51,8 @@ import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWResourcePack;
 import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.ModUtil;
+import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.particle.Particle;
@@ -80,13 +79,10 @@ import net.minecraftforge.fml.common.discovery.ModCandidate;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.relauncher.CoreModManager;
-import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistry;
 import paulscode.sound.SoundSystemConfig;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.charset.Charset;
@@ -95,7 +91,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.modularwarfare.ModularWarfare.MOD_VERSION;
 import static com.modularwarfare.ModularWarfare.contentPacks;
 
 public class ClientProxy extends CommonProxy {
@@ -817,6 +812,10 @@ public class ClientProxy extends CommonProxy {
         if (gunType != null) {
             ClientRenderHooks.getAnimMachine(player).triggerShoot((ModelGun) gunType.model, gunType, fireTickDelay);
 
+            RenderParameters.rate = Math.min(RenderParameters.rate + 0.07f, 1f);
+
+            ModularWarfare.LOGGER.info(RenderParameters.rate);
+
             float recoilPitchGripFactor = 1.0f;
             float recoilYawGripFactor = 1.0f;
 
@@ -835,15 +834,22 @@ public class ClientProxy extends CommonProxy {
                 recoilYawBarrelFactor = barrelAttachment.type.barrel.recoilYawFactor;
             }
 
-            if (! (ClientRenderHooks.isAiming || ClientRenderHooks.isAimingScope)) {
-                RenderParameters.playerRecoilPitch += (gunType.recoilPitch + (new Random().nextFloat() * (gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch)) * (recoilPitchGripFactor * recoilPitchBarrelFactor);
-
-                RenderParameters.playerRecoilYaw += gunType.recoilYaw + (new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw) * (recoilYawGripFactor * recoilYawBarrelFactor);
-            } else {
-                RenderParameters.playerRecoilPitch += ((gunType.recoilPitch + (new Random().nextFloat() * (gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch)) * gunType.recoilAimReducer) * (recoilPitchGripFactor * recoilPitchBarrelFactor);
-
-                RenderParameters.playerRecoilYaw += ((gunType.recoilYaw + (new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw)) * gunType.recoilAimReducer) * (recoilYawGripFactor * recoilYawBarrelFactor);
+            boolean isCrawling = false;
+            if(Loader.isModLoaded("modularmovements")){
+                if(ClientLitener.clientPlayerState.isCrawling){
+                    isCrawling = true;
+                }
             }
+            if (!(ClientRenderHooks.isAiming || ClientRenderHooks.isAimingScope)) {
+                RenderParameters.playerRecoilPitch += (gunType.recoilPitch + (1.0f * (gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch)) * (recoilPitchGripFactor * recoilPitchBarrelFactor);
+
+                RenderParameters.playerRecoilYaw += RenderParameters.rate * (isCrawling ? 0.2f : 1.0f) * (RenderParameters.phase ? 1 : -1 * gunType.recoilYaw + (new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw)) * (recoilYawGripFactor * recoilYawBarrelFactor);
+            } else {
+                RenderParameters.playerRecoilPitch += ((gunType.recoilPitch + (1.0f * (gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch)) * gunType.recoilAimReducer) * (recoilPitchGripFactor * recoilPitchBarrelFactor);
+
+                RenderParameters.playerRecoilYaw += RenderParameters.rate * (isCrawling ? 0.2f : 1.0f) * ((RenderParameters.phase ? 1 : -1 * gunType.recoilYaw + (new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw)) * gunType.recoilAimReducer) * (recoilYawGripFactor * recoilYawBarrelFactor);
+            }
+            RenderParameters.phase = !RenderParameters.phase;
         }
     }
 
@@ -877,7 +883,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void playHitmarker(boolean headshot) {
-        if (ModConfig.INSTANCE.enableHitmarker) {
+        if (ModConfig.INSTANCE.hud.hitmarkers) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getRecord(ClientProxy.modSounds.get("hitmarker"), 1f, 4f));
             ClientProxy.gunUI.addHitMarker(headshot);
         }

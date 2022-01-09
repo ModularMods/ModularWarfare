@@ -3,7 +3,7 @@
     "displayName": "SKS",
     "weaponType": "dmr",
     "gunDamage": 10,
-    "customFlashTexture": "prototype.flash",
+    "customFlashTexture": "prototype.advanced.flash",
     "moveSpeedModifier": 1,
     "roundsPerMin": 300,
     "reloadTime": 40,
@@ -16,7 +16,7 @@
     "allowSprintFiring": true,
     "recoilPitch": 1.5,
     "recoilYaw": 0.5,
-    "randomRecoilPitch": 0.8,
+    "randomRecoilPitch": 0.0,
     "randomRecoilYaw": 0.8,
     "acceptedAttachments": {
         "barrel": [

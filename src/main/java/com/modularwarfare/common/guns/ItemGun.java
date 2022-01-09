@@ -239,6 +239,7 @@ public class ItemGun extends BaseItem {
                 NBTTagCompound tagCompound = heldStack.getTagCompound();
                 boolean canFire = true;
                 if (tagCompound.hasKey("shotsremaining") && tagCompound.getInteger("shotsremaining") > 0) {
+                    ModularWarfare.LOGGER.info("burst");
                     ShotManager.fireClient(entityPlayer, world, heldStack, itemGun, gunType.getFireMode(heldStack));
                     canFire = false;
                 } else if (fireButtonHeld & !lastFireButtonHeld && Minecraft.getMinecraft().inGameHasFocus && canFire) {
@@ -494,6 +495,11 @@ public class ItemGun extends BaseItem {
                         }
                     }
                 }
+            }
+
+            if(gunType.extraLore != null) {
+                tooltip.add("" + TextFormatting.BLUE.toString() + "Lore:");
+                tooltip.add(gunType.extraLore);
             }
         } else {
             tooltip.add("\u00a7e" + "[Shift]");

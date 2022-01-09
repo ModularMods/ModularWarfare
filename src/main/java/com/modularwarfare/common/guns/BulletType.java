@@ -27,6 +27,8 @@ public class BulletType extends BaseType {
     public String shellModelFileName = defaultModel;
     public transient MWModelBase shell;
 
+    public String shellSound = "casing";
+
     @Override
     public void loadExtraValues() {
         if (maxStackSize == null)

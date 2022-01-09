@@ -34,7 +34,7 @@ public class ObjModel extends AbstractObjModel {
 
     public ObjModelRenderer getPart(String name) {
         for (ObjModelRenderer part : parts) {
-            if (name.equalsIgnoreCase(part.getName())) {
+            if (name.contains(part.getName())) {
                 return part;
             }
         }
@@ -92,7 +92,7 @@ public class ObjModel extends AbstractObjModel {
         checkForNoDuplications();
         for (ObjModelRenderer part : parts) {
             for (String groupName : groupNames) {
-                if (groupName.equalsIgnoreCase(part.getName())) {
+                if (groupName.contains(part.getName())) {
                     part.render(scale);
                 }
             }
@@ -117,7 +117,7 @@ public class ObjModel extends AbstractObjModel {
     public void renderPart(float scale, String partName) {
         checkForNoDuplications();
         for (ObjModelRenderer part : parts) {
-            if (partName.equalsIgnoreCase(part.getName())) {
+            if (partName.contains(part.getName())) {
                 part.render(scale);
             }
         }

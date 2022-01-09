@@ -4,6 +4,7 @@
   "displayName": "12 Slug Gauge Shot",
   "renderBulletModel": true,
 
+  "shellSound": "casing_gauge",
   "shellModelFileName": "12sluggauge.obj",
 
   "bulletAccuracyFactor": 0.2,

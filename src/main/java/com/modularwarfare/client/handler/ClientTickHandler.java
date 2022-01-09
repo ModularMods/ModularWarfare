@@ -285,10 +285,13 @@ public class ClientTickHandler extends ForgeEvent {
         antiRecoilPitch += playerRecoilPitch;
         antiRecoilYaw += playerRecoilYaw;
 
-        player.rotationPitch += antiRecoilPitch * 0.2F;
-        player.rotationYaw += antiRecoilYaw * 0.2F;
-        antiRecoilPitch *= 0.8F;
-        antiRecoilYaw *= 0.8F;
+        player.rotationPitch += antiRecoilPitch * 0.25F;
+        player.rotationYaw += antiRecoilYaw * 0.25F;
+        antiRecoilPitch *= 0.75F;
+        antiRecoilYaw *= 0.75F;
+
+        if(!ItemGun.fireButtonHeld)
+        RenderParameters.rate = Math.max(RenderParameters.rate - 0.05f , 0f);
 
         for (AnimStateMachine stateMachine : ClientRenderHooks.weaponAnimations.values()) {
             stateMachine.onTickUpdate();

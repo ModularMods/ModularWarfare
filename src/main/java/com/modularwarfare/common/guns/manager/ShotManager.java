@@ -97,7 +97,7 @@ public class ShotManager {
         ClientTickHandler.playerShootCooldown.put(entityPlayer.getUniqueID(), gunType.fireTickDelay);
 
 
-        if (ModConfig.INSTANCE.dropBulletCasing) {
+        if (ModConfig.INSTANCE.casings_drops.drop_bullets_casings) {
             /**
              * Drop casing
              */
@@ -120,7 +120,7 @@ public class ShotManager {
         /**
          * Hit Register
          */
-        if (!ModConfig.INSTANCE.experimental_hit_reg) {
+        if (!ModConfig.INSTANCE.shots.client_sided_hit_registration) {
             ModularWarfare.NETWORK.sendToServer(new PacketGunFire(gunType.internalName, gunType.fireTickDelay, gunType.recoilPitch, gunType.recoilYaw, gunType.recoilAimReducer, gunType.bulletSpread, entityPlayer.rotationPitch, entityPlayer.rotationYaw));
         } else {
             fireClientSide(entityPlayer, itemGun);
@@ -187,8 +187,9 @@ public class ShotManager {
                                 if (entityPlayer instanceof EntityPlayerMP) {
                                     ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(headshot), (EntityPlayerMP) entityPlayer);
                                     ModularWarfare.NETWORK.sendTo(new PacketPlaySound(victim.getPosition(), "flyby", 1f, 1f), (EntityPlayerMP) victim);
-
-                                    ModularWarfare.NETWORK.sendTo(new PacketPlayerHit(), (EntityPlayerMP) victim);
+                                    if (ModConfig.INSTANCE.hud.snap_fade_hit) {
+                                        ModularWarfare.NETWORK.sendTo(new PacketPlayerHit(), (EntityPlayerMP) victim);
+                                    }
                                 }
                             }
                         }
@@ -275,7 +276,7 @@ public class ShotManager {
                                 }
                             }
 
-                            if (!ModConfig.INSTANCE.applyKnockback) {
+                            if (!ModConfig.INSTANCE.shots.knockback_entity_damage) {
                                 RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(preFireEvent.getWeaponUser()).setProjectile(), preHitEvent.getDamage());
                             } else {
                                 target.attackEntityFrom(DamageSource.causePlayerDamage(preFireEvent.getWeaponUser()).setProjectile(), preHitEvent.getDamage());
@@ -307,7 +308,7 @@ public class ShotManager {
             }
             ServerTickHandler.playerAimShootCooldown.put(entityPlayer.getName(), 60);
         } else {
-            if (ModConfig.INSTANCE.kickIfModifiedContentPack) {
+            if (ModConfig.INSTANCE.general.modified_pack_server_kick) {
                 ((EntityPlayerMP) entityPlayer).connection.disconnect(new TextComponentString("[ModularWarfare] Kicked for client-side modified content-pack. (Bad RPM/Recoil for the gun: " + itemGun.type.internalName + ") [RPM should be: " + itemGun.type.roundsPerMin + "]"));
             }
         }

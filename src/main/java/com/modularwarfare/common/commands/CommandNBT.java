@@ -1,12 +1,15 @@
 package com.modularwarfare.common.commands;
 
-import com.modularwarfare.ModularWarfare;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 
 public class CommandNBT extends CommandBase {
     public int getRequiredPermissionLevel() {
@@ -26,9 +29,13 @@ public class CommandNBT extends CommandBase {
             if (args.length != 1) {
                 if (sender instanceof EntityPlayerMP) {
                     EntityPlayerMP localPlayer = (EntityPlayerMP) sender;
-
-                    localPlayer.sendMessage(new TextComponentString("NBT Info -> "+localPlayer.getHeldItemMainhand().getTagCompound().toString()));
-                    ModularWarfare.LOGGER.info("[ModularWarfare] NBT Info -> "+localPlayer.getHeldItemMainhand().getTagCompound().toString());
+                    localPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY+"["+TextFormatting.RED+"ModularWarfare"+TextFormatting.GRAY+"] Item NBT copied to clipboard !"));
+                    Toolkit.getDefaultToolkit()
+                            .getSystemClipboard()
+                            .setContents(
+                                    new StringSelection(localPlayer.getHeldItemMainhand().serializeNBT().toString()),
+                                    null
+                            );
                 }
             }
 

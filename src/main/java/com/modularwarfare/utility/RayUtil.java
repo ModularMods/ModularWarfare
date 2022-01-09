@@ -15,7 +15,6 @@ import com.modularwarfare.common.network.PacketGunTrail;
 import com.modularwarfare.common.network.PacketGunTrailAskServer;
 import com.modularwarfare.common.network.PacketPlaySound;
 import mchhui.modularmovements.coremod.ModularMovementsHooks;
-import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -272,7 +271,7 @@ public class RayUtil {
                         if (intercept != null) {
                             intercept.entityHit = hitbox.player;
 
-                            if(ModConfig.INSTANCE.debug_hits) {
+                            if(ModConfig.INSTANCE.debug_hits_message) {
                                 long currentTime = System.nanoTime();
                                 ModularWarfare.LOGGER.info("Shooter's ping: " + ping / 20 + "ms | " + ping + "ticks");
                                 ModularWarfare.LOGGER.info("Took the snapshot " + snapshotToTry + " Part: " + hitbox.type.toString());
@@ -454,7 +453,7 @@ public class RayUtil {
                     IBlockState iblockstate1 = world.getBlockState(blockpos);
                     Block block1 = iblockstate1.getBlock();
 
-                    if (ModConfig.INSTANCE.canShotBreakGlass) {
+                    if (ModConfig.INSTANCE.shots.shot_break_glass) {
                         if (block1 instanceof BlockGlass || block1 instanceof BlockStainedGlassPane || block1 instanceof BlockStainedGlass) {
                             world.setBlockToAir(blockpos);
                             ModularWarfare.NETWORK.sendToAllAround(new PacketPlaySound(blockpos, "impact.glass", 1f, 1f), new NetworkRegistry.TargetPoint(0, blockpos.getX(), blockpos.getY(), blockpos.getZ(), 25));

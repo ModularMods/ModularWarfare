@@ -5,7 +5,7 @@
     "roundsPerMin": 350,
     "allowEmptyMagazines": true,
     "weaponType": "pistol",
-    "customFlashTexture": "prototype.flash",
+    "customFlashTexture": "prototype.advanced.flash",
     "acceptedAmmo": [
         "prototype.p88ammo"
     ],
@@ -14,7 +14,7 @@
     ],
     "recoilPitch": 0.2,
     "recoilYaw": 0.2,
-    "randomRecoilPitch": 0.1,
+    "randomRecoilPitch": 0.0,
     "randomRecoilYaw": 0.5,
     "armPose": "ITEM",
     "armPoseAiming": "BOW_AND_ARROW",

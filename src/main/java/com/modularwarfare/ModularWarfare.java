@@ -10,6 +10,7 @@ import com.modularwarfare.common.armor.ItemSpecialArmor;
 import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.commands.CommandClear;
 import com.modularwarfare.common.commands.CommandDebug;
+import com.modularwarfare.common.commands.kits.CommandKit;
 import com.modularwarfare.common.commands.CommandNBT;
 import com.modularwarfare.common.entity.EntityBullet;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
@@ -39,6 +40,7 @@ import net.lingala.zip4j.io.ZipInputStream;
 import net.lingala.zip4j.model.FileHeader;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -72,7 +74,9 @@ public class ModularWarfare {
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
-    public static final String MOD_VERSION = "1.0.19f";
+    public static final String MOD_VERSION = "1.0.20f";
+    public static final String MOD_PREFIX = TextFormatting.GRAY+"["+TextFormatting.RED+"ModularWarfare"+TextFormatting.GRAY+"]"+TextFormatting.GRAY;
+
     // Main instance
     @Instance(ModularWarfare.MOD_ID)
     public static ModularWarfare INSTANCE;
@@ -366,7 +370,7 @@ public class ModularWarfare {
         event.registerServerCommand(new CommandClear());
         event.registerServerCommand(new CommandNBT());
         event.registerServerCommand(new CommandDebug());
-
+        event.registerServerCommand(new CommandKit());
     }
 
     /**

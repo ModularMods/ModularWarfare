@@ -2,7 +2,7 @@
     "internalName": "prototype.uzi",
     "displayName": "Mini-Uzi",
     "weaponType": "smg",
-    "customFlashTexture": "prototype.flash",
+    "customFlashTexture": "prototype.advanced.flash",
     "gunDamage": 8,
     "gunDamageHeadshotBonus": 2,
     "roundsPerMin": 575,

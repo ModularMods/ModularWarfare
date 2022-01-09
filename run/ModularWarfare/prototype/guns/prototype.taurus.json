@@ -5,7 +5,7 @@
     "roundsPerMin": 350,
     "allowEmptyMagazines": true,
     "weaponType": "revolver",
-    "customFlashTexture": "prototype.flash",
+    "customFlashTexture": "prototype.advanced.flash",
     "fireModes": [
         "semi"
     ],
@@ -17,8 +17,8 @@
     "bulletSpread": 0,
     "recoilPitch": 1.5,
     "recoilYaw": 0.5,
-    "randomRecoilPitch": 1,
-    "randomRecoilYaw": 2,
+    "randomRecoilPitch": 0.75,
+    "randomRecoilYaw": 1.0,
     "armPose": "ITEM",
     "armPoseAiming": "BOW_AND_ARROW",
     "accuracySneakFactor": 0.75,

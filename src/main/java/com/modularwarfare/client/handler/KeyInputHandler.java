@@ -5,7 +5,6 @@ import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.anim.AnimStateMachine;
-import com.modularwarfare.client.gui.customization.GuiMainScreen;
 import com.modularwarfare.client.input.KeyEntry;
 import com.modularwarfare.client.input.KeyType;
 import com.modularwarfare.client.model.renders.RenderGunStatic;
@@ -40,7 +39,7 @@ public class KeyInputHandler extends ForgeEvent {
         keyBinds.add(new KeyEntry(KeyType.AddAttachment));
         keyBinds.add(new KeyEntry(KeyType.Flashlight));
 
-        if (!ModConfig.INSTANCE.enableModifiedInventory) {
+        if (!ModConfig.INSTANCE.general.customInventory) {
             keyBinds.add(new KeyEntry(KeyType.Backpack));
         }
 
@@ -161,7 +160,7 @@ public class KeyInputHandler extends ForgeEvent {
                     }
                     break;
                 case Backpack:
-                    if (!ModConfig.INSTANCE.enableModifiedInventory) {
+                    if (!ModConfig.INSTANCE.general.customInventory) {
                         if (!entityPlayer.isCreative()) {
                             ModularWarfare.NETWORK.sendToServer(new PacketOpenGui(0));
                         }

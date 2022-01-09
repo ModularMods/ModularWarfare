@@ -19,7 +19,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -80,7 +79,7 @@ public class CapabilityExtra {
         if(event.getEntity() instanceof EntityPlayer) {
             final EntityPlayer player = (EntityPlayer) event.getEntity();
             final World world = player.world;
-            if (world.isRemote || world.getGameRules().getBoolean("keepInventory") || !ModConfig.INSTANCE.dropExtraSlotsOnDeath) {
+            if (world.isRemote || world.getGameRules().getBoolean("keepInventory") || !ModConfig.INSTANCE.general.drop_extra_slots_on_death) {
                 return;
             }
 

@@ -7,7 +7,6 @@ import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.network.PacketClientKillFeedEntry;
 import com.modularwarfare.common.network.PacketExplosion;
 import com.modularwarfare.common.type.BaseItem;
-import com.modularwarfare.utility.ModularDamageSource;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -16,10 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -94,7 +91,7 @@ public class CommonEventHandler {
 
     @SubscribeEvent
     public void onEntityInteractBlock(final PlayerInteractEvent.RightClickBlock event) {
-        if (ModConfig.INSTANCE.disableGunInteraction) {
+        if (ModConfig.INSTANCE.guns.guns_interaction_hand) {
             if (event.getWorld().isRemote) {
                 if (Minecraft.getMinecraft().player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null) {
                     if (Minecraft.getMinecraft().player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
@@ -136,11 +133,11 @@ public class CommonEventHandler {
         if (event.getWorld().isRemote) {
             return;
         }
-        if (ModConfig.INSTANCE.enable3DModelsDrops) {
+        if (ModConfig.INSTANCE.drops.advanced_drops_models) {
             if (event.getEntity().getClass() == EntityItem.class) {
                 final EntityItem item = (EntityItem) event.getEntity();
                 if (!item.getItem().isEmpty()) {
-                    if (item.getItem().getItem() instanceof BaseItem) {
+                    if (item.getItem().getItem() instanceof BaseItem || ModConfig.INSTANCE.drops.advanced_drops_models_everything) {
                         final EntityItemLoot loot = new EntityItemLoot((EntityItem) event.getEntity());
                         event.getEntity().setDead();
                         loot.setInfinitePickupDelay();
