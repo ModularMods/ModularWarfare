@@ -803,7 +803,6 @@ public class RenderGunStatic extends CustomItemRenderer {
                                         String pathAmmo = skinIdAmmo > 0 ? ammoType.modelSkins[skinIdAmmo].getSkin() : ammoType.modelSkins[0].getSkin();
                                         bindTexture("ammo", pathAmmo);
                                     }
-
                                     modelAmmo.renderAmmo(worldScale);
                                 }
                             } else {
@@ -841,12 +840,15 @@ public class RenderGunStatic extends CustomItemRenderer {
                             bindTexture("bullets", itemBullet.type.modelSkins[0].getSkin());
 
                             if (currentReloadState.isPresent() && currentReloadState.get().stateType == StateType.Tilt) {
+                                GL11.glRotatef(-90, 1F, 0F, 0F);
                                 bulletModel.renderAll(worldScale);
                             } else {
                                 if (model.config.revolverBarrel.numberBullets != null) {
                                     bulletModel.renderBullet(anim.bulletsToRender, worldScale);
                                 }
                             }
+
+
                             GlStateManager.popMatrix();
                         }
 

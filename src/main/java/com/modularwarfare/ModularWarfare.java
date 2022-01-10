@@ -38,7 +38,9 @@ import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.io.ZipInputStream;
 import net.lingala.zip4j.model.FileHeader;
+import net.minecraft.command.EntitySelector;
 import net.minecraft.item.Item;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
@@ -70,11 +72,11 @@ import static com.modularwarfare.common.CommonProxy.zipJar;
 
 @Mod(modid = ModularWarfare.MOD_ID, name = ModularWarfare.MOD_NAME, version = ModularWarfare.MOD_VERSION)
 public class ModularWarfare {
-
+    EntitySelector
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
-    public static final String MOD_VERSION = "1.0.20f";
+    public static final String MOD_VERSION = "1.1.1f";
     public static final String MOD_PREFIX = TextFormatting.GRAY+"["+TextFormatting.RED+"ModularWarfare"+TextFormatting.GRAY+"]"+TextFormatting.GRAY;
 
     // Main instance

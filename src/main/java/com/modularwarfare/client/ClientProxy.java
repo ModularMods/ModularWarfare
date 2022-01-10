@@ -814,8 +814,6 @@ public class ClientProxy extends CommonProxy {
 
             RenderParameters.rate = Math.min(RenderParameters.rate + 0.07f, 1f);
 
-            ModularWarfare.LOGGER.info(RenderParameters.rate);
-
             float recoilPitchGripFactor = 1.0f;
             float recoilYawGripFactor = 1.0f;
 

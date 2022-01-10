@@ -515,11 +515,6 @@ public class PacketGunReload extends PacketBase {
         NBTTagCompound nbtTagCompound = targetStack.getTagCompound();
         //boolean isAmmo = targetStack.getItem() instanceof ItemAmmo;
 
-        if(targetStack.getCount() >= 0){
-            entityPlayer.sendMessage(new TextComponentString("You can only load bullets on a single magazine."));
-            return null;
-        }
-
         if (nbtTagCompound.hasKey("bullet")) {
             ItemStack returningBullet = new ItemStack(nbtTagCompound.getCompoundTag("bullet"));
             int bulletsToUnload = 0;

@@ -9,6 +9,7 @@ import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
@@ -57,7 +58,7 @@ public class CommandKit extends CommandBase {
                 if(args.length == 2 && sender instanceof EntityPlayerMP){
                     player = (EntityPlayerMP) sender;
                 } else {
-                    player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(args[2]);
+                    player = getPlayer(server, sender, args[2]);
                 }
                 if (sender != null) {
                     try {
@@ -97,9 +98,9 @@ public class CommandKit extends CommandBase {
                                         }
                                     }
                                 }
-                                sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " The player " + TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " has received the kit "+ TextFormatting.YELLOW + name + TextFormatting.GRAY+"."));
+                                sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " " +TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " has received the kit "+ TextFormatting.YELLOW + name + TextFormatting.GRAY+"."));
                             } else {
-                                sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " The player " + TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " is not online."));
+                                sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " " + TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " is not online."));
                             }
                         } else {
                             sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " The kit " + TextFormatting.YELLOW + name + TextFormatting.GRAY + " doest not exist."));
@@ -109,7 +110,7 @@ public class CommandKit extends CommandBase {
                     }
 
                 } else {
-                    sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " The player " + TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " is not connected."));
+                    sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " " + TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " is not connected."));
                 }
             } else if (args[0].equalsIgnoreCase("save") && args.length == 2) {
                 if (sender instanceof EntityPlayerMP) {
