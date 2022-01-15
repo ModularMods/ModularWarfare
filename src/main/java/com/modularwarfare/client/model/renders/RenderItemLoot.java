@@ -113,6 +113,12 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
             float worldScale = 1F / 16F;
             if (model != null) {
                 int skinId = 0;
+                if (itemstack.hasTagCompound()) {
+                    if (itemstack.getTagCompound().hasKey("skinId")) {
+                        skinId = itemstack.getTagCompound().getInteger("skinId");
+                    }
+                }
+
                 String path = skinId > 0 ? gunType.modelSkins[skinId].getSkin() : gunType.modelSkins[0].getSkin();
                 ClientRenderHooks.customRenderers[1].bindTexture("guns", path);
                 model.renderPart("gunModel", worldScale);
