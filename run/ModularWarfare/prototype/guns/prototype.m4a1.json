@@ -79,12 +79,14 @@
         {
             "internalName": "prototype.m4a1",
             "skinAsset": "prototype.m4a1",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         },
         {
             "internalName": "prototype.m4a1.blood",
             "skinAsset": "prototype.m4a1.blood",
-            "displayName": "Blood"
+            "displayName": "Blood",
+            "textures": ["basic"]
         }
     ]
 }

@@ -73,7 +73,8 @@
         {
             "internalName": "prototype.mp5",
             "skinAsset": "prototype.mp5",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }

@@ -64,7 +64,8 @@
         {
             "internalName": "prototype.m14",
             "skinAsset": "prototype.m14",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }

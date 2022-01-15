@@ -58,6 +58,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -81,10 +82,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.lwjgl.opengl.GL11;
 import paulscode.sound.SoundSystemConfig;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -275,6 +278,28 @@ public class ClientProxy extends CommonProxy {
         if(ModUtil.isMac()){
             ModConfig.INSTANCE.model_optimization = false;
         }
+
+        ModularWarfare.LOGGER.info("Preloading textures");
+        long time = System.currentTimeMillis();
+        preloadSkinTypes.forEach((skin, type) -> {
+            ModularWarfare.LOGGER.info("Loading texture for "+type.internalName);
+
+            for (int i = 0; i < skin.textures.length; i++) {
+                ResourceLocation resource = new ResourceLocation(ModularWarfare.MOD_ID,
+                        String.format(skin.textures[i].format, type.getAssetDir(), skin.getSkin()));
+
+                Minecraft.getMinecraft().getTextureManager().loadTexture(resource, new SimpleTexture(resource));
+                ModularWarfare.LOGGER.info(resource);
+            }
+            if (skin.sampling.equals(SkinType.Sampling.LINEAR)) {
+                ResourceLocation resource = new ResourceLocation(ModularWarfare.MOD_ID,
+                        String.format(skin.textures[0].format, type.getAssetDir(), skin.getSkin()));
+                Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+            }
+        });
+        ModularWarfare.LOGGER.info("All textures are ready(" + (System.currentTimeMillis() - time) + "ms)");
     }
 
     @SubscribeEvent

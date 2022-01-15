@@ -29,6 +29,7 @@ import com.modularwarfare.common.hitbox.playerdata.PlayerDataHandler;
 import com.modularwarfare.common.network.NetworkHandler;
 import com.modularwarfare.common.protector.ModularProtector;
 import com.modularwarfare.common.textures.TextureType;
+import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
@@ -72,7 +73,7 @@ import static com.modularwarfare.common.CommonProxy.zipJar;
 
 @Mod(modid = ModularWarfare.MOD_ID, name = ModularWarfare.MOD_NAME, version = ModularWarfare.MOD_VERSION)
 public class ModularWarfare {
-    EntitySelector
+
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
@@ -450,6 +451,21 @@ public class ModularWarfare {
                     tabOrder.add(itemGrenade);
                 }
             }
+
+            tabOrder.forEach((item)->{
+                if(item instanceof ItemGun){
+                    for(SkinType skin: ((ItemGun) item).type.modelSkins) {
+                        PROXY.preloadSkinTypes.put(skin, ((ItemGun) item).type);
+                    }
+                }
+                if(item instanceof ItemMWArmor) {
+                    for(SkinType skin: ((ItemMWArmor) item).type.modelSkins) {
+                        PROXY.preloadSkinTypes.put(skin, ((ItemMWArmor) item).type);
+                    }
+                }
+
+            });
+
             MODS_TABS.get(file.getName()).preInitialize(tabOrder);
         }
 

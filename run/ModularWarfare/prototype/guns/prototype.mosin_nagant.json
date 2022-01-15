@@ -77,7 +77,8 @@
     {
       "internalName": "prototype.mosin_nagant",
       "skinAsset": "prototype.mosin_nagant",
-      "displayName": "Default"
+      "displayName": "Default",
+      "textures": ["basic"]
     }
   ]
 }

@@ -70,12 +70,14 @@
         {
             "internalName":"prototype.ak47",
             "skinAsset":"prototype.ak47",
-            "displayName":"Default"
+            "displayName":"Default",
+            "textures": ["basic"]
         },
         {
             "internalName":"prototype.ak47.urban",
             "skinAsset":"prototype.ak47.urban",
-            "displayName":"Urban"
+            "displayName":"Urban",
+            "textures": ["basic"]
         }
     ]
 }

@@ -76,7 +76,8 @@
         {
             "internalName": "prototype.ak74u",
             "skinAsset": "prototype.ak74u",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }

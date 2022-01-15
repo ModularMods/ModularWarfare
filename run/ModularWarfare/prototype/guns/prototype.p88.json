@@ -68,5 +68,13 @@
         "barrel": [
             "prototype.pistol_suppressor"
         ]
-    }
+    },
+    "modelSkins": [
+        {
+            "internalName": "prototype.p88",
+            "skinAsset": "prototype.p88",
+            "displayName": "Default",
+            "textures": ["basic"]
+        }
+    ]
 }

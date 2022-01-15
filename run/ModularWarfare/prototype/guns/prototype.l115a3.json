@@ -79,7 +79,8 @@
     {
       "internalName": "prototype.l115a3",
       "skinAsset": "prototype.l115a3",
-      "displayName": "Default"
+      "displayName": "Default",
+      "textures": ["basic"]
     }
   ]
 }

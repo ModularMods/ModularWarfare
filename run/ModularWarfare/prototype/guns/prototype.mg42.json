@@ -64,7 +64,8 @@
         {
             "internalName": "prototype.mg42",
             "skinAsset": "prototype.mg42",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }

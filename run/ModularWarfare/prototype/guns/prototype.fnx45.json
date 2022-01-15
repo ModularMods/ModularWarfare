@@ -65,7 +65,8 @@
         {
             "internalName": "prototype.fnx45",
             "skinAsset": "prototype.fnx45",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }

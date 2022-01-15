@@ -56,7 +56,8 @@
         {
             "internalName": "prototype.vz68",
             "skinAsset": "prototype.vz68",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }

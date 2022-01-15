@@ -77,12 +77,14 @@
         {
             "internalName": "prototype.spas12",
             "skinAsset": "prototype.spas12",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         },
         {
             "internalName": "prototype.spas12.urban",
             "skinAsset": "prototype.spas12.urban",
-            "displayName": "Urban"
+            "displayName": "Urban",
+            "textures": ["basic"]
         }
     ]
 }

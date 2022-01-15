@@ -79,7 +79,8 @@
         {
             "internalName": "prototype.hk416",
             "skinAsset": "prototype.hk416",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }

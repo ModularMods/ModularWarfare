@@ -64,7 +64,8 @@
         {
             "internalName": "prototype.mp40",
             "skinAsset": "prototype.mp40",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }

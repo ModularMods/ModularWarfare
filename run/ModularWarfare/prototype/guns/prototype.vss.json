@@ -59,7 +59,8 @@
         {
             "internalName": "prototype.vss",
             "skinAsset": "prototype.vss",
-            "displayName": "Default"
+            "displayName": "Default",
+            "textures": ["basic"]
         }
     ]
 }
