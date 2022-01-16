@@ -3,6 +3,7 @@ package com.modularwarfare.client;
 import com.modularwarfare.api.AnimationUtils;
 import com.modularwarfare.api.RenderBonesEvent;
 import com.modularwarfare.client.anim.AnimStateMachine;
+import com.modularwarfare.client.handler.ClientTickHandler;
 import com.modularwarfare.client.model.ModelCustomArmor.Bones.BonePart.EnumBoneType;
 import com.modularwarfare.client.model.objects.CustomItemRenderType;
 import com.modularwarfare.client.model.objects.CustomItemRenderer;
@@ -226,7 +227,13 @@ public class ClientRenderHooks extends ForgeEvent {
                     GlStateManager.rotate(f11 * -80.0F, 1.0F, 0.0F, 0.0F);
                     GlStateManager.scale(0.4F, 0.4F, 0.4F);
 
-                    customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), stack, mc.world, mc.player);
+                    if(stack.getItem() instanceof ItemGun) {
+                        customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(),
+                                (ClientTickHandler.lastItemStack.isEmpty()? stack: ClientTickHandler.lastItemStack), mc.world, mc.player);
+                    }else {
+                        customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(),
+                                stack, mc.world, mc.player);
+                    }
 
                     GlStateManager.popMatrix();
                     GlStateManager.disableRescaleNormal();
