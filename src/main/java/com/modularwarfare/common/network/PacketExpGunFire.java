@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -42,11 +43,16 @@ public class PacketExpGunFire extends PacketBase {
     private double posX;
     private double posY;
     private double posZ;
+    private EnumFacing facing;
 
     public PacketExpGunFire() {
     }
 
     public PacketExpGunFire(int entityId, String internalname, String hitboxType, int fireTickDelay, float recoilPitch, float recoilYaw, float recoilAimReducer, float bulletSpread, double x, double y, double z) {
+        this(entityId, internalname, hitboxType, fireTickDelay, recoilPitch, recoilYaw, recoilAimReducer, bulletSpread, x, y, z, null);
+    }
+
+    public PacketExpGunFire(int entityId, String internalname, String hitboxType, int fireTickDelay, float recoilPitch, float recoilYaw, float recoilAimReducer, float bulletSpread, double x, double y, double z,EnumFacing facing) {
         this.entityId = entityId;
         this.internalname = internalname;
         this.hitboxType = hitboxType;
@@ -60,6 +66,7 @@ public class PacketExpGunFire extends PacketBase {
         this.posX = x;
         this.posY = y;
         this.posZ = z;
+        this.facing=facing;
     }
 
     @Override
@@ -77,6 +84,11 @@ public class PacketExpGunFire extends PacketBase {
         data.writeDouble(this.posX);
         data.writeDouble(this.posY);
         data.writeDouble(this.posZ);
+        if(this.facing==null) {
+            data.writeInt(-1);
+        }else {
+            data.writeInt(this.facing.ordinal());
+        }
     }
 
     @Override
@@ -94,6 +106,10 @@ public class PacketExpGunFire extends PacketBase {
         this.posX = data.readDouble();
         this.posY = data.readDouble();
         this.posZ = data.readDouble();
+        int enumFacing=data.readInt();
+        if(enumFacing!=-1) {
+            this.facing=EnumFacing.values()[enumFacing];
+        }
     }
 
     @Override
@@ -157,7 +173,7 @@ public class PacketExpGunFire extends PacketBase {
                                         BlockPos blockPos = new BlockPos(posX, posY, posZ);
                                         ItemGun.playImpactSound(entityPlayer.world, blockPos, itemGun.type);
                                         itemGun.type.playSoundPos(blockPos, entityPlayer.world, WeaponSoundType.Crack, entityPlayer, 1.0f);
-                                        ItemGun.doHit(posX, posY, posZ, entityPlayer);
+                                        ItemGun.doHit(posX, posY, posZ,facing, entityPlayer);
                                     }
                                 }
                             }

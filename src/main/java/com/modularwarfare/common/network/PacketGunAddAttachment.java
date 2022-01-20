@@ -80,6 +80,9 @@ public class PacketGunAddAttachment extends PacketBase {
                                     nbtTagCompound.setInteger("skinId", i);
                                     gunStack.setTagCompound(nbtTagCompound);
                                     inventory.getStackInSlot(slot).damageItem(1, entityPlayer);
+                                    if(inventory.getStackInSlot(slot).getMaxDamage() !=0 && inventory.getStackInSlot(slot).getItemDamage() == inventory.getStackInSlot(slot).getMaxDamage()) {
+                                        inventory.removeStackFromSlot(slot);
+                                    }
                                     ModularWarfare.NETWORK.sendTo(new PacketPlaySound(entityPlayer.getPosition(), "spray", 1f, 1f), entityPlayer);
                                 }
                             }

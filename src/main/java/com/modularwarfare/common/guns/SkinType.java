@@ -19,7 +19,7 @@ public class SkinType {
         @SerializedName("linear") LINEAR;
     }
 
-    public Texture[] textures = new Texture[1];
+    public Texture[] textures = new Texture[0];
 
     public enum Texture {
         @SerializedName("basic") BASIC("skins/%s/%s.png"),
@@ -35,7 +35,10 @@ public class SkinType {
     }
 
     public SkinType(){
-        textures[0] = Texture.BASIC;
+        /**
+         * Disable by default the texture preloading
+         */
+        //textures[0] = Texture.BASIC;
     }
 
     public static SkinType getDefaultSkin(BaseType baseType) {

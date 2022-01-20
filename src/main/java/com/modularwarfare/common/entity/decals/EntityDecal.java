@@ -163,7 +163,8 @@ public abstract class EntityDecal extends Entity {
         NORTH(3),
         EAST(4),
         SOUTH(5),
-        WEST(6);
+        WEST(6),
+        CEILING(7);
 
         private final int id;
 

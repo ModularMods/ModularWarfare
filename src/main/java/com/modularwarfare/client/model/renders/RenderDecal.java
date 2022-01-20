@@ -71,6 +71,10 @@ public class RenderDecal extends Render<EntityDecal> {
                 break;
             case 6:
                 this.renderDecalWest(var1, var2, var4, var6, transparency, var9);
+                break;
+            case 7:
+                this.renderDecalCeiling(var1, var2, var4, var6, transparency, var9);
+                break;
         }
 
     }
@@ -127,6 +131,138 @@ public class RenderDecal extends Render<EntityDecal> {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableBlend();
         GlStateManager.depthMask(true);
+    }
+
+    private void renderDecalCeiling(EntityDecal entityIn, double x, double y, double z, float shadowAlpha, float partialTicks) {
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        this.renderManager.renderEngine.bindTexture(this.getEntityTexture(entityIn));
+        World world = this.getWorldFromRenderManager();
+        GlStateManager.depthMask(false);
+        double f = 1.0D;
+        double d5 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double) partialTicks;
+        double d0 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double) partialTicks;
+        double d1 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double) partialTicks;
+        int i = MathHelper.floor(d5 - f);
+        int j = MathHelper.floor(d5 + f);
+        int k = MathHelper.floor(d0 - f);
+        int l = MathHelper.ceil(d0);
+        int i1 = MathHelper.floor(d1 - f);
+        int j1 = MathHelper.floor(d1 + f);
+        double d2 = x - d5;
+        double d3 = y - d0;
+        double d4 = z - d1;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+        Iterator var33 = BlockPos.getAllInBoxMutable(new BlockPos(i, k, i1), new BlockPos(j, l, j1)).iterator();
+
+        while (var33.hasNext()) {
+            BlockPos blockpos = (BlockPos) var33.next();
+            IBlockState iblockstate = world.getBlockState(blockpos.up());
+            if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && !world.getBlockState(blockpos).isOpaqueCube()) {
+                this.renderDecalSingleCeiling(iblockstate, x, y, z, blockpos, shadowAlpha, f, d2, d3, d4, vertexbuffer);
+            }
+        }
+
+        tessellator.draw();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.disableBlend();
+        GlStateManager.depthMask(true);
+    }
+
+    private void renderDecalSingleCeiling(IBlockState state, double p_188299_2_, double p_188299_4_, double p_188299_6_, BlockPos p_188299_8_, float p_188299_9_, double p_188299_10_, double p_188299_11_, double p_188299_13_, double p_188299_15_, BufferBuilder vertexbuffer) {
+        boolean bool = false;
+
+        bool = state.isSideSolid(this.getWorldFromRenderManager(), p_188299_8_, EnumFacing.UP);
+
+        float f;
+        float f1;
+        float f2;
+        float f3;
+        double d0;
+        AxisAlignedBB axisalignedbb;
+        double d1;
+        double d2;
+        double d3;
+        double d4;
+        double d5;
+        if (bool) {
+            d0 = (double) p_188299_9_;
+            if (d0 >= 0.0D) {
+                if (d0 > 1.0D) {
+                    d0 = 1.0D;
+                }
+
+                axisalignedbb = state.getBoundingBox(this.getWorldFromRenderManager(), p_188299_8_);
+                d1 = (double) p_188299_8_.getX() + axisalignedbb.minX + p_188299_11_;
+                d2 = (double) p_188299_8_.getX() + axisalignedbb.maxX + p_188299_11_;
+                d3 = (double) p_188299_8_.getY() + axisalignedbb.maxY + p_188299_13_ - 0.015625D;
+                if (state.getBlock() instanceof BlockSlab && !state.getBlock().isNormalCube(state, this.getWorldFromRenderManager(), p_188299_8_)) {
+                    d3 -= 0.5D;
+                }
+
+                d4 = (double) p_188299_8_.getZ() + axisalignedbb.minZ + p_188299_15_;
+                d5 = (double) p_188299_8_.getZ() + axisalignedbb.maxZ + p_188299_15_;
+                f = (float) ((p_188299_2_ - d1) / 2.0D / p_188299_10_ + 0.5D);
+                f1 = (float) ((p_188299_2_ - d2) / 2.0D / p_188299_10_ + 0.5D);
+                f2 = (float) ((p_188299_6_ - d4) / 2.0D / p_188299_10_ + 0.5D);
+                f3 = (float) ((p_188299_6_ - d5) / 2.0D / p_188299_10_ + 0.5D);
+                vertexbuffer.pos(d2, d3, d4).tex((double) f1, (double) f2).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                vertexbuffer.pos(d2, d3, d5).tex((double) f1, (double) f3).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                vertexbuffer.pos(d1, d3, d5).tex((double) f, (double) f3).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                vertexbuffer.pos(d1, d3, d4).tex((double) f, (double) f2).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+            }
+        } else if (state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs) {
+            d0 = (double) p_188299_9_;
+            if (d0 >= 0.0D) {
+                if (d0 > 1.0D) {
+                    d0 = 1.0D;
+                }
+
+                axisalignedbb = state.getBoundingBox(this.getWorldFromRenderManager(), p_188299_8_);
+                d1 = (double) p_188299_8_.getX() + axisalignedbb.minX + p_188299_11_;
+                d2 = (double) p_188299_8_.getX() + axisalignedbb.maxX + p_188299_11_;
+                d3 = (double) p_188299_8_.getY() + axisalignedbb.maxY + p_188299_13_ - 0.015625D + 0.5D;
+                d4 = (double) p_188299_8_.getZ() + axisalignedbb.minZ + p_188299_15_;
+                d5 = (double) p_188299_8_.getZ() + axisalignedbb.maxZ + p_188299_15_;
+                f = (float) ((p_188299_2_ - d1) / 2.0D / p_188299_10_ + 0.5D);
+                f1 = (float) ((p_188299_2_ - d2) / 2.0D / p_188299_10_ + 0.5D);
+                f2 = (float) ((p_188299_6_ - d4) / 2.0D / p_188299_10_ + 0.5D);
+                f3 = (float) ((p_188299_6_ - d5) / 2.0D / p_188299_10_ + 0.5D);
+                vertexbuffer.pos(d2, d3, d4).tex((double) f1, (double) f2).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                vertexbuffer.pos(d2, d3, d5).tex((double) f1, (double) f3).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                vertexbuffer.pos(d1, d3, d5).tex((double) f, (double) f3).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                vertexbuffer.pos(d1, d3, d4).tex((double) f, (double) f2).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                if (state.getBlock() instanceof BlockStairs && state.getValue(BlockStairs.SHAPE) == EnumShape.STRAIGHT) {
+                    d3 += 0.5D;
+                    EnumFacing facing = (EnumFacing) state.getValue(BlockHorizontal.FACING);
+                    switch (facing) {
+                        case NORTH:
+                            d5 -= 0.5D;
+                            break;
+                        case EAST:
+                            d1 += 0.5D;
+                            break;
+                        case SOUTH:
+                            d4 += 0.5D;
+                            break;
+                        case WEST:
+                            d2 -= 0.5D;
+                    }
+
+                    f = (float) ((p_188299_2_ - d1) / 2.0D / p_188299_10_ + 0.5D);
+                    f1 = (float) ((p_188299_2_ - d2) / 2.0D / p_188299_10_ + 0.5D);
+                    f2 = (float) ((p_188299_6_ - d4) / 2.0D / p_188299_10_ + 0.5D);
+                    f3 = (float) ((p_188299_6_ - d5) / 2.0D / p_188299_10_ + 0.5D);
+                    vertexbuffer.pos(d2, d3, d4).tex((double) f1, (double) f2).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                    vertexbuffer.pos(d2, d3, d5).tex((double) f1, (double) f3).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                    vertexbuffer.pos(d1, d3, d5).tex((double) f, (double) f3).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                    vertexbuffer.pos(d1, d3, d4).tex((double) f, (double) f2).color(1.0F, 1.0F, 1.0F, (float) d0).normal(0.0F, 0.0F, 0.0F).endVertex();
+                }
+            }
+        }
+
     }
 
     private void renderDecalSingleFloor(IBlockState state, double p_188299_2_, double p_188299_4_, double p_188299_6_, BlockPos p_188299_8_, float p_188299_9_, double p_188299_10_, double p_188299_11_, double p_188299_13_, double p_188299_15_, BufferBuilder vertexbuffer) {
