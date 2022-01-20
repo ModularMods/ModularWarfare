@@ -180,7 +180,12 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                                 }
                             }
                             path = skinId > 0 ? attachmentType.modelSkins[skinId].getSkin() : attachmentType.modelSkins[0].getSkin();
-                            ClientRenderHooks.customRenderers[3].bindTexture("attachments", path);
+                            if(attachmentType.sameTextureAsGun) {
+                                ClientRenderHooks.customRenderers[3].bindTexture("guns", path);
+                            }else {
+                                path = skinId > 0 ? attachmentType.modelSkins[skinId].getSkin() : attachmentType.modelSkins[0].getSkin();
+                                ClientRenderHooks.customRenderers[3].bindTexture("attachments", path);
+                            }
                             attachmentModel.renderAttachment(worldScale);
                         }
                     }

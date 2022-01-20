@@ -38,7 +38,7 @@ public class GuiMainScreen extends GuiMWScreen {
     @Override
     public void initGui() {
         super.initGui();
-        Minecraft.getMinecraft().entityRenderer.loadShader(new ResourceLocation("modularwarfare:shaders/post/blur.json"));
+        Minecraft.getMinecraft().entityRenderer.loadShader(new ResourceLocation("modularwarfare:shaders/post/blurex.json"));
         addContainer(this.containerGunParts);
     }
 

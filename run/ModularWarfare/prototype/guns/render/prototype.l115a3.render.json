@@ -110,7 +110,7 @@
     "aimPointMap": {
       "prototype.acog_scope": [
         {
-          "x": 0.4,
+          "x": 1.8,
           "y": -0.9,
           "z": 0.0
         },
@@ -134,7 +134,7 @@
       ],
       "prototype.long_scope": [
         {
-          "x": 0.0,
+          "x": 1.5,
           "y": -0.88,
           "z": 0.0
         },
@@ -217,7 +217,7 @@
     "crouchZoom": -0.05,
     "adsSpeed": 0.07,
     "gunSlideDistance": 0.05,
-    "modelRecoilBackwards": 0.15,
+    "modelRecoilBackwards": 0.05,
     "modelRecoilUpwards": 1.0,
     "modelRecoilShake": 0.5
   }

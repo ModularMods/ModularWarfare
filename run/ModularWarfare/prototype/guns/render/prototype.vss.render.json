@@ -171,8 +171,8 @@
     "aimPointMap": {
       "prototype.obzor_sight": [
         {
-          "x": -0.4,
-          "y": -0.9,
+          "x": 1.5,
+          "y": -0.85,
           "z": 0.0
         },
         {
@@ -183,7 +183,7 @@
       ],
       "prototype.psv_scope": [
         {
-          "x": -3.0,
+          "x": -1.0,
           "y": -0.4,
           "z": 0.0
         },
@@ -213,8 +213,8 @@
     "crouchZoom": -0.035,
     "adsSpeed": 0.07,
     "gunSlideDistance": 0.15,
-    "modelRecoilBackwards": 0.15,
-    "modelRecoilUpwards": 1.0,
-    "modelRecoilShake": 0.5
+    "modelRecoilBackwards": 0.05,
+    "modelRecoilUpwards": 0.75,
+    "modelRecoilShake": 0.25
   }
 }

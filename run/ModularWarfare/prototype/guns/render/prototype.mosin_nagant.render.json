@@ -124,7 +124,7 @@
     "aimPointMap": {
       "prototype.obzor_sight": [
         {
-          "x": 1.0,
+          "x": 2.5,
           "y": -0.85,
           "z": 0.0
         },
@@ -169,7 +169,7 @@
     "crouchZoom": -0.05,
     "adsSpeed": 0.07,
     "gunSlideDistance": 0.14,
-    "modelRecoilBackwards": 0.15,
+    "modelRecoilBackwards": 0.05,
     "modelRecoilUpwards": 1.0,
     "modelRecoilShake": 0.5
   }

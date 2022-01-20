@@ -1,5 +1,8 @@
 package com.modularwarfare.client;
 
+import com.google.common.base.Throwables;
+import com.google.gson.JsonSyntaxException;
+import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.AnimationUtils;
 import com.modularwarfare.api.RenderBonesEvent;
 import com.modularwarfare.client.anim.AnimStateMachine;
@@ -8,14 +11,15 @@ import com.modularwarfare.client.model.ModelCustomArmor.Bones.BonePart.EnumBoneT
 import com.modularwarfare.client.model.objects.CustomItemRenderType;
 import com.modularwarfare.client.model.objects.CustomItemRenderer;
 import com.modularwarfare.client.model.renders.*;
+import com.modularwarfare.client.scope.ScopeUtils;
 import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
 import com.modularwarfare.common.entity.grenades.EntitySmokeGrenade;
-import com.modularwarfare.common.guns.ItemAttachment;
-import com.modularwarfare.common.guns.ItemGun;
+import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.network.BackWeaponsManager;
 import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
+import com.modularwarfare.mixin.client.accessor.IShaderGroup;
 import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RenderHelperMW;
 import com.modularwarfare.utility.event.ForgeEvent;
@@ -24,11 +28,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.client.shader.Shader;
+import net.minecraft.client.shader.ShaderGroup;
+import net.minecraft.client.shader.ShaderUniform;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,11 +50,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.Project;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 
 public class ClientRenderHooks extends ForgeEvent {
 
@@ -57,6 +75,7 @@ public class ClientRenderHooks extends ForgeEvent {
     private float equippedProgress = 1f, prevEquippedProgress = 1f;
 
     public static final ResourceLocation grenade_smoke = new ResourceLocation("modularwarfare", "textures/particles/smoke.png");
+
 
     public ClientRenderHooks() {
         mc = Minecraft.getMinecraft();
@@ -133,7 +152,6 @@ public class ClientRenderHooks extends ForgeEvent {
             }
         }
     }
-
 
     @SubscribeEvent
     public void renderHeldItem(RenderSpecificHandEvent event) {
@@ -227,20 +245,63 @@ public class ClientRenderHooks extends ForgeEvent {
                     GlStateManager.rotate(f11 * -80.0F, 1.0F, 0.0F, 0.0F);
                     GlStateManager.scale(0.4F, 0.4F, 0.4F);
 
-                    if(stack.getItem() instanceof ItemGun) {
+
+                    ClientProxy.scopeUtils.initBlur();
+                    GlStateManager.pushMatrix();
+                    GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, ClientProxy.scopeUtils.blurFramebuffer.framebufferObject);
+                    GL30.glBlitFramebuffer(0, 0, mc.displayWidth, mc.displayHeight, 0, 0, mc.displayWidth, mc.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+                    GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mc.getFramebuffer().framebufferObject);
+                    GL11.glEnable(GL11.GL_STENCIL_TEST);
+                    GL11.glStencilMask(0xFF);
+                    GL11.glClearStencil(0);
+                    GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+                    GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+                    GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0XFF);
+
+                    if(item instanceof ItemGun) {
                         customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(),
-                                (ClientTickHandler.lastItemStack.isEmpty()? stack: ClientTickHandler.lastItemStack), mc.world, mc.player);
-                    }else {
+                                (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
+                    } else {
                         customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(),
                                 stack, mc.world, mc.player);
                     }
+                    GL11.glStencilMask(0x00);
+                    GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0XFF);
+
+                    boolean needBlur = false;
+                    if(RenderParameters.adsSwitch != 0F) {
+                        if (GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight) != null) {
+                            final ItemAttachment itemAttachment = (ItemAttachment) GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight).getItem();
+                            if (itemAttachment != null) {
+                                if (itemAttachment.type != null) {
+                                    if (itemAttachment.type.sight.scopeType != WeaponScopeType.REDDOT) {
+                                        if (!OptifineHelper.isShadersEnabled()) {
+                                            needBlur = true;
+                                            ClientProxy.scopeUtils.renderBlur();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    mc.getFramebuffer().bindFramebuffer(false);
+                    ClientProxy.scopeUtils.blurFramebuffer.bindFramebufferTexture();
+                    GlStateManager.pushMatrix();
+                    ScaledResolution resolution = new ScaledResolution(mc);
+                    Minecraft.getMinecraft().entityRenderer.setupOverlayRendering();
+                    if (needBlur) {
+                        ClientProxy.scopeUtils.drawScaledCustomSizeModalRectFlipY(0, 0, 0, 0, 1, 1, resolution.getScaledWidth(), resolution.getScaledHeight(), 1, 1);
+                    }
+                    GlStateManager.popMatrix();
+                    GL11.glDisable(GL11.GL_STENCIL_TEST);
 
                     GlStateManager.popMatrix();
                     GlStateManager.disableRescaleNormal();
                     RenderHelper.disableStandardItemLighting();
                     renderer.disableLightmap();
+                    GlStateManager.popMatrix();
                 }
-
                 GlStateManager.popMatrix();
 
                 if (mc.gameSettings.thirdPersonView == 0 && !flag) {

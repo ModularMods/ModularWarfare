@@ -19,6 +19,9 @@ public class AttachmentType extends BaseType {
 
     public Sight sight = new Sight();
 
+    public boolean sameTextureAsGun = false;
+
+
     @Override
     public void loadExtraValues() {
         if (maxStackSize == null)

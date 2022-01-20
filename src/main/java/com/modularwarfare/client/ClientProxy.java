@@ -279,6 +279,10 @@ public class ClientProxy extends CommonProxy {
             ModConfig.INSTANCE.model_optimization = false;
         }
 
+        if(!Minecraft.getMinecraft().getFramebuffer().isStencilEnabled()) {
+            Minecraft.getMinecraft().getFramebuffer().enableStencil();
+        }
+
         ModularWarfare.LOGGER.info("Preloading textures");
         long time = System.currentTimeMillis();
         preloadSkinTypes.forEach((skin, type) -> {

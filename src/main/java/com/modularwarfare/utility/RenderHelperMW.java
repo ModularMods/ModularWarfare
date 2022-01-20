@@ -179,6 +179,38 @@ public class RenderHelperMW {
         GL11.glPopMatrix();
     }
 
+    public static void renderRect(int givenPosX, int givenPosY, int givenWidth, int givenHeight) {
+        GL11.glPushMatrix();
+
+        givenWidth = givenPosX + givenWidth;
+        givenHeight = givenPosY + givenHeight;
+        if (givenPosX < givenWidth) {
+            int i = givenPosX;
+            givenPosX = givenWidth;
+            givenWidth = i;
+        }
+        if (givenPosY < givenHeight) {
+            int j = givenPosY;
+            givenPosY = givenHeight;
+            givenHeight = j;
+        }
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.pos(givenPosX, givenHeight, 0.0D).endVertex();
+        bufferbuilder.pos(givenWidth, givenHeight, 0.0D).endVertex();
+        bufferbuilder.pos(givenWidth, givenPosY, 0.0D).endVertex();
+        bufferbuilder.pos(givenPosX, givenPosY, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+
+        GL11.glPopMatrix();
+    }
+
     public static void renderRectAlphaComp(int givenPosX, int givenPosY, int givenWidth, int givenHeight, int givenColor, int alpha) {
         GL11.glPushMatrix();
 

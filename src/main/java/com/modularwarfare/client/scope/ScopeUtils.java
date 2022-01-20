@@ -1,17 +1,23 @@
 package com.modularwarfare.client.scope;
 
 
+import com.google.gson.JsonSyntaxException;
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.model.ModelAttachment;
 import com.modularwarfare.client.model.renders.RenderParameters;
 import com.modularwarfare.common.guns.*;
+import com.modularwarfare.mixin.client.accessor.IShaderGroup;
 import com.modularwarfare.utility.OptifineHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.client.shader.Shader;
+import net.minecraft.client.shader.ShaderGroup;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
@@ -21,6 +27,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 
@@ -35,6 +42,13 @@ public class ScopeUtils {
     public boolean hasBeenReseted = true;
     public float mouseSensitivityBackup;
     private Field renderEndNanoTime;
+
+    public ShaderGroup blurShader;
+    public Framebuffer blurFramebuffer;
+    public int blurTexture;
+    private static int lastScale;
+    private static int lastScaleWidth;
+    private static int lastScaleHeight;
 
     public ScopeUtils() {
         GL11.glPushMatrix();
@@ -105,6 +119,7 @@ public class ScopeUtils {
                     }
                 } else if (!hasBeenReseted) {
                     mc.gameSettings.mouseSensitivity = mouseSensitivityBackup;
+                    mc.gameSettings.fovSetting = 90;
                     hasBeenReseted = true;
                 } else if (mouseSensitivityBackup != mc.gameSettings.mouseSensitivity) {
                     mouseSensitivityBackup = mc.gameSettings.mouseSensitivity;
@@ -219,6 +234,80 @@ public class ScopeUtils {
         if (event.getWorld().isRemote) {
             scopeRenderGlobal.setWorldAndLoadRenderers((WorldClient) event.getWorld());
         }
+    }
+
+    /**
+     * Blur Shader
+     */
+    public void drawScaledCustomSizeModalRectFlipY(int x, int y, float u, float v, int uWidth, int vHeight, int width, int height, float tileWidth, float tileHeight)
+    {
+        ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());
+
+        int scaleFactor = resolution.getScaleFactor();
+        int widthFactor = resolution.getScaledWidth();
+        int heightFactor = resolution.getScaledHeight();
+
+        if (lastScale != scaleFactor || lastScaleWidth != widthFactor || lastScaleHeight != heightFactor || blurFramebuffer == null || blurShader == null) {
+            initBlur();
+        }
+
+        lastScale = scaleFactor;
+        lastScaleWidth = widthFactor;
+        lastScaleHeight = heightFactor;
+
+        float f = 1.0F / tileWidth;
+        float f1 = 1.0F / tileHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos((double) x, (double) (y + height), 0.0D)
+                .tex((double) (u * f), 1 - (double) ((v + (float) vHeight) * f1)).endVertex();
+        bufferbuilder.pos((double) (x + width), (double) (y + height), 0.0D)
+                .tex((double) ((u + (float) uWidth) * f), 1 - (double) ((v + (float) vHeight) * f1)).endVertex();
+        bufferbuilder.pos((double) (x + width), (double) y, 0.0D)
+                .tex((double) ((u + (float) uWidth) * f), 1 - (double) (v * f1)).endVertex();
+        bufferbuilder.pos((double) x, (double) y, 0.0D).tex((double) (u * f), 1 - (double) (v * f1)).endVertex();
+        tessellator.draw();
+    }
+
+    public void initBlur() {
+        ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());
+
+        int scaleFactor = resolution.getScaleFactor();
+        int widthFactor = resolution.getScaledWidth();
+        int heightFactor = resolution.getScaledHeight();
+
+        if (!(lastScale != scaleFactor || lastScaleWidth != widthFactor || lastScaleHeight != heightFactor || blurFramebuffer == null || blurShader == null)) {
+            return;
+        }
+
+        lastScale = scaleFactor;
+        lastScaleWidth = widthFactor;
+        lastScaleHeight = heightFactor;
+
+        try {
+            blurFramebuffer = new Framebuffer(mc.displayWidth, mc.displayHeight, false);
+            blurFramebuffer.enableStencil();
+            blurShader = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), blurFramebuffer, new ResourceLocation(ModularWarfare.MOD_ID,"shaders/post/blurex.json"));
+            blurShader.createBindFramebuffers(mc.displayWidth, mc.displayHeight);
+            blurTexture = GL11.glGenTextures();
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, blurTexture);
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, mc.displayWidth, mc.displayHeight, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        } catch (JsonSyntaxException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void renderBlur() {
+        for(Shader shader : ((IShaderGroup)blurShader).getListShaders()){
+            if(shader.getShaderManager().getShaderUniform("Progress") != null){
+                shader.getShaderManager().getShaderUniform("Progress").set(RenderParameters.adsSwitch);
+            }
+        }
+        blurShader.render(ClientProxy.renderHooks.partialTicks);
     }
 
 }
