@@ -259,11 +259,9 @@ public class ClientRenderHooks extends ForgeEvent {
                     GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0XFF);
 
                     if(item instanceof ItemGun) {
-                        customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(),
-                                (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
+                        customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
                     } else {
-                        customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(),
-                                stack, mc.world, mc.player);
+                        customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), stack, mc.world, mc.player);
                     }
                     GL11.glStencilMask(0x00);
                     GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0XFF);
@@ -290,6 +288,11 @@ public class ClientRenderHooks extends ForgeEvent {
                     GlStateManager.pushMatrix();
                     ScaledResolution resolution = new ScaledResolution(mc);
                     Minecraft.getMinecraft().entityRenderer.setupOverlayRendering();
+                    
+                    GlStateManager.disableRescaleNormal();
+                    RenderHelper.disableStandardItemLighting();
+                    renderer.disableLightmap();
+
                     if (needBlur) {
                         ClientProxy.scopeUtils.drawScaledCustomSizeModalRectFlipY(0, 0, 0, 0, 1, 1, resolution.getScaledWidth(), resolution.getScaledHeight(), 1, 1);
                     }
