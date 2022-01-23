@@ -1,0 +1,79 @@
+# Blender MTL File: 'AK74MReload.blend'
+# Material Count: 7
+
+newmtl ModelMaterial
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Protoxy\\AK-74M\\动画\\本体\\ModelAK-74M.obj.png
+
+newmtl ModelMaterial.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Protoxy\\AK-74M\\动画\\枪机\\ModelAK-74M.obj.png
+
+newmtl ModelMaterial.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Protoxy\\AK-74M\\动画\\防尘盖\\ModelAK-74M.obj.png
+
+newmtl ModelMaterial.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Protoxy\\AK-74M\\动画\\弹匣\\ModelAK-74M.obj.png
+
+newmtl ModelMaterial.004
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Protoxy\\AK-74M\\动画\\弹匣\\ModelAK-74M.obj.png
+
+newmtl ModelMaterial.005
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Protoxy\\DefaultArms\\ModelDefaultLeftArm.obj.png
+
+newmtl ModelMaterial.006
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Protoxy\\DefaultArms\\ModelDefaultRightArm.obj.png

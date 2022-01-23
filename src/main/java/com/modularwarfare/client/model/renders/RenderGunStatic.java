@@ -10,6 +10,8 @@ import com.modularwarfare.client.anim.AnimStateMachine;
 import com.modularwarfare.client.anim.ReloadType;
 import com.modularwarfare.client.anim.StateEntry;
 import com.modularwarfare.client.anim.StateType;
+import com.modularwarfare.client.animengine.AnimationLoader;
+import com.modularwarfare.client.animengine.AnimationManager;
 import com.modularwarfare.client.config.GunRenderConfig;
 import com.modularwarfare.client.model.*;
 import com.modularwarfare.client.model.objects.BreakActionData;
@@ -454,7 +456,7 @@ public class RenderGunStatic extends CustomItemRenderer {
 
             //Render call for the static arm
             if (renderType == CustomItemRenderType.EQUIPPED_FIRST_PERSON && model.hasArms()) {
-                renderStaticArm(mc.player, model, anim, currentReloadState);
+                //renderStaticArm(mc.player, model, anim, currentReloadState);
             }
 
 
@@ -474,7 +476,7 @@ public class RenderGunStatic extends CustomItemRenderer {
 
                 String path = skinId > 0 ? gunType.modelSkins[skinId].getSkin() : gunType.modelSkins[0].getSkin();
                 String gunPath = path;
-                bindTexture("guns", path);
+                //bindTexture("guns", path);
 
                 GL11.glEnable(GL11.GL_TEXTURE_2D);
 
@@ -495,8 +497,43 @@ public class RenderGunStatic extends CustomItemRenderer {
                     }
                 }
 
+                float time = ((float) (Minecraft.getMinecraft().world.getTotalWorldTime() & 0xFFFFFF)) + this.timer.renderPartialTicks;
+                if(Minecraft.getMinecraft().player.isSneaking()){
+                    time = 0;
+                }
+                GL11.glPushMatrix();
+                Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/akm.png"));
+                AnimationManager.applyAnimation(AnimationLoader.ak_reload, "gunModel", time);
+                GL11.glTranslatef(-2.93484f * worldScale, -4.67972f * worldScale,-5f * worldScale);
+                GL11.glScalef(5.7f, 5.7f, 5.7f);
                 model.renderPart("gunModel", worldScale);
+                GL11.glPopMatrix();
 
+                GL11.glPushMatrix();
+                AnimationManager.applyAnimation(AnimationLoader.ak_reload, "ammoModel", time);
+                GL11.glTranslatef(-2.93484f * worldScale, -4.67972f * worldScale,-5f * worldScale);
+                GL11.glScalef(5.7f, 5.7f, 5.7f);
+                model.renderPart("ammoModel", worldScale);
+                GL11.glPopMatrix();
+
+                GL11.glPushMatrix();
+                Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/arms.png"));
+                AnimationManager.applyAnimation(AnimationLoader.ak_reload, "leftArm", time);
+                GL11.glTranslatef(-2.93484f * worldScale, -4.67972f * worldScale,-5f * worldScale);
+                GL11.glScalef(5.7f, 5.7f, 5.7f);
+                model.renderPart("leftArm", worldScale);
+                GL11.glPopMatrix();
+
+                GL11.glPushMatrix();
+                AnimationManager.applyAnimation(AnimationLoader.ak_reload, "rightArm", time);
+                Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/arms.png"));
+                GL11.glTranslatef(-2.93484f * worldScale, -4.67972f * worldScale,-5f * worldScale);
+                GL11.glScalef(5.7f, 5.7f, 5.7f);
+                model.renderPart("rightArm", worldScale);
+                GL11.glPopMatrix();
+
+
+                /*
                 //Render any attachments
                 if (GunType.getAttachment(item, AttachmentEnum.Sight) == null && !model.config.attachments.scopeIsOnSlide)
                     model.renderPart("defaultScopeModel", worldScale);
@@ -1004,6 +1041,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                     }
                 }
                 GL11.glPopMatrix();
+                 */
             }
             GL11.glPopMatrix();
 

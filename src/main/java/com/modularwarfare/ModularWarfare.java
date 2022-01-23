@@ -3,6 +3,7 @@ package com.modularwarfare;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import com.modularwarfare.client.animengine.AnimationLoader;
 import com.modularwarfare.common.CommonProxy;
 import com.modularwarfare.common.MWTab;
 import com.modularwarfare.common.armor.ItemMWArmor;
@@ -334,6 +335,8 @@ public class ModularWarfare {
 
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
         MinecraftForge.EVENT_BUS.register(this);
+
+        AnimationLoader.ak_reload = AnimationLoader.loadAnimation("ak47_reload.json");
     }
 
     /**

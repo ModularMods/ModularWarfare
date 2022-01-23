@@ -92,6 +92,11 @@ dependencies {
     embed 'net.lingala.zip4j:zip4j:1.2.4'
 
     compile fileTree(dir: 'libs', include: '*.jar')
+
+
+    // https://mvnrepository.com/artifact/org.joml/joml
+    implementation group: 'org.joml', name: 'joml', version: '1.10.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.40"
 }
 
 repositories {

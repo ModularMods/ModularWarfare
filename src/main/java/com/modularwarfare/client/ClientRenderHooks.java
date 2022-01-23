@@ -20,6 +20,7 @@ import com.modularwarfare.common.network.BackWeaponsManager;
 import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.mixin.client.accessor.IShaderGroup;
+import com.modularwarfare.utility.ModUtil;
 import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RenderHelperMW;
 import com.modularwarfare.utility.event.ForgeEvent;
@@ -32,6 +33,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -288,13 +290,14 @@ public class ClientRenderHooks extends ForgeEvent {
                     GlStateManager.pushMatrix();
                     ScaledResolution resolution = new ScaledResolution(mc);
                     Minecraft.getMinecraft().entityRenderer.setupOverlayRendering();
-                    
-                    GlStateManager.disableRescaleNormal();
-                    RenderHelper.disableStandardItemLighting();
-                    renderer.disableLightmap();
 
                     if (needBlur) {
+                        float lastBrightnessX = OpenGlHelper.lastBrightnessX;
+                        float lastBrightnessY = OpenGlHelper.lastBrightnessY;
+                        GlStateManager.disableLighting();
+                        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240,240);
                         ClientProxy.scopeUtils.drawScaledCustomSizeModalRectFlipY(0, 0, 0, 0, 1, 1, resolution.getScaledWidth(), resolution.getScaledHeight(), 1, 1);
+                        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
                     }
                     GlStateManager.popMatrix();
                     GL11.glDisable(GL11.GL_STENCIL_TEST);
