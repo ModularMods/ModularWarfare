@@ -263,7 +263,8 @@ public class ClientProxy extends CommonProxy {
     public void setupLayers(RenderPlayer renderer) {
         renderer.addLayer(new RenderLayerBackpack(renderer, renderer.getMainModel().bipedBodyWear));
         renderer.addLayer(new RenderLayerBody(renderer, renderer.getMainModel().bipedBodyWear));
-        renderer.addLayer(new RenderLayerHeldGun(renderer));
+        // Disabled for animation third person test
+        // renderer.addLayer(new RenderLayerHeldGun(renderer));
     }
 
     @Override
@@ -278,6 +279,12 @@ public class ClientProxy extends CommonProxy {
         Thread smoothTickThread = new Thread(smoothSwingTicker, "SmoothSwingThread");
         smoothTickThread.start();
 
+        if(!Minecraft.getMinecraft().getFramebuffer().isStencilEnabled()) {
+            Minecraft.getMinecraft().getFramebuffer().enableStencil();
+        }
+    }
+
+    public void loadTextures() {
         ModularWarfare.LOGGER.info("Preloading textures");
         long time = System.currentTimeMillis();
         preloadSkinTypes.forEach((skin, type) -> {
@@ -947,5 +954,4 @@ public class ClientProxy extends CommonProxy {
         Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, 5.0f, 0.2f, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
         Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, 5.0f, 0.1f, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
     }
-
 }
