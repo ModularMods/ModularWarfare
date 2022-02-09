@@ -1,13 +1,13 @@
 {
-    "internalName": "prototype.uzi",
-    "displayName": "Mini-Uzi",
-    "weaponType": "smg",
+    "internalName": "prototype.tec9",
+    "displayName": "Tec-9",
+    "weaponType": "pistol",
     "customFlashTexture": "prototype.advanced.flash",
-    "gunDamage": 7,
+    "gunDamage": 7.5,
     "gunDamageHeadshotBonus": 2,
-    "roundsPerMin": 575,
+    "roundsPerMin": 800,
     "allowEmptyMagazines": true,
-    "recoilPitch": 2,
+    "recoilPitch": 2.5,
     "recoilYaw": 1.5,
     "randomRecoilPitch": 0.8,
     "randomRecoilYaw": 0.8,
@@ -18,11 +18,10 @@
     "moveSpeedModifier": 1,
     "allowSprintFiring": true,
     "fireModes": [
-        "full",
         "semi"
     ],
     "acceptedAmmo": [
-        "prototype.uziammo"
+        "prototype.tec9ammo"
     ],
     "dropBulletCasing": true,
     "shellEjectOffsetNormal": {
@@ -39,10 +38,10 @@
         "weaponFire": [
             {
                 "soundEvent": "weaponFire",
-                "soundName": "prototype.uzi.shoot",
-                "soundNameDistant": "prototype.uzi.distant",
-                "soundRange": 64,
-                "soundMaxRange": 96,
+                "soundName": "prototype.tec9.shoot",
+                "soundNameDistant": "prototype.tec9.distant",
+                "soundRange": 40,
+                "soundMaxRange": 64,
                 "soundFadeMultiplier": 1
             }
         ],
@@ -51,21 +50,12 @@
                 "soundEvent": "weaponReload",
                 "soundName": "prototype.generic.reload"
             }
-        ],
-        "weaponFireSuppressed": [
-            {
-                "soundEvent": "weaponFireSuppressed",
-                "soundName": "prototype.ak74u.shoot.sup",
-                "soundRange": 30,
-                "soundMaxRange": 50,
-                "soundFadeMultiplier": 1
-            }
         ]
     },
     "modelSkins": [
         {
-            "internalName": "prototype.uzi",
-            "skinAsset": "prototype.uzi",
+            "internalName": "prototype.tec9",
+            "skinAsset": "prototype.tec9",
             "displayName": "Default",
             "textures": ["basic"]
         }
