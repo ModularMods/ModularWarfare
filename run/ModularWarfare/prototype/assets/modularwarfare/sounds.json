@@ -303,6 +303,18 @@
       "modularwarfare:uzi/distant"
     ]
   },
+  "prototype.tec9.shoot": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:tec9/shoot1"
+    ]
+  },
+  "prototype.tec9.distant": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:tec9/distant"
+    ]
+  },
   "prototype.mp5.shoot": {
     "category": "player",
     "sounds": [

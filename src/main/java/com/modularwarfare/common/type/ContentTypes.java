@@ -16,7 +16,6 @@ import com.modularwarfare.common.textures.TextureType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-import javax.xml.soap.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
@@ -58,15 +57,20 @@ public class ContentTypes {
         registerType("armor", ArmorType.class, (type, reload) -> {
             ArmorType armorType = (ArmorType) type;
 
-            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                ((ModelCustomArmor) (type.bipedModel)).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
-
+            if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+                if (!armorType.simpleArmor) {
+                    ((ModelCustomArmor) (type.bipedModel)).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
+                }
+            }
             if (!reload) {
                 for (MWArmorType mwArmorType : armorType.armorTypes.keySet()) {
                     if (MWArmorType.isVanilla(mwArmorType)) {
                         ModularWarfare.armorTypes.put(armorType.internalName + "_" + mwArmorType.name().toLowerCase(), new ItemMWArmor(armorType, mwArmorType));
-                        if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                            ((ModelCustomArmor) type.bipedModel).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
+                        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+                            if (!armorType.simpleArmor) {
+                                ((ModelCustomArmor) type.bipedModel).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
+                            }
+                        }
                     } else {
                         ModularWarfare.specialArmorTypes.put(armorType.internalName, new ItemSpecialArmor(armorType, mwArmorType));
                         if (FMLCommonHandler.instance().getSide() == Side.CLIENT)

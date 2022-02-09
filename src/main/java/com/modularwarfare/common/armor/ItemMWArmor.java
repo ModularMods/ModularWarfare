@@ -70,20 +70,22 @@ public class ItemMWArmor extends ItemArmor implements ISpecialArmor {
     @SideOnly(Side.CLIENT)
     @Nullable
     public ModelBiped getArmorModel(EntityLivingBase living, ItemStack stack, EntityEquipmentSlot slot, ModelBiped defaultModel) {
-        if (!stack.isEmpty()) {
-            if (stack.getItem() instanceof ItemMWArmor) {
-                ArmorType armorType = ((ItemMWArmor) stack.getItem()).type;
-                ModelCustomArmor armorModel = (ModelCustomArmor) armorType.bipedModel;
-                if (slot != slot.MAINHAND && slot != slot.OFFHAND) {
-                    armorModel.showChest(slot == EntityEquipmentSlot.CHEST);
-                    armorModel.showFeet(slot == EntityEquipmentSlot.FEET);
-                    armorModel.showHead(slot == EntityEquipmentSlot.HEAD);
-                    armorModel.showLegs(slot == EntityEquipmentSlot.LEGS);
+        if(!type.simpleArmor) {
+            if (!stack.isEmpty()) {
+                if (stack.getItem() instanceof ItemMWArmor) {
+                    ArmorType armorType = ((ItemMWArmor) stack.getItem()).type;
+                    ModelCustomArmor armorModel = (ModelCustomArmor) armorType.bipedModel;
+                    if (slot != slot.MAINHAND && slot != slot.OFFHAND) {
+                        armorModel.showChest(slot == EntityEquipmentSlot.CHEST);
+                        armorModel.showFeet(slot == EntityEquipmentSlot.FEET);
+                        armorModel.showHead(slot == EntityEquipmentSlot.HEAD);
+                        armorModel.showLegs(slot == EntityEquipmentSlot.LEGS);
+                    }
+
+                    armorModel.setModelAttributes(defaultModel);
+
+                    return armorModel;
                 }
-
-                armorModel.setModelAttributes(defaultModel);
-
-                return armorModel;
             }
         }
         return null;

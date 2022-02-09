@@ -15,6 +15,9 @@ import java.util.HashMap;
 public class ArmorType extends BaseType {
     public Integer durability;
     public double defense;
+
+    public boolean simpleArmor = false;
+
     public HashMap<MWArmorType, ArmorInfo> armorTypes;
 
     public ArmorType() {
@@ -49,7 +52,8 @@ public class ArmorType extends BaseType {
     @Override
     @SideOnly(Side.CLIENT)
     public void reloadModel() {
-        this.bipedModel = new ModelCustomArmor(ModularWarfare.getRenderConfig(this, ArmorRenderConfig.class), this);
+        if(!simpleArmor)
+            this.bipedModel = new ModelCustomArmor(ModularWarfare.getRenderConfig(this, ArmorRenderConfig.class), this);
     }
 
     @Override

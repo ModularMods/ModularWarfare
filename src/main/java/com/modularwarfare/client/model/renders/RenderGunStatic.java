@@ -22,7 +22,6 @@ import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.network.PacketAimingRequest;
 import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.utility.ModUtil;
-import com.modularwarfare.utility.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -51,7 +50,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+
 import static com.modularwarfare.client.model.objects.CustomItemRenderType.BACK;
 import static com.modularwarfare.client.model.renders.RenderParameters.*;
 
@@ -259,8 +258,8 @@ public class RenderGunStatic extends CustomItemRenderer {
                         }
                     }
 
-                    RenderParameters.VAL = (float) (Math.sin(RenderParameters.SMOOTH_SWING / 100) * 8);
-                    RenderParameters.VAL2 = (float) (Math.sin(RenderParameters.SMOOTH_SWING / 80) * 8);
+                    RenderParameters.VAL = (float) (Math.sin(RenderParameters.SMOOTH_SWING / 140) * 1.0f);
+                    RenderParameters.VAL2 = (float) (Math.sin(RenderParameters.SMOOTH_SWING / 100) * 1.0f);
                     RenderParameters.VALROT = (float) (Math.sin(RenderParameters.SMOOTH_SWING / 90) * 1.2f);
 
 
@@ -334,7 +333,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                     GL11.glRotatef((GUN_BALANCING_X) * adsSwitch * 0.4F, -1, 0, 0);
 
                     GL11.glRotatef((GUN_BALANCING_Y * 2F) * (1F - adsSwitch), 0, 0, -1);
-                    GL11.glRotatef((GUN_BALANCING_Y) * adsSwitch * 0.4F, 0, 0, -1);
+                    //GL11.glRotatef((GUN_BALANCING_Y) * adsSwitch * 0.4F, 0, 0, -1);
 
                     GL11.glTranslatef(0F, (float) Math.sin(Math.PI* -GUN_CHANGE_Y) * 1.5F, 0F);
                     GL11.glRotatef(80 * (float) Math.sin(Math.PI* -GUN_CHANGE_Y), 0, 0, -1);
@@ -1152,23 +1151,32 @@ public class RenderGunStatic extends CustomItemRenderer {
 
 
     public void renderLeftSleeve(EntityPlayer player, ModelBiped modelplayer) {
+        Minecraft mc = Minecraft.getMinecraft();
 
         if (player.inventory.armorItemInSlot(2) != null) {
             ItemStack armorStack = player.inventory.armorItemInSlot(2);
             if (armorStack.getItem() instanceof ItemMWArmor) {
-                ModelCustomArmor modelArmor = ((ModelCustomArmor) ((ItemMWArmor) armorStack.getItem()).type.bipedModel);
                 int skinId = 0;
                 String path = skinId > 0 ? ((ItemMWArmor) armorStack.getItem()).type.modelSkins[skinId].getSkin() : ((ItemMWArmor) armorStack.getItem()).type.modelSkins[0].getSkin();
-                bindTexture("armor", path);
-                GL11.glPushMatrix();
-                {
-                    float modelScale = modelArmor.config.extra.modelScale;
-                    GL11.glScalef(modelScale, modelScale, modelScale);
-                    modelArmor.showChest(true);
-                    //modelArmor.render("leftArmModel", modelplayer.bipedLeftArm, 0.0625F, modelScale);
-                    modelArmor.renderLeftArm((AbstractClientPlayer) player, modelplayer);
+                if(!((ItemMWArmor) armorStack.getItem()).type.simpleArmor) {
+                    ModelCustomArmor modelArmor = ((ModelCustomArmor) ((ItemMWArmor) armorStack.getItem()).type.bipedModel);
+
+                    GL11.glPushMatrix();
+                    {
+                        float modelScale = modelArmor.config.extra.modelScale;
+                        GL11.glScalef(modelScale, modelScale, modelScale);
+                        modelArmor.showChest(true);
+                        //modelArmor.render("leftArmModel", modelplayer.bipedLeftArm, 0.0625F, modelScale);
+                        modelArmor.renderLeftArm((AbstractClientPlayer) player, modelplayer);
+                    }
+                    GL11.glPopMatrix();
+                } else {
+                    Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(Minecraft.getMinecraft().player);
+                    RenderPlayer renderplayer = (RenderPlayer) render;
+                    GlStateManager.scale(1.00000001F, 1.00000001F, 1.00000001F);
+                    bindTexture("armor", path);
+                    renderplayer.renderLeftArm(Minecraft.getMinecraft().player);
                 }
-                GL11.glPopMatrix();
             }
         }
     }
@@ -1177,19 +1185,29 @@ public class RenderGunStatic extends CustomItemRenderer {
         if (player.inventory.armorItemInSlot(2) != null) {
             ItemStack armorStack = player.inventory.armorItemInSlot(2);
             if (armorStack.getItem() instanceof ItemMWArmor) {
-                ModelCustomArmor modelArmor = ((ModelCustomArmor) ((ItemMWArmor) armorStack.getItem()).type.bipedModel);
                 int skinId = 0;
                 String path = skinId > 0 ? ((ItemMWArmor) armorStack.getItem()).type.modelSkins[skinId].getSkin() : ((ItemMWArmor) armorStack.getItem()).type.modelSkins[0].getSkin();
-                bindTexture("armor", path);
-                GL11.glPushMatrix();
-                {
-                    float modelScale = modelArmor.config.extra.modelScale;
-                    GL11.glScalef(modelScale, modelScale, modelScale);
-                    modelArmor.showChest(true);
-                    //modelArmor.render("rightArmModel", modelplayer.bipedRightArm, 0.0625F, modelScale);
-                    modelArmor.renderRightArm((AbstractClientPlayer) player, modelplayer);
+
+                if (!((ItemMWArmor) armorStack.getItem()).type.simpleArmor) {
+                    ModelCustomArmor modelArmor = ((ModelCustomArmor) ((ItemMWArmor) armorStack.getItem()).type.bipedModel);
+
+                    bindTexture("armor", path);
+                    GL11.glPushMatrix();
+                    {
+                        float modelScale = modelArmor.config.extra.modelScale;
+                        GL11.glScalef(modelScale, modelScale, modelScale);
+                        modelArmor.showChest(true);
+                        //modelArmor.render("rightArmModel", modelplayer.bipedRightArm, 0.0625F, modelScale);
+                        modelArmor.renderRightArm((AbstractClientPlayer) player, modelplayer);
+                    }
+                    GL11.glPopMatrix();
+                } else {
+                    Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(Minecraft.getMinecraft().player);
+                    RenderPlayer renderplayer = (RenderPlayer) render;
+                    GlStateManager.scale(1.00000001F, 1.00000001F, 1.00000001F);
+                    bindTexture("armor", path);
+                    renderplayer.renderRightArm(Minecraft.getMinecraft().player);
                 }
-                GL11.glPopMatrix();
             }
         }
     }
