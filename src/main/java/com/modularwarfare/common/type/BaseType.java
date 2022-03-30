@@ -1,5 +1,6 @@
 package com.modularwarfare.common.type;
 
+import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
 import com.modularwarfare.common.guns.SkinType;
 import com.modularwarfare.loader.MWModelBase;
 import com.modularwarfare.loader.MWModelBipedBase;
@@ -10,11 +11,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BaseType {
 
+    /**
+     * Basic model, only loaded for guns if WeaponAnimationType.BASIC
+     */
     @SideOnly(value = Side.CLIENT)
     public transient MWModelBase model;
 
     @SideOnly(value = Side.CLIENT)
     public transient MWModelBipedBase bipedModel;
+
+    /**
+     * Enhanced model, only loaded for guns if WeaponAnimationType.ENHANCED
+     * MWModelBase model will be ignored
+     */
+    @SideOnly(value = Side.CLIENT)
+    public transient EnhancedModel enhancedModel;
 
     /**
      * Max stack size
@@ -73,7 +84,7 @@ public class BaseType {
      * Method for sub types to use for having models
      */
     public boolean hasModel() {
-        return model != null || bipedModel != null;
+        return (model != null || bipedModel != null || enhancedModel != null);
     }
 
     /**

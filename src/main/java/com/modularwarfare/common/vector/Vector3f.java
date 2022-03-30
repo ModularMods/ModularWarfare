@@ -50,6 +50,7 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
     private static final long serialVersionUID = 1L;
 
     public float x, y, z;
+    public float[] array = new float[3];
 
     /**
      * Constructor for Vector3f.
@@ -206,6 +207,9 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
         this.x = x;
         this.y = y;
         this.z = z;
+        this.array[0] = x;
+        this.array[1] = y;
+        this.array[2] = z;
     }
 
     /**
@@ -237,9 +241,7 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
      * @return this
      */
     public Vector3f translate(float x, float y, float z) {
-        this.x += x;
-        this.y += y;
-        this.z += z;
+        this.set(this.x + x, this.y + y, this.z + z);
         return this;
     }
 
@@ -393,5 +395,9 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
         data.writeFloat(x);
         data.writeFloat(y);
         data.writeFloat(z);
+    }
+
+    public float[] getArray(){
+        return this.array;
     }
 }

@@ -1,9 +1,9 @@
 package com.modularwarfare.utility;
 
-import com.modularwarfare.client.anim.AnimStateMachine;
-import com.modularwarfare.client.anim.StateType;
-import com.modularwarfare.client.model.ModelGun;
-import com.modularwarfare.client.model.renders.RenderGunStatic;
+import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
+import com.modularwarfare.client.fpp.basic.animations.StateType;
+import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.fpp.basic.renderers.RenderGunStatic;
 import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemAmmo;
 import com.modularwarfare.common.guns.ItemGun;

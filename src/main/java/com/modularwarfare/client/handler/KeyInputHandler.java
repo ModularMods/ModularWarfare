@@ -4,10 +4,13 @@ import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.anim.AnimStateMachine;
+import com.modularwarfare.client.fpp.basic.configs.GunRenderConfig;
+import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
+import com.modularwarfare.client.gui.customization.GuiMainScreen;
 import com.modularwarfare.client.input.KeyEntry;
 import com.modularwarfare.client.input.KeyType;
-import com.modularwarfare.client.model.renders.RenderGunStatic;
+import com.modularwarfare.client.fpp.basic.renderers.RenderGunStatic;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.network.PacketGunReload;
 import com.modularwarfare.common.network.PacketGunSwitchMode;
@@ -87,7 +90,9 @@ public class KeyInputHandler extends ForgeEvent {
                                 }
                             }
                         }
-                        if (gunType.hasModel()) {
+                        if (gunType.hasModel() && gunType.animationType.equals(WeaponAnimationType.ENHANCED)) {
+                            gunType.enhancedModel.config = ModularWarfare.getRenderConfig(gunType, GunEnhancedRenderConfig.class);
+                        } else if(gunType.hasModel()){
                             gunType.reloadModel();
                         }
                     }
@@ -128,7 +133,7 @@ public class KeyInputHandler extends ForgeEvent {
                     break;
 
                 case AddAttachment:
-
+                    /*
                     if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
                         if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                             AnimStateMachine stateMachine = ClientRenderHooks.getAnimMachine(entityPlayer);
@@ -136,11 +141,12 @@ public class KeyInputHandler extends ForgeEvent {
                             ModularWarfare.PROXY.playSound(new MWSound(entityPlayer.getPosition(), "attachment.open", 1f, 1f));
                         }
                     }
+                     */
 
 
                     if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
                         if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
-                            //Minecraft.getMinecraft().displayGuiScreen(new GuiMainScreen(entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND),(ItemGun) entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem()));
+                            Minecraft.getMinecraft().displayGuiScreen(new GuiMainScreen(entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND),(ItemGun) entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem()));
                         }
                     }
 

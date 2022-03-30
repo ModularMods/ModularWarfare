@@ -1,8 +1,8 @@
 package com.modularwarfare.client.patch.galacticraft;
 
-import com.modularwarfare.client.model.layers.RenderLayerBackpack;
-import com.modularwarfare.client.model.layers.RenderLayerBody;
-import com.modularwarfare.client.model.layers.RenderLayerHeldGun;
+import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBackpack;
+import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBody;
+import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerHeldGun;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;

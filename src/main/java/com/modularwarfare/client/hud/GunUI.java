@@ -4,8 +4,9 @@ import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.model.ModelAttachment;
-import com.modularwarfare.client.model.renders.RenderParameters;
+import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
+import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
+import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RayUtil;
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import static com.modularwarfare.client.model.renders.RenderParameters.*;
+import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.*;
 
 public class GunUI {
 
@@ -133,7 +134,8 @@ public class GunUI {
                         }
 
                         GlStateManager.popMatrix();
-                        if (ModConfig.INSTANCE.hud.dynamic_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && adsSwitch < 0.6F && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
+                        boolean showCrosshair = ((adsSwitch < 0.6F) && (AnimationController.ADS < 0.5F));
+                        if (ModConfig.INSTANCE.hud.dynamic_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && showCrosshair && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
                             if(RenderParameters.collideFrontDistance <= 0.2f) {
                                 GlStateManager.pushMatrix();
                                 final float accuracy = RayUtil.calculateAccuracyClient((ItemGun) mc.player.getHeldItemMainhand().getItem(), mc.player);
@@ -141,11 +143,17 @@ public class GunUI {
                                 mc.renderEngine.bindTexture(crosshair);
                                 int xPos = width / 2;
                                 int yPos = height / 2;
+                                GlStateManager.enableAlpha();
+                                GlStateManager.enableBlend();
+                                GlStateManager.color(1f,1f,1f, (1F-AnimationController.ADS));
                                 Gui.drawModalRectWithCustomSizedTexture(xPos, yPos, 1.0f, 1.0f, 1, 1, 16.0f, 16.0f);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos, yPos + move, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos, yPos - move - 3, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos + move, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos - move - 3, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
+                                GlStateManager.disableBlend();
+                                GlStateManager.disableAlpha();
+
                                 GlStateManager.popMatrix();
                             }
                         }

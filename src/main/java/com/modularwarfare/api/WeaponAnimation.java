@@ -1,11 +1,11 @@
 package com.modularwarfare.api;
 
-import com.modularwarfare.client.anim.AnimStateMachine;
-import com.modularwarfare.client.anim.ReloadType;
-import com.modularwarfare.client.anim.StateEntry;
-import com.modularwarfare.client.anim.StateEntry.MathType;
-import com.modularwarfare.client.anim.StateType;
-import com.modularwarfare.client.model.ModelGun;
+import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
+import com.modularwarfare.client.fpp.basic.animations.ReloadType;
+import com.modularwarfare.client.fpp.basic.animations.StateEntry;
+import com.modularwarfare.client.fpp.basic.animations.StateEntry.MathType;
+import com.modularwarfare.client.fpp.basic.animations.StateType;
+import com.modularwarfare.client.fpp.basic.models.ModelGun;
 import com.modularwarfare.common.guns.GunType;
 import org.lwjgl.util.vector.Vector3f;
 

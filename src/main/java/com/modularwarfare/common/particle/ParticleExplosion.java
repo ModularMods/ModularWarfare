@@ -1,7 +1,7 @@
 package com.modularwarfare.common.particle;
 
 import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.client.model.renders.RenderParameters;
+import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.utility.RenderHelperMW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
@@ -13,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

@@ -39,6 +39,7 @@ import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.io.ZipInputStream;
 import net.lingala.zip4j.model.FileHeader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.item.Item;
 import net.minecraft.util.EntitySelectors;

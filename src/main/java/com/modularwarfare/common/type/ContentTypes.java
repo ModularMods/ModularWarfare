@@ -2,8 +2,10 @@ package com.modularwarfare.common.type;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.MWArmorType;
-import com.modularwarfare.client.config.*;
-import com.modularwarfare.client.model.*;
+import com.modularwarfare.client.fpp.basic.configs.*;
+import com.modularwarfare.client.fpp.basic.models.*;
+import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
+import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.common.armor.ArmorType;
 import com.modularwarfare.common.armor.ItemMWArmor;
 import com.modularwarfare.common.armor.ItemSpecialArmor;
@@ -34,8 +36,13 @@ public class ContentTypes {
         registerType("guns", GunType.class, (type, reload) -> {
             ContentTypes.<GunType, ItemGun>assignType(ModularWarfare.gunTypes, ItemGun.factory, (GunType) type, reload);
 
-            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                ((ModelGun) (type.model)).config = ModularWarfare.getRenderConfig(type, GunRenderConfig.class);
+            if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+                if(((GunType)type).animationType.equals(WeaponAnimationType.ENHANCED)){
+                    ((type.enhancedModel)).config = ModularWarfare.getRenderConfig(type, GunEnhancedRenderConfig.class);
+                } else {
+                    ((ModelGun) (type.model)).config = ModularWarfare.getRenderConfig(type, GunRenderConfig.class);
+                }
+            }
         });
 
         registerType("ammo", AmmoType.class, (type, reload) -> {

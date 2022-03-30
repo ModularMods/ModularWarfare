@@ -29,12 +29,13 @@ public class ContainerGunParts extends GuiMWContainer {
 
     public void initGui(){
 
-        this.gunParts = Arrays.asList("body", "stock", "slide", "sight", "pipe", "muzzle", "magazine", "grip", "front_receiver", "forearm", "back_receiver");
+        //this.gunParts = Arrays.asList("body", "stock", "slide", "sight", "pipe", "muzzle", "magazine", "grip", "front_receiver", "forearm", "back_receiver");
+        this.gunParts = Arrays.asList("gunModel", "slideModel", "ammoModel");
 
         for(int i = 0; i < gunParts.size(); i++){
-            this.partsSets.put(gunParts.get(i), false);
+            this.partsSets.put(gunParts.get(i), true);
         }
-        this.partsSets.put("body", true);
+        this.partsSets.put("gunModel", true);
 
         for (int i = 0; i < this.gunParts.size(); i++) {
             String displayName = this.gunParts.get(i).substring(0,1).toUpperCase() + this.gunParts.get(i).substring(1).toLowerCase();

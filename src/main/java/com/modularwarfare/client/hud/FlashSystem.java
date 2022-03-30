@@ -1,8 +1,6 @@
 package com.modularwarfare.client.hud;
 
-import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.client.model.ModelAttachment;
-import com.modularwarfare.client.scope.ScopeUtils;
+import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
 import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RenderHelperMW;
 import net.minecraft.client.Minecraft;

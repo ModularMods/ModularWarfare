@@ -1,25 +1,18 @@
 package com.modularwarfare.client;
 
-import com.google.common.base.Throwables;
-import com.google.gson.JsonSyntaxException;
-import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.AnimationUtils;
-import com.modularwarfare.api.RenderBonesEvent;
-import com.modularwarfare.client.anim.AnimStateMachine;
+import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
+import com.modularwarfare.client.fpp.basic.renderers.*;
+import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
+import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
 import com.modularwarfare.client.handler.ClientTickHandler;
-import com.modularwarfare.client.model.ModelCustomArmor.Bones.BonePart.EnumBoneType;
-import com.modularwarfare.client.model.objects.CustomItemRenderType;
-import com.modularwarfare.client.model.objects.CustomItemRenderer;
-import com.modularwarfare.client.model.renders.*;
-import com.modularwarfare.client.scope.ScopeUtils;
+import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
+import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderer;
 import com.modularwarfare.common.backpacks.ItemBackpack;
-import com.modularwarfare.common.entity.grenades.EntityGrenade;
 import com.modularwarfare.common.entity.grenades.EntitySmokeGrenade;
 import com.modularwarfare.common.guns.*;
-import com.modularwarfare.common.network.BackWeaponsManager;
 import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
-import com.modularwarfare.mixin.client.accessor.IShaderGroup;
 import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RenderHelperMW;
 import com.modularwarfare.utility.event.ForgeEvent;
@@ -34,11 +27,6 @@ import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.client.shader.Shader;
-import net.minecraft.client.shader.ShaderGroup;
-import net.minecraft.client.shader.ShaderUniform;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,23 +38,20 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.Project;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.List;
 
 public class ClientRenderHooks extends ForgeEvent {
 
     public static HashMap<EntityLivingBase, AnimStateMachine> weaponAnimations = new HashMap<EntityLivingBase, AnimStateMachine>();
+    public static AnimationController controller;
+
+
     public static CustomItemRenderer[] customRenderers = new CustomItemRenderer[9];
     public static boolean isAimingScope;
     public static boolean isAiming;
@@ -79,6 +64,7 @@ public class ClientRenderHooks extends ForgeEvent {
 
     public ClientRenderHooks() {
         mc = Minecraft.getMinecraft();
+        customRenderers[0] = ClientProxy.gunEnhancedRenderer = new RenderGunEnhanced();
         customRenderers[1] = ClientProxy.gunStaticRenderer = new RenderGunStatic();
         customRenderers[2] = ClientProxy.ammoRenderer = new RenderAmmo();
         customRenderers[3] = ClientProxy.attachmentRenderer = new RenderAttachment();
@@ -173,6 +159,7 @@ public class ClientRenderHooks extends ForgeEvent {
             if (item.render3d && customRenderers[type.id] != null && type.hasModel() && !type.getAssetDir().equalsIgnoreCase("attachments")) {
                 //Cancel the hand render event so that we can do our own.
                 event.setCanceled(true);
+                ClientProxy.scopeUtils.updateScope();
 
                 float partialTicks = event.getPartialTicks();
                 EntityRenderer renderer = mc.entityRenderer;
@@ -246,26 +233,35 @@ public class ClientRenderHooks extends ForgeEvent {
                     GlStateManager.scale(0.4F, 0.4F, 0.4F);
 
 
-                    ClientProxy.scopeUtils.initBlur();
-                    GlStateManager.pushMatrix();
-                    GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, ClientProxy.scopeUtils.blurFramebuffer.framebufferObject);
-                    GL30.glBlitFramebuffer(0, 0, mc.displayWidth, mc.displayHeight, 0, 0, mc.displayWidth, mc.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-                    GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mc.getFramebuffer().framebufferObject);
-                    GL11.glEnable(GL11.GL_STENCIL_TEST);
-                    GL11.glStencilMask(0xFF);
-                    GL11.glClearStencil(0);
-                    GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-                    GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
-                    GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0XFF);
+                    if (!OptifineHelper.isShadersEnabled()) {
+                        ClientProxy.scopeUtils.initBlur();
+                        GlStateManager.pushMatrix();
+                        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, ClientProxy.scopeUtils.blurFramebuffer.framebufferObject);
+                        GL30.glBlitFramebuffer(0, 0, mc.displayWidth, mc.displayHeight, 0, 0, mc.displayWidth, mc.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+                        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, mc.getFramebuffer().framebufferObject);
+                        GL11.glEnable(GL11.GL_STENCIL_TEST);
+                        GL11.glStencilMask(0xFF);
+                        GL11.glClearStencil(0);
+                        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+                        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+                        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0XFF);
+                    }
 
+                    //Check if model is Basic or Enhanced for gun render
                     if(item instanceof ItemGun) {
-                        customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
+                        if(((GunType)type).animationType.equals(WeaponAnimationType.BASIC)){
+                            customRenderers[1].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
+                        } else{
+                            customRenderers[0].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), stack, mc.world, mc.player);
+                        }
                     } else {
                         customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), stack, mc.world, mc.player);
                     }
-                    GL11.glStencilMask(0x00);
-                    GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0XFF);
 
+                    if (!OptifineHelper.isShadersEnabled()) {
+                        GL11.glStencilMask(0x00);
+                        GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0XFF);
+                    }
                     boolean needBlur = false;
                     if(RenderParameters.adsSwitch != 0F) {
                         if (GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight) != null) {
@@ -283,23 +279,26 @@ public class ClientRenderHooks extends ForgeEvent {
                         }
                     }
 
-                    mc.getFramebuffer().bindFramebuffer(false);
-                    ClientProxy.scopeUtils.blurFramebuffer.bindFramebufferTexture();
-                    GlStateManager.pushMatrix();
-                    ScaledResolution resolution = new ScaledResolution(mc);
-                    Minecraft.getMinecraft().entityRenderer.setupOverlayRendering();
-                    
-                    GlStateManager.disableRescaleNormal();
-                    RenderHelper.disableStandardItemLighting();
-                    renderer.disableLightmap();
+                    if (!OptifineHelper.isShadersEnabled()) {
+                        mc.getFramebuffer().bindFramebuffer(false);
+                        ClientProxy.scopeUtils.blurFramebuffer.bindFramebufferTexture();
+                        GlStateManager.pushMatrix();
+                        ScaledResolution resolution = new ScaledResolution(mc);
+                        Minecraft.getMinecraft().entityRenderer.setupOverlayRendering();
 
-                    if (needBlur) {
-                        ClientProxy.scopeUtils.drawScaledCustomSizeModalRectFlipY(0, 0, 0, 0, 1, 1, resolution.getScaledWidth(), resolution.getScaledHeight(), 1, 1);
+                        GlStateManager.disableRescaleNormal();
+                        RenderHelper.disableStandardItemLighting();
+                        renderer.disableLightmap();
+
+                        if (needBlur) {
+                            ClientProxy.scopeUtils.drawScaledCustomSizeModalRectFlipY(0, 0, 0, 0, 1, 1, resolution.getScaledWidth(), resolution.getScaledHeight(), 1, 1);
+                        }
+                        GlStateManager.popMatrix();
+                        GL11.glDisable(GL11.GL_STENCIL_TEST);
+
+                        GlStateManager.popMatrix();
                     }
-                    GlStateManager.popMatrix();
-                    GL11.glDisable(GL11.GL_STENCIL_TEST);
 
-                    GlStateManager.popMatrix();
                     GlStateManager.disableRescaleNormal();
                     RenderHelper.disableStandardItemLighting();
                     renderer.disableLightmap();

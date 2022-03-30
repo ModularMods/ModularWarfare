@@ -1,6 +1,6 @@
 package com.modularwarfare.client.handler;
 
-import com.modularwarfare.client.model.renders.RenderParameters;
+import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 
 public class SmoothSwingTicker implements Runnable {
 

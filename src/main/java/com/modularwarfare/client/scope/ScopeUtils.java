@@ -4,12 +4,10 @@ package com.modularwarfare.client.scope;
 import com.google.gson.JsonSyntaxException;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
-import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.model.ModelAttachment;
-import com.modularwarfare.client.model.renders.RenderParameters;
+import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
+import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.mixin.client.accessor.IShaderGroup;
-import com.modularwarfare.utility.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -41,6 +39,8 @@ public class ScopeUtils {
 
     public boolean hasBeenReseted = true;
     public float mouseSensitivityBackup;
+    public float fovBackup;
+
     private Field renderEndNanoTime;
 
     public ShaderGroup blurShader;
@@ -55,7 +55,7 @@ public class ScopeUtils {
 
         MIRROR_TEX = GL11.glGenTextures();
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, MIRROR_TEX);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, quality, quality, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, mc.displayWidth, mc.displayWidth, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 
@@ -78,6 +78,7 @@ public class ScopeUtils {
 
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
+        /*
         if (event.phase == TickEvent.Phase.START) {
             GL11.glPushMatrix();
             if (mc.player != null && mc.currentScreen == null) {
@@ -99,36 +100,74 @@ public class ScopeUtils {
             }
             GL11.glPopMatrix();
         }
+         */
     }
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
         switch (event.phase) {
             case START:
-                if (ClientRenderHooks.isAimingScope) {
-                    if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun && RenderParameters.adsSwitch != 0 && mc.gameSettings.thirdPersonView == 0) {
-                        if (GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight) != null) {
-                            final ItemAttachment itemAttachment = (ItemAttachment) GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight).getItem();
-                            if (itemAttachment != null) {
-                                if (itemAttachment.type != null) {
-                                    mc.gameSettings.mouseSensitivity = mouseSensitivityBackup * ((ModelAttachment) itemAttachment.type.model).config.sight.mouseSensitivityFactor;
-                                    hasBeenReseted = false;
-                                }
-                            }
-                        }
-                    }
-                } else if (!hasBeenReseted) {
-                    mc.gameSettings.mouseSensitivity = mouseSensitivityBackup;
-                    mc.gameSettings.fovSetting = 90;
-                    hasBeenReseted = true;
-                } else if (mouseSensitivityBackup != mc.gameSettings.mouseSensitivity) {
-                    mouseSensitivityBackup = mc.gameSettings.mouseSensitivity;
-                }
         }
     }
 
-    public void renderWorld(Minecraft mc, ItemAttachment itemAttachment, float partialTick) {
+    public void updateScope(){
+        if (mc.player != null && mc.currentScreen == null) {
+            //If player has gun, update scope
+            if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun && RenderParameters.adsSwitch != 0 && mc.gameSettings.thirdPersonView == 0) {
+                if (GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight) != null) {
+                    final ItemAttachment itemAttachment = (ItemAttachment) GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight).getItem();
+                    if (itemAttachment != null) {
+                        if (itemAttachment.type != null) {
+                            mc.gameSettings.mouseSensitivity = mouseSensitivityBackup * ((ModelAttachment) itemAttachment.type.model).config.sight.mouseSensitivityFactor;
 
+                            mc.gameSettings.fovSetting = Math.max(0.1f, Math.min(fovBackup, ((fovBackup * 1.0f/((ModelAttachment) itemAttachment.type.model).config.sight.fovZoom) * 1F/RenderParameters.adsSwitch)));
+                            ModularWarfare.LOGGER.info(mc.gameSettings.fovSetting);
+                            hasBeenReseted = false;
+                            if (itemAttachment.type.sight.scopeType != WeaponScopeType.REDDOT) {
+                                GL11.glTranslatef(-0.5f,0f,0f);
+                                takeScopeImage(mc, ((ModelAttachment) itemAttachment.type.model).config.sight.fovZoom);
+                            }
+                        }
+                    }
+                }
+            } else if (!hasBeenReseted) {
+                mc.gameSettings.mouseSensitivity = mouseSensitivityBackup;
+                mc.gameSettings.fovSetting = fovBackup;
+                hasBeenReseted = true;
+            } else if (mouseSensitivityBackup != mc.gameSettings.mouseSensitivity || fovBackup != mc.gameSettings.fovSetting) {
+                mouseSensitivityBackup = mc.gameSettings.mouseSensitivity;
+                fovBackup = mc.gameSettings.fovSetting;
+            }
+        } else if (!hasBeenReseted) {
+            mc.gameSettings.mouseSensitivity = mouseSensitivityBackup;
+            mc.gameSettings.fovSetting = fovBackup;
+            hasBeenReseted = true;
+        } else if (mouseSensitivityBackup != mc.gameSettings.mouseSensitivity || fovBackup != mc.gameSettings.fovSetting) {
+            mouseSensitivityBackup = mc.gameSettings.mouseSensitivity;
+            fovBackup = mc.gameSettings.fovSetting;
+        }
+    }
+
+    public void takeScopeImage(Minecraft mc, float attach_fov) {
+        float zoom = mc.gameSettings.fovSetting / attach_fov;
+
+        mc.renderGlobal = scopeRenderGlobal;
+
+        GL11.glPushMatrix();
+
+        //Get the current Display and Height/Width
+        int width = Display.getWidth();
+        int height = Display.getHeight();
+
+        //Bind mirror texture and apply the screen to it as a texture
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, MIRROR_TEX);
+        GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, width, height, 0);
+
+
+        GL11.glPopMatrix();
+    }
+
+    public void renderWorld(Minecraft mc, ItemAttachment itemAttachment, float partialTick) {
         float zoom = (50.0f / ((ModelAttachment) itemAttachment.type.model).config.sight.fovZoom);
 
         GL11.glPushMatrix();

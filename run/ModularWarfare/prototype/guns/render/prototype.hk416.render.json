@@ -237,7 +237,7 @@
     "chargeHandleDistance": 0.15,
     "gunOffsetScoping": 0.0,
     "crouchZoom": -0.035,
-    "adsSpeed": 0.02,
+    "adsSpeed": 0.17,
     "gunSlideDistance": 0.25,
     "modelRecoilBackwards": 0.05,
     "modelRecoilUpwards": 1.0,

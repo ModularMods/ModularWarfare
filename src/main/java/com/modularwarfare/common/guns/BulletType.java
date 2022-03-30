@@ -1,9 +1,9 @@
 package com.modularwarfare.common.guns;
 
 import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.client.config.BulletRenderConfig;
-import com.modularwarfare.client.model.ModelBullet;
-import com.modularwarfare.client.model.ModelShell;
+import com.modularwarfare.client.fpp.basic.configs.BulletRenderConfig;
+import com.modularwarfare.client.fpp.basic.models.ModelBullet;
+import com.modularwarfare.client.fpp.basic.models.ModelShell;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.loader.MWModelBase;
 

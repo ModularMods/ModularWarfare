@@ -1,6 +1,6 @@
 package com.modularwarfare.utility;
 
-import com.modularwarfare.client.model.renders.RenderParameters;
+import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.*;

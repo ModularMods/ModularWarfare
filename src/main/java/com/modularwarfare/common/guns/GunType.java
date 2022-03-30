@@ -2,8 +2,11 @@ package com.modularwarfare.common.guns;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
-import com.modularwarfare.client.config.GunRenderConfig;
-import com.modularwarfare.client.model.ModelGun;
+import com.modularwarfare.client.fpp.basic.configs.GunRenderConfig;
+import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
+import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
+import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.common.network.PacketPlaySound;
 import com.modularwarfare.common.textures.TextureEnumType;
 import com.modularwarfare.common.textures.TextureType;
@@ -37,6 +40,8 @@ public class GunType extends BaseType {
     public WeaponType weaponType;
 
     public WeaponScopeType scopeType = WeaponScopeType.DEFAULT;
+
+    public WeaponAnimationType animationType = WeaponAnimationType.BASIC;
 
     //Munition variables
     /**
@@ -279,7 +284,11 @@ public class GunType extends BaseType {
 
     @Override
     public void reloadModel() {
-        model = new ModelGun(ModularWarfare.getRenderConfig(this, GunRenderConfig.class), this);
+        if (animationType == WeaponAnimationType.BASIC) {
+            model = new ModelGun(ModularWarfare.getRenderConfig(this, GunRenderConfig.class), this);
+        } else {
+            enhancedModel = new ModelEnhancedGun(ModularWarfare.getRenderConfig(this, GunEnhancedRenderConfig.class), this);
+        }
     }
 
     public void playClientSound(EntityPlayer player, WeaponSoundType weaponSoundType) {

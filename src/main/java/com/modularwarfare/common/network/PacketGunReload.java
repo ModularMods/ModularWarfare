@@ -2,7 +2,7 @@ package com.modularwarfare.common.network;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.WeaponReloadEvent;
-import com.modularwarfare.client.anim.ReloadType;
+import com.modularwarfare.client.fpp.basic.animations.ReloadType;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.handler.ServerTickHandler;
 import io.netty.buffer.ByteBuf;

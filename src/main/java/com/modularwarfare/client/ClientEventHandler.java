@@ -3,7 +3,7 @@ package com.modularwarfare.client;
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.hud.FlashSystem;
-import com.modularwarfare.client.model.InstantBulletRenderer;
+import com.modularwarfare.client.fpp.basic.models.InstantBulletRenderer;
 import com.modularwarfare.common.init.ModSounds;
 import com.modularwarfare.common.network.PacketOpenGui;
 import net.minecraft.client.Minecraft;

@@ -189,7 +189,7 @@
     "chargeHandleDistance": 0.0,
     "gunOffsetScoping": 0.0,
     "crouchZoom": -0.035,
-    "adsSpeed": 0.1,
+    "adsSpeed": 0.17,
     "gunSlideDistance": 0.05,
     "chargeModifier": {
       "x": 0.1,

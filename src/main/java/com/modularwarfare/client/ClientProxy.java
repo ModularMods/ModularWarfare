@@ -5,21 +5,22 @@ import com.google.gson.GsonBuilder;
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.WeaponAnimations;
-import com.modularwarfare.client.anim.ReloadType;
-import com.modularwarfare.client.config.*;
+import com.modularwarfare.client.fpp.basic.animations.ReloadType;
 import com.modularwarfare.client.export.ItemModelExport;
+import com.modularwarfare.client.fpp.basic.animations.anims.*;
+import com.modularwarfare.client.fpp.basic.configs.*;
+import com.modularwarfare.client.fpp.basic.renderers.*;
+import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
+import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
 import com.modularwarfare.client.handler.*;
 import com.modularwarfare.client.hud.AttachmentUI;
 import com.modularwarfare.client.hud.FlashSystem;
 import com.modularwarfare.client.hud.GunUI;
 import com.modularwarfare.client.killchat.KillFeedManager;
 import com.modularwarfare.client.killchat.KillFeedRender;
-import com.modularwarfare.client.model.ModelGun;
-import com.modularwarfare.client.model.animations.*;
-import com.modularwarfare.client.model.layers.RenderLayerBackpack;
-import com.modularwarfare.client.model.layers.RenderLayerBody;
-import com.modularwarfare.client.model.layers.RenderLayerHeldGun;
-import com.modularwarfare.client.model.renders.*;
+import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBackpack;
+import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBody;
 import com.modularwarfare.client.patch.customnpc.CustomNPCListener;
 import com.modularwarfare.client.patch.galacticraft.GCCompatInterop;
 import com.modularwarfare.client.patch.galacticraft.GCDummyInterop;
@@ -47,6 +48,8 @@ import com.modularwarfare.common.init.ModSounds;
 import com.modularwarfare.common.particle.EntityBloodFX;
 import com.modularwarfare.common.particle.ParticleExplosion;
 import com.modularwarfare.common.type.BaseType;
+import com.modularwarfare.common.type.ContentTypes;
+import com.modularwarfare.common.type.TypeEntry;
 import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWResourcePack;
 import com.modularwarfare.utility.MWSound;
@@ -58,9 +61,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -89,22 +89,22 @@ import paulscode.sound.SoundSystemConfig;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Predicate;
 
 import static com.modularwarfare.ModularWarfare.contentPacks;
 
 public class ClientProxy extends CommonProxy {
 
-    public static String modelDir = "com.modularwarfare.client.model.";
+    public static String modelDir = "com.modularwarfare.client.fpp.basic.model.";
 
     //Renderes
     public static RenderGunStatic gunStaticRenderer;
+    public static RenderGunEnhanced gunEnhancedRenderer;
+
     public static RenderAmmo ammoRenderer;
     public static RenderAttachment attachmentRenderer;
     public static RenderGrenade grenadeRenderer;
@@ -201,6 +201,7 @@ public class ClientProxy extends CommonProxy {
 
         MinecraftForge.EVENT_BUS.register(this);
         startPatches();
+        Minecraft.getMinecraft().gameSettings.useVbo = false;
     }
 
     public void startPatches() {
@@ -403,49 +404,17 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void generateJsonModels(ArrayList<BaseType> types) {
-
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
         for (BaseType type : types) {
             if (type.contentPack == null)
                 continue;
 
             File contentPackDir = new File(ModularWarfare.MOD_DIR, type.contentPack);
             if (contentPackDir.exists() && contentPackDir.isDirectory()) {
+
                 File itemModelsDir = new File(contentPackDir, "/assets/modularwarfare/models/item");
-                File gunRenderConfig = new File(contentPackDir, "/guns/render");
-                File attachmentRenderConfig = new File(contentPackDir, "/attachments/render");
-                File armorRenderConfig = new File(contentPackDir, "/armor/render");
-                File ammoRenderConfig = new File(contentPackDir, "/ammo/render");
-                File bulletRenderConfig = new File(contentPackDir, "/bullets/render");
-                File backpacksRenderConfig = new File(contentPackDir, "/backpacks/render");
-                File grenadeRenderConfig = new File(contentPackDir, "/grenades/render");
-
-
                 if (!itemModelsDir.exists())
                     itemModelsDir.mkdirs();
-
-                if (!gunRenderConfig.exists())
-                    gunRenderConfig.mkdirs();
-
-                if (!attachmentRenderConfig.exists())
-                    attachmentRenderConfig.mkdirs();
-
-                if (!armorRenderConfig.exists())
-                    armorRenderConfig.mkdirs();
-
-                if (!ammoRenderConfig.exists())
-                    ammoRenderConfig.mkdirs();
-
-                if (!bulletRenderConfig.exists())
-                    bulletRenderConfig.mkdirs();
-
-                if (!backpacksRenderConfig.exists())
-                    backpacksRenderConfig.mkdirs();
-
-                if (!grenadeRenderConfig.exists())
-                    grenadeRenderConfig.mkdirs();
-
                 File typeModel = new File(itemModelsDir, type.internalName + ".json");
 
                 if (ModularWarfare.DEV_ENV) {
@@ -454,7 +423,6 @@ public class ClientProxy extends CommonProxy {
                         for (ArmorInfo armorInfo : armorType.armorTypes.values()) {
                             String internalName = armorInfo.internalName != null ? armorInfo.internalName : armorType.internalName;
                             typeModel = new File(itemModelsDir, internalName + ".json");
-
                             try {
                                 FileWriter fileWriter = new FileWriter(typeModel, false);
                                 gson.toJson(createJson(type, internalName), fileWriter);
@@ -476,127 +444,38 @@ public class ClientProxy extends CommonProxy {
                     }
                 }
 
+                /**
+                 * Create directories & files for .render.json if they don't exist
+                 */
                 if (ModularWarfare.DEV_ENV) {
-                    if (type instanceof GunType) {
-                        File typeGunRender = new File(gunRenderConfig, type.internalName + ".render.json");
-                        if (!typeGunRender.exists()) {
-                            try {
-                                FileWriter fileWriter = new FileWriter(typeGunRender, true);
-                                GunRenderConfig renderConfig = new GunRenderConfig();
-                                renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
-                                renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
-                                gson.toJson(renderConfig, fileWriter);
-                                fileWriter.flush();
-                                fileWriter.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+                    final File dir = new File(contentPackDir, "/" + type.getAssetDir() + "/render");
+                    if (!dir.exists()) {
+                        dir.mkdirs();
                     }
-                    if (type instanceof AttachmentType) {
-                        File typeAttachmentRender = new File(attachmentRenderConfig, type.internalName + ".render.json");
-                        if (!typeAttachmentRender.exists()) {
-                            try {
-                                FileWriter fileWriter = new FileWriter(typeAttachmentRender, true);
-                                AttachmentRenderConfig renderConfig = new AttachmentRenderConfig();
-                                renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
-                                renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
-                                gson.toJson(renderConfig, fileWriter);
-                                fileWriter.flush();
-                                fileWriter.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    if (type instanceof ArmorType) {
-                        File typeArmorRender = new File(armorRenderConfig, type.internalName + ".render.json");
-                        if (!typeArmorRender.exists()) {
-                            try {
-                                FileWriter fileWriter = new FileWriter(typeArmorRender, true);
-                                ArmorRenderConfig renderConfig = new ArmorRenderConfig();
-                                renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
-                                renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
-                                gson.toJson(renderConfig, fileWriter);
-                                fileWriter.flush();
-                                fileWriter.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    if (type instanceof AmmoType) {
-                        AmmoType ammoType = (AmmoType) type;
-                        if (ammoType.isDynamicAmmo) {
-                            File typeAmmoRender = new File(ammoRenderConfig, type.internalName + ".render.json");
-                            if (!typeAmmoRender.exists()) {
-                                try {
-                                    FileWriter fileWriter = new FileWriter(typeAmmoRender, true);
-                                    AmmoRenderConfig renderConfig = new AmmoRenderConfig();
+                    final File renderFile = new File(dir, type.internalName + ".render.json");
+                    if (!renderFile.exists()) {
+                        try {
+                            FileWriter fileWriter = new FileWriter(renderFile, true);
+                            if (type instanceof GunType) {
+                                if (((GunType) type).animationType.equals(WeaponAnimationType.ENHANCED)) {
+                                    GunEnhancedRenderConfig renderConfig = new GunEnhancedRenderConfig();
+                                    renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
+                                    renderConfig.modelFileName = renderConfig.modelFileName + ".glb";
+                                    gson.toJson(renderConfig, fileWriter);
+                                } else {
+                                    GunRenderConfig renderConfig = new GunRenderConfig();
                                     renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
                                     renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
                                     gson.toJson(renderConfig, fileWriter);
-                                    fileWriter.flush();
-                                    fileWriter.close();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
-                            }
-                        }
-                    }
-                    if (type instanceof BulletType) {
-                        BulletType ammoType = (BulletType) type;
-                        if (ammoType.renderBulletModel) {
-                            File typeBulletRender = new File(bulletRenderConfig, type.internalName + ".render.json");
-                            if (!typeBulletRender.exists()) {
-                                try {
-                                    FileWriter fileWriter = new FileWriter(typeBulletRender, true);
-                                    BulletRenderConfig renderConfig = new BulletRenderConfig();
-                                    renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
-                                    renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
-                                    gson.toJson(renderConfig, fileWriter);
-                                    fileWriter.flush();
-                                    fileWriter.close();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                    if (type instanceof BackpackType) {
-                        File typeBackpackRender = new File(backpacksRenderConfig, type.internalName + ".render.json");
-                        if (!typeBackpackRender.exists()) {
-                            try {
-                                FileWriter fileWriter = new FileWriter(typeBackpackRender, true);
-                                BackpackRenderConfig renderConfig = new BackpackRenderConfig();
-                                renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
-                                renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
-                                gson.toJson(renderConfig, fileWriter);
                                 fileWriter.flush();
                                 fileWriter.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
-                        }
-                    }
-                    if (type instanceof GrenadeType) {
-                        File typeGrenadeRender = new File(grenadeRenderConfig, type.internalName + ".render.json");
-                        if (!typeGrenadeRender.exists()) {
-                            try {
-                                FileWriter fileWriter = new FileWriter(typeGrenadeRender, true);
-                                GrenadeRenderConfig renderConfig = new GrenadeRenderConfig();
-                                renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
-                                renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
-                                gson.toJson(renderConfig, fileWriter);
-                                fileWriter.flush();
-                                fileWriter.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }
-
             }
         }
     }

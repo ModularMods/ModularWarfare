@@ -4,6 +4,7 @@ import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.WeaponFireEvent;
 import com.modularwarfare.api.WeaponHitEvent;
+import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.handler.ClientTickHandler;
 import com.modularwarfare.common.armor.ArmorType;
@@ -18,6 +19,7 @@ import com.modularwarfare.common.hitbox.hits.BulletHit;
 import com.modularwarfare.common.hitbox.hits.PlayerHit;
 import com.modularwarfare.common.hitbox.maths.EnumHitboxType;
 import com.modularwarfare.common.network.*;
+import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.RayUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,10 +57,8 @@ public class ShotManager {
 
         if (preFireEvent.getResult() == Event.Result.DEFAULT || preFireEvent.getResult() == Event.Result.ALLOW) {
             if (!ItemGun.hasNextShot(gunStack)) {
-                if (ItemGun.canDryFire) {
-                    gunType.playClientSound(entityPlayer, WeaponSoundType.DryFire);
-                    gunType.playClientSound(entityPlayer, WeaponSoundType.FireLast);
-                    ItemGun.canDryFire = false;
+                if (fireMode == WeaponFireMode.SEMI) {
+                    ((ClientProxy)ModularWarfare.PROXY).playSound(new MWSound(entityPlayer.getPosition(), "defemptyclick", 1.0f, 1.0f));
                 }
                 if (fireMode == WeaponFireMode.BURST) gunStack.getTagCompound().setInteger("shotsremaining", 0);
                 return;
@@ -66,8 +66,6 @@ public class ShotManager {
         }
 
         ModularWarfare.PROXY.onShootAnimation(entityPlayer, gunType.internalName, gunType.fireTickDelay, itemGun.type.recoilPitch, itemGun.type.recoilYaw);
-
-        ItemGun.canDryFire = true;
 
         // Sound
         if (GunType.getAttachment(gunStack, AttachmentEnum.Barrel) != null) {

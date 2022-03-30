@@ -3,15 +3,18 @@ package com.modularwarfare.client.handler;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.anim.AnimStateMachine;
-import com.modularwarfare.client.anim.StateEntry;
+import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
+import com.modularwarfare.client.fpp.basic.animations.StateEntry;
+import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
+import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.client.hud.FlashSystem;
-import com.modularwarfare.client.model.InstantBulletRenderer;
-import com.modularwarfare.client.model.ModelGun;
-import com.modularwarfare.client.model.renders.RenderParameters;
+import com.modularwarfare.client.fpp.basic.models.InstantBulletRenderer;
+import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.common.grenades.ItemGrenade;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.guns.ItemSpray;
+import com.modularwarfare.common.guns.WeaponAnimationType;
 import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.RayUtil;
 import com.modularwarfare.utility.event.ForgeEvent;
@@ -29,16 +32,16 @@ import org.lwjgl.input.Mouse;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.modularwarfare.client.model.renders.RenderParameters.*;
+import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.*;
 
 public class ClientTickHandler extends ForgeEvent {
 
     public static ConcurrentHashMap<UUID, Integer> playerShootCooldown = new ConcurrentHashMap<UUID, Integer>();
     public static ConcurrentHashMap<UUID, Integer> playerReloadCooldown = new ConcurrentHashMap<UUID, Integer>();
 
-    private static int oldCurrentItem;
-    private static ItemStack oldItemStack = ItemStack.EMPTY;
-    public static ItemStack lastItemStack=ItemStack.EMPTY;
+    public static int oldCurrentItem;
+    public static ItemStack oldItemStack = ItemStack.EMPTY;
+    public static ItemStack lastItemStack = ItemStack.EMPTY;
     int i = 0;
 
     public ClientTickHandler() {
@@ -99,47 +102,50 @@ public class ClientTickHandler extends ForgeEvent {
         EntityPlayerSP player = minecraft.player;
 
         if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemGun) {
-            ModelGun model = (ModelGun) ((ItemGun) player.getHeldItemMainhand().getItem()).type.model;
-            if (!RenderParameters.lastModel.equalsIgnoreCase(model.getClass().getName())) {
-                RenderParameters.resetRenderMods();
-                RenderParameters.lastModel = model.getClass().getName();
+            float adsSpeed = 0F;
+            if(((ItemGun) player.getHeldItemMainhand().getItem()).type.animationType.equals(WeaponAnimationType.BASIC)){
+                ModelGun model = (ModelGun) ((ItemGun) player.getHeldItemMainhand().getItem()).type.model;
+                if (!RenderParameters.lastModel.equalsIgnoreCase(model.getClass().getName())) {
+                    RenderParameters.resetRenderMods();
+                    RenderParameters.lastModel = model.getClass().getName();
+                    adsSpeed = model.config.extra.adsSpeed;
+                }
+                AnimStateMachine anim = ClientRenderHooks.getAnimMachine(player);
+
+                float adsSpeedFinal = (0.10f + adsSpeed) * renderTick;
+                boolean aimChargeMisc = !anim.reloading;
+                float value = (Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && aimChargeMisc && !ClientRenderHooks.getAnimMachine(player).attachmentMode) ? RenderParameters.adsSwitch + adsSpeedFinal : RenderParameters.adsSwitch - adsSpeedFinal;
+                RenderParameters.adsSwitch = Math.max(0, Math.min(1, value));
+                ;
+
+                float sprintSpeed = 0.15f * renderTick;
+                float sprintValue = (player.isSprinting() && !ClientRenderHooks.getAnimMachine(player).attachmentMode) ? RenderParameters.sprintSwitch + sprintSpeed : RenderParameters.sprintSwitch - sprintSpeed;
+                RenderParameters.sprintSwitch = Math.max(0, Math.min(1, sprintValue));
+                ;
+
+                float attachmentSpeed = 0.15f * renderTick;
+                float attachmentValue = ClientRenderHooks.getAnimMachine(player).attachmentMode ? RenderParameters.attachmentSwitch + attachmentSpeed : RenderParameters.attachmentSwitch - attachmentSpeed;
+                RenderParameters.attachmentSwitch = Math.max(0, Math.min(1, attachmentValue));
+                ;
+
+                float crouchSpeed = 0.15f * renderTick;
+                float crouchValue = player.isSneaking() ? RenderParameters.crouchSwitch + crouchSpeed : RenderParameters.crouchSwitch - crouchSpeed;
+                RenderParameters.crouchSwitch = Math.max(0, Math.min(1, crouchValue));
+                ;
+
+                float reloadSpeed = 0.15f * renderTick;
+                float reloadValue = anim.reloading ? RenderParameters.reloadSwitch - reloadSpeed : RenderParameters.reloadSwitch + reloadSpeed;
+                RenderParameters.reloadSwitch = Math.max(0, Math.min(1, reloadValue));
+                ;
+
+                float triggerPullSpeed = 0.03f * renderTick;
+                float triggerPullValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) && !ClientRenderHooks.getAnimMachine(player).attachmentMode ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
+                RenderParameters.triggerPullSwitch = Math.max(0, Math.min(0.02f, triggerPullValue));
+
+                float modeSwitchSpeed = 0.03f * renderTick;
+                float modeSwitchValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
+                RenderParameters.triggerPullSwitch = Math.max(0, Math.min(0.02f, triggerPullValue));
             }
-
-            AnimStateMachine anim = ClientRenderHooks.getAnimMachine(player);
-
-            float adsSpeed = (0.10f + model.config.extra.adsSpeed) * renderTick;
-            boolean aimChargeMisc = !anim.reloading;
-            float value = (Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && aimChargeMisc && !ClientRenderHooks.getAnimMachine(player).attachmentMode) ? RenderParameters.adsSwitch + adsSpeed : RenderParameters.adsSwitch - adsSpeed;
-            RenderParameters.adsSwitch = Math.max(0, Math.min(1, value));
-            ;
-
-            float sprintSpeed = 0.15f * renderTick;
-            float sprintValue = (player.isSprinting() && !ClientRenderHooks.getAnimMachine(player).attachmentMode) ? RenderParameters.sprintSwitch + sprintSpeed : RenderParameters.sprintSwitch - sprintSpeed;
-            RenderParameters.sprintSwitch = Math.max(0, Math.min(1, sprintValue));
-            ;
-
-            float attachmentSpeed = 0.15f * renderTick;
-            float attachmentValue = ClientRenderHooks.getAnimMachine(player).attachmentMode ? RenderParameters.attachmentSwitch + attachmentSpeed : RenderParameters.attachmentSwitch - attachmentSpeed;
-            RenderParameters.attachmentSwitch = Math.max(0, Math.min(1, attachmentValue));
-            ;
-
-            float crouchSpeed = 0.15f * renderTick;
-            float crouchValue = player.isSneaking() ? RenderParameters.crouchSwitch + crouchSpeed : RenderParameters.crouchSwitch - crouchSpeed;
-            RenderParameters.crouchSwitch = Math.max(0, Math.min(1, crouchValue));
-            ;
-
-            float reloadSpeed = 0.15f * renderTick;
-            float reloadValue = anim.reloading ? RenderParameters.reloadSwitch - reloadSpeed : RenderParameters.reloadSwitch + reloadSpeed;
-            RenderParameters.reloadSwitch = Math.max(0, Math.min(1, reloadValue));
-            ;
-
-            float triggerPullSpeed = 0.03f * renderTick;
-            float triggerPullValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) && !ClientRenderHooks.getAnimMachine(player).attachmentMode ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
-            RenderParameters.triggerPullSwitch = Math.max(0, Math.min(model.triggerDistance, triggerPullValue));
-
-            float modeSwitchSpeed = 0.03f * renderTick;
-            float modeSwitchValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
-            RenderParameters.triggerPullSwitch = Math.max(0, Math.min(model.triggerDistance, triggerPullValue));
 
             float balancing_speed_x = 0.08f * renderTick;
             if(player.moveStrafing > 0){
@@ -166,7 +172,6 @@ public class ClientTickHandler extends ForgeEvent {
                     RenderParameters.GUN_BALANCING_Y = Math.min(0, RenderParameters.GUN_BALANCING_Y + balancing_speed_y*2);
                 }
             }
-
 
             //Gun change animation
             if(player.inventory.currentItem != oldCurrentItem){
