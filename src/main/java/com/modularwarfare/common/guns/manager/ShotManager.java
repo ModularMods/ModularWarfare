@@ -298,7 +298,7 @@ public class ShotManager {
                     }
                 }
             } else {
-                EntityExplosiveProjectile projectile = new EntityExplosiveProjectile(world, entityPlayer, 0.5f, 3f, 2.5f, bulletItem.type.internalName);
+                EntityExplosiveProjectile projectile = new EntityExplosiveProjectile(world, entityPlayer, 0.5f, 3f, bulletItem.type.projectileVelocity, bulletItem.type.internalName);
                 world.spawnEntity(projectile);
             }
 

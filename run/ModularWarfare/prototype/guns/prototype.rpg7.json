@@ -4,7 +4,6 @@
     "customFlashTexture": "prototype.advanced.flash",
 
     "weaponType": "launcher",
-    "projectileVelocity": 4,
     "numBullets": 1,
     "internalAmmoStorage": 1,
     "fireModes": [

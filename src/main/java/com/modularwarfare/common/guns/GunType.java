@@ -182,11 +182,6 @@ public class GunType extends BaseType {
     //Sound Variables
     private SoundEntry[] weaponSounds;
 
-    /**
-     * Projectile Velocity
-     */
-    public float projectileVelocity;
-
     public static boolean isPackAPunched(ItemStack heldStack) {
         if (heldStack.getTagCompound() != null) {
             NBTTagCompound nbtTagCompound = heldStack.getTagCompound();

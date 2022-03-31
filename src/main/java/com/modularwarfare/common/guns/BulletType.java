@@ -32,6 +32,7 @@ public class BulletType extends BaseType {
     /**
      * Explosives type only for launcher
      */
+    public float projectileVelocity = 2.5f;
     public float explosionStrength = 4f;
     public boolean damageWorld = true;
 

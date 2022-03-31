@@ -4,6 +4,7 @@
   "displayName": "RPG-7 Rocket",
   "renderBulletModel": true,
 
+  "projectileVelocity": 4,
   "explosionStrength": 4.0,
   "damageWorld": true
 }
