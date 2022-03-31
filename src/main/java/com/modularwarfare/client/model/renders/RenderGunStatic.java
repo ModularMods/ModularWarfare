@@ -144,7 +144,7 @@ public class RenderGunStatic extends CustomItemRenderer {
         if (model == null)
             return;
         {
-            AnimStateMachine anim = data.length >= 2 ? (EntityLivingBase) data[1] instanceof EntityPlayer ? ClientRenderHooks.getAnimMachine((EntityPlayer) data[1]) : new AnimStateMachine() : new AnimStateMachine();
+            AnimStateMachine anim = data.length >= 2 ? data[1] instanceof EntityPlayer ? ClientRenderHooks.getAnimMachine((EntityPlayer) data[1]) : new AnimStateMachine() : new AnimStateMachine();
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
             renderGun(type, item, anim, gunType, data);
             GlStateManager.shadeModel(GL11.GL_FLAT);
@@ -302,7 +302,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                     GlStateManager.rotate(MathHelper.sin(f2 * (float) Math.PI) * f3 * 3.0F, 0.0F, 0.0F, 1.0F);
                     GlStateManager.rotate(Math.abs(MathHelper.cos(f2 * (float) Math.PI - 0.2F) * f3) * 5.0F, 1.0F, 0.0F, 0.0F);
                     GlStateManager.rotate(f4, 1.0F, 0.0F, 0.0F);
-                    this.prevBobModifier = bobModifier;
+                    prevBobModifier = bobModifier;
 
                     // Position calls and apply a special position if player is sprinting or crouching
                     GL11.glRotatef(rotateX, 1F, 0F, 0F); //ROLL LEFT-RIGHT
@@ -398,7 +398,7 @@ public class RenderGunStatic extends CustomItemRenderer {
 
                     /** Flashlight **/
                     if (this.light == null) {
-                        this.light = new ItemStack(((ClientProxy) ModularWarfare.PROXY).itemLight, 1);
+                        this.light = new ItemStack(ClientProxy.itemLight, 1);
                     }
                     final IBakedModel lightmodel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(this.light);
 
@@ -411,7 +411,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                         this.slowDiff = Math.max(this.slowDiff - 0.1f, wantedDiff);
                     }
 
-                    if (this.isLightOn && GunType.getAttachment(item, AttachmentEnum.Flashlight) != null) {
+                    if (isLightOn && GunType.getAttachment(item, AttachmentEnum.Flashlight) != null) {
                         final float alpha = 0.25f + this.slowDiff * 0.05f;
                         GlStateManager.rotate(-90, 0,1,0);
 
@@ -608,7 +608,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                         if (model.switchIsOnSlide) {
                             GL11.glPushMatrix();
                             {
-                                WeaponFireMode fireMode = gunType.getFireMode(item);
+                                WeaponFireMode fireMode = GunType.getFireMode(item);
                                 float switchAngle = fireMode == WeaponFireMode.SEMI ? model.switchSemiRot : fireMode == WeaponFireMode.FULL ? model.switchAutoRot : fireMode == WeaponFireMode.BURST ? model.switchBurstRot : 0F;
                                 GL11.glTranslatef(model.switchRotationPoint.x, model.switchRotationPoint.y, model.switchRotationPoint.z);
                                 GL11.glRotatef(switchAngle, 0, 0, 1);
@@ -685,7 +685,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                 if (!model.switchIsOnSlide) {
                     GL11.glPushMatrix();
                     {
-                        WeaponFireMode fireMode = gunType.getFireMode(item);
+                        WeaponFireMode fireMode = GunType.getFireMode(item);
                         float switchAngle = fireMode == WeaponFireMode.SEMI ? model.switchSemiRot : fireMode == WeaponFireMode.FULL ? model.switchAutoRot : fireMode == WeaponFireMode.BURST ? model.switchBurstRot : 0F;
                         GL11.glTranslatef(model.switchRotationPoint.x, model.switchRotationPoint.y, model.switchRotationPoint.z);
                         GL11.glRotatef(switchAngle, 0, 0, 1);
@@ -847,11 +847,8 @@ public class RenderGunStatic extends CustomItemRenderer {
                                     bulletModel.renderBullet(anim.bulletsToRender, worldScale);
                                 }
                             }
-
-
                             GlStateManager.popMatrix();
                         }
-
 
                         if (anim.reloading && model.config.extra.reloadAnimation != null && WeaponAnimations.getAnimation(model.config.extra.reloadAnimation) != null) {
                             if (anim.reloading && model.config.extra.reloadAnimation != null && WeaponAnimations.getAnimation(model.config.extra.reloadAnimation) != null) {
@@ -861,7 +858,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                             }
                         }
 
-                        if (itemBullet.type.model != null && anim.reloading) {
+                        if (itemBullet.type.model != null && anim.reloading && gunType.weaponType != WeaponType.Launcher) {
                             GL11.glPushMatrix();
                             {
                                 if (model.config.maps.bulletMap.containsKey(itemBullet.baseType.internalName)) {
@@ -874,11 +871,33 @@ public class RenderGunStatic extends CustomItemRenderer {
                                     }
                                 }
                                 bindTexture("bullets", itemBullet.type.modelSkins[0].getSkin());
-
                                 bulletModel.renderBullet(worldScale);
                             }
                             GL11.glPopMatrix();
                         }
+
+                        if (itemBullet.type.model != null && gunType.weaponType == WeaponType.Launcher) {
+                            GL11.glPushMatrix();
+                            {
+                                if (model.config.maps.bulletMap.containsKey(itemBullet.baseType.internalName)) {
+                                    RenderVariables renderVar = model.config.maps.bulletMap.get(itemBullet.type.internalName);
+                                    Vector3f offset = renderVar.offset;
+                                    GL11.glTranslatef(offset.x, offset.y, offset.z);
+                                    if (renderVar.scale != null) {
+                                        Vector3f scale = renderVar.scale;
+                                        GL11.glScalef(scale.x, scale.y, scale.z);
+                                    }
+                                }
+                                int ammoCount = item.getTagCompound().getInteger("ammocount");
+                                boolean isLoading = currentReloadState.isPresent() && (currentReloadState.get().stateType == StateType.Load);
+                                if(isLoading || (ammoCount > 0 && !currentReloadState.isPresent())) {
+                                    bindTexture("bullets", itemBullet.type.modelSkins[0].getSkin());
+                                    bulletModel.renderBullet(worldScale);
+                                }
+                            }
+                            GL11.glPopMatrix();
+                        }
+
                     }
                 }
 
@@ -1015,7 +1034,7 @@ public class RenderGunStatic extends CustomItemRenderer {
     private void renderStaticArm(EntityPlayer player, ModelGun model, AnimStateMachine anim, Optional<StateEntry> currentState) {
         Minecraft mc = Minecraft.getMinecraft();
         mc.getTextureManager().bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
-        Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(Minecraft.getMinecraft().player);
+        Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(Minecraft.getMinecraft().player);
         RenderPlayer renderplayer = (RenderPlayer) render;
 
         float tiltProgress = currentState.isPresent() ? (currentState.get().stateType == StateType.Tilt || currentState.get().stateType == StateType.Untilt) ? currentState.get().currentValue : anim.tiltHold ? 1f : 0f : 0f;
@@ -1069,7 +1088,7 @@ public class RenderGunStatic extends CustomItemRenderer {
     private void renderMovingArm(EntityPlayer player, ModelGun model, AnimStateMachine anim, Optional<StateEntry> currentState) {
         Minecraft mc = Minecraft.getMinecraft();
         mc.getTextureManager().bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
-        Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(Minecraft.getMinecraft().player);
+        Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(Minecraft.getMinecraft().player);
         RenderPlayer renderplayer = (RenderPlayer) render;
 
         boolean rightArm = model.config.arms.leftHandAmmo && model.config.arms.rightArm.armPos != null;
@@ -1176,7 +1195,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                     }
                     GL11.glPopMatrix();
                 } else {
-                    Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(Minecraft.getMinecraft().player);
+                    Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(Minecraft.getMinecraft().player);
                     RenderPlayer renderplayer = (RenderPlayer) render;
                     GlStateManager.scale(1.00000001F, 1.00000001F, 1.00000001F);
                     bindTexture("armor", path);
@@ -1207,7 +1226,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                     }
                     GL11.glPopMatrix();
                 } else {
-                    Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(Minecraft.getMinecraft().player);
+                    Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(Minecraft.getMinecraft().player);
                     RenderPlayer renderplayer = (RenderPlayer) render;
                     GlStateManager.scale(1.00000001F, 1.00000001F, 1.00000001F);
                     bindTexture("armor", path);

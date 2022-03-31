@@ -120,9 +120,11 @@ public class CommonProxy extends ForgeEvent {
         return null;
     }
 
-    public void spawnExplosionParticle(World par1World, double par2, double par4, double par6) {
+    public void spawnExplosionParticle(World world, double x, double y, double z) {
     }
 
+    public void spawnRocketParticle(World world, double x, double y, double z) {
+    }
 
     public void reloadModels(boolean reloadSkins) {
     }

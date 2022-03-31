@@ -872,6 +872,27 @@ public class RenderHelperMW {
         GL11.glPopMatrix();
     }
 
+    public static void renderPositionedImageInViewWithDepth(ResourceLocation img, double x, double y, double z, float width, float height, float givenAlpha) {
+
+        EntityPlayer player = Minecraft.getMinecraft().player;
+
+        GL11.glPushMatrix();
+
+        GL11.glTranslated(x, y, z);
+        GL11.glTranslated(-Minecraft.getMinecraft().getRenderManager().viewerPosX, -Minecraft.getMinecraft().getRenderManager().viewerPosY, -Minecraft.getMinecraft().getRenderManager().viewerPosZ);
+        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+
+        //Rotate to player pos
+        GL11.glRotatef(-player.rotationYaw, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(player.rotationPitch, 1.0F, 0.0F, 0.0F);
+
+        //Scaling and fitting for the text above item
+        GL11.glScalef(-0.03f, -0.03f, 0.03f);
+
+        renderImageAlpha(-width / 2, -height / 2, img, width, height, givenAlpha);
+        GL11.glPopMatrix();
+    }
+
 
     public static void renderRectFlash(double x, double y, double width, double height) {
 

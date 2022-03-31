@@ -243,6 +243,8 @@ public class GunUI {
 
                         RenderHelperMW.renderTextWithShadow(String.valueOf(s), left + 83, j - 30, 0xffffff);
 
+                        RenderHelperMW.renderTextWithShadow(String.valueOf(Minecraft.getMinecraft().player.rotationPitch), left + 83, j - 150, 0xffffff);
+
                         x += 16 + mc.fontRenderer.getStringWidth(s);
 
                         ItemGun gun = (ItemGun) stack.getItem();

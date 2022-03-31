@@ -32,7 +32,9 @@ import com.modularwarfare.common.armor.ItemMWArmor;
 import com.modularwarfare.common.armor.ItemSpecialArmor;
 import com.modularwarfare.common.backpacks.BackpackType;
 import com.modularwarfare.common.backpacks.ItemBackpack;
+import com.modularwarfare.common.entity.EntityBullet;
 import com.modularwarfare.common.entity.EntityBulletClient;
+import com.modularwarfare.common.entity.EntityExplosiveProjectile;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
@@ -46,6 +48,7 @@ import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.init.ModSounds;
 import com.modularwarfare.common.particle.EntityBloodFX;
 import com.modularwarfare.common.particle.ParticleExplosion;
+import com.modularwarfare.common.particle.ParticleRocket;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWResourcePack;
@@ -262,6 +265,7 @@ public class ClientProxy extends CommonProxy {
         WeaponAnimations.registerAnimation("sniper_top", new AnimationSniperTop());
         WeaponAnimations.registerAnimation("sideclip", new AnimationSideClip());
         WeaponAnimations.registerAnimation("toprifle", new AnimationTopRifle());
+        WeaponAnimations.registerAnimation("rocket_launcher", new AnimationRocketLauncher());
 
         final Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
         for (final RenderPlayer renderer : skinMap.values()) {
@@ -829,6 +833,8 @@ public class ClientProxy extends CommonProxy {
 
             RenderingRegistry.registerEntityRenderingHandler(EntityBulletClient.class, RenderBullet.FACTORY);
 
+            //RENDER PROJECTILES
+            RenderingRegistry.registerEntityRenderingHandler(EntityExplosiveProjectile.class, RenderProjectile.FACTORY);
         }
 
     }
@@ -942,6 +948,11 @@ public class ClientProxy extends CommonProxy {
     public void spawnExplosionParticle(World world, double x, double y, double z) {
         final Particle explosionParticle = new ParticleExplosion(world, x, y, z);
         Minecraft.getMinecraft().effectRenderer.addEffect(explosionParticle);
+    }
+
+    public void spawnRocketParticle(World world, double x, double y, double z) {
+        final Particle rocketParticle = new ParticleRocket(world, x, y, z);
+        Minecraft.getMinecraft().effectRenderer.addEffect(rocketParticle);
     }
 
     @Override

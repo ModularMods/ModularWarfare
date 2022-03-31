@@ -409,5 +409,11 @@
     "sounds": [
       "modularwarfare:vz68/distant"
     ]
+  },
+  "prototype.rpg7.shoot": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:rpg7/shoot"
+    ]
   }
 }

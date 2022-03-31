@@ -29,6 +29,12 @@ public class BulletType extends BaseType {
 
     public String shellSound = "casing";
 
+    /**
+     * Explosives type only for launcher
+     */
+    public float explosionStrength = 4f;
+    public boolean damageWorld = true;
+
     @Override
     public void loadExtraValues() {
         if (maxStackSize == null)

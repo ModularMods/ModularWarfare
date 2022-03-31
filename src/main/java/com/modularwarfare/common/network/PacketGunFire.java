@@ -29,10 +29,12 @@ public class PacketGunFire extends PacketBase {
     public float rotationPitch;
     public float rotationYaw;
 
+    public boolean isLauncher;
+
     public PacketGunFire() {
     }
 
-    public PacketGunFire(String internalname, int fireTickDelay, float recoilPitch, float recoilYaw, float recoilAimReducer, float bulletSpread, float rotationPitch, float rotationYaw) {
+    public PacketGunFire(String internalname, int fireTickDelay, float recoilPitch, float recoilYaw, float recoilAimReducer, float bulletSpread, float rotationPitch, float rotationYaw, boolean isLauncher) {
         this.internalname = internalname;
         this.fireTickDelay = fireTickDelay;
         this.recoilPitch = recoilPitch;
@@ -42,6 +44,7 @@ public class PacketGunFire extends PacketBase {
 
         this.rotationPitch = rotationPitch;
         this.rotationYaw = rotationYaw;
+        this.isLauncher = isLauncher;
     }
 
     @Override
@@ -55,6 +58,7 @@ public class PacketGunFire extends PacketBase {
 
         data.writeFloat(this.rotationPitch);
         data.writeFloat(this.rotationYaw);
+        data.writeBoolean(this.isLauncher);
     }
 
     @Override
@@ -68,6 +72,7 @@ public class PacketGunFire extends PacketBase {
 
         this.rotationPitch = data.readFloat();
         this.rotationYaw = data.readFloat();
+        this.isLauncher = data.readBoolean();
     }
 
     @Override
@@ -75,7 +80,7 @@ public class PacketGunFire extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if(!ModConfig.INSTANCE.shots.client_sided_hit_registration) {
+                if(!ModConfig.INSTANCE.shots.client_sided_hit_registration || isLauncher) {
                     if (entityPlayer != null) {
                         if (ModularWarfare.gunTypes.get(internalname) != null) {
                             ItemGun itemGun = ModularWarfare.gunTypes.get(internalname);

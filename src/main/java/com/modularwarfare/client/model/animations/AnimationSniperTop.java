@@ -56,7 +56,6 @@ public class AnimationSniperTop extends WeaponAnimation {
 
         states.add(new StateEntry(StateType.Tilt, 0.15f, 0f, MathType.Add));
 
-
         if (reloadType == ReloadType.Load || reloadType == ReloadType.Full)
             states.add(new StateEntry(StateType.Load, 0.35f, 1f, MathType.Sub));
 

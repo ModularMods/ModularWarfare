@@ -1,0 +1,9 @@
+{
+  "internalName": "prototype.rocket",
+  "maxStackSize": 3,
+  "displayName": "RPG-7 Rocket",
+  "renderBulletModel": true,
+
+  "explosionStrength": 4.0,
+  "damageWorld": true
+}
