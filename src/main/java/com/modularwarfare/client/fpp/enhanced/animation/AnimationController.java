@@ -27,6 +27,7 @@ public class AnimationController {
     public static float ADS;
     public static float RELOAD;
     public static float SPRINT;
+    public static float INSPECT;
 
     public static int oldCurrentItem;
 
@@ -44,6 +45,11 @@ public class AnimationController {
         float drawSpeed = config.animations.get(AnimationType.DRAW).speed * partialTick;
         DRAW = Math.max(0, Math.min(1F, DRAW + drawSpeed));
 
+        /** INSPECT **/
+        float inspectSpeed = config.animations.get(AnimationType.INSPECT).speed * partialTick;
+        float valInspect = (player.isSneaking()) ? INSPECT + inspectSpeed : 0;
+        INSPECT = Math.max(0F, Math.min(1F, valInspect));
+
         /** ADS **/
         boolean aimChargeMisc = ClientRenderHooks.getEnhancedAnimMachine(player).reloading;
         float adsSpeed = config.animations.get(AnimationType.AIM_IN).speed * partialTick;
@@ -56,7 +62,7 @@ public class AnimationController {
         if(anim.gunRecoil > 0.1F){
             sprintValue = SPRINT - sprintSpeed*3f;
         }
-        
+
         SPRINT = Math.max(0, Math.min(1, sprintValue));
 
         if (DRAW > 0F && DRAW < 1F && (oldCurrentItem != player.inventory.currentItem)) {
@@ -67,6 +73,8 @@ public class AnimationController {
             this.playback.action = AnimationType.AIM_OUT;
         } else if (RELOAD > 0F) {
             this.playback.action = AnimationType.RELOAD;
+        } else if (INSPECT > 0F) {
+            this.playback.action = AnimationType.INSPECT;
         } else if (this.playback.hasPlayed) {
             this.playback.action = AnimationType.DEFAULT;
         }
@@ -100,6 +108,9 @@ public class AnimationController {
                 break;
             case RELOAD:
                 this.playback.updateTime(RELOAD);
+                break;
+            case INSPECT:
+                this.playback.updateTime(INSPECT);
                 break;
 
         }

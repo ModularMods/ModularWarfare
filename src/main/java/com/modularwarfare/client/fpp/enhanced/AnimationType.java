@@ -8,7 +8,8 @@ public enum AnimationType {
     @SerializedName("draw") DRAW,
     @SerializedName("aimIn") AIM_IN,
     @SerializedName("aimOut") AIM_OUT,
-    @SerializedName("reload") RELOAD;
+    @SerializedName("reload") RELOAD,
+    @SerializedName("inspect") INSPECT;
 
     public static AnimationType fromString(String modeName) {
         for (AnimationType animationType : values()) {

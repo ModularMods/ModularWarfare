@@ -149,20 +149,18 @@ public class GunUI {
                                     GL11.glRotatef(gunRotX, 0, -1, 0);
                                     GL11.glRotatef(gunRotY, 0, 0, -1);
 
-                                    if (!OptifineHelper.isShadersEnabled()) {
-                                        ResourceLocation overlayToRender = new ResourceLocation("modularwarfare", "textures/overlay/prototype.okp7.png");
+                                    ResourceLocation overlayToRender = new ResourceLocation("modularwarfare", "textures/overlay/prototype.okp7.png");
 
-                                        float factor = 1;
-                                        if (width < 700) {
-                                            factor = 2;
-                                        }
-                                        float rectileScale = 1f;
-                                        int size = (32 * 2 / (int) (event.getResolution().getScaleFactor() * factor)) + ((int) (crouchSwitch) * 5);
-                                        size = (int) (((size * (1 + (playerRecoilYaw > 0.8 ? playerRecoilYaw : 0) * 0.2))) * rectileScale);
-                                        GL11.glTranslatef((width / 2 - size), (height / 2 - size), 0);
-                                        GL11.glTranslatef((VAL2 / 10), (VAL / 10), 0);
-                                        RenderHelperMW.renderImageAlpha(0, 0, overlayToRender, size * 2, size * 2, 1f - alpha);
+                                    float factor = 1;
+                                    if (width < 700) {
+                                        factor = 2;
                                     }
+                                    float rectileScale = 1f;
+                                    int size = (32 * 2 / (int) (event.getResolution().getScaleFactor() * factor)) + ((int) (crouchSwitch) * 5);
+                                    size = (int) (((size * (1 + (playerRecoilYaw > 0.8 ? playerRecoilYaw : 0) * 0.2))) * rectileScale);
+                                    GL11.glTranslatef((width / 2 - size), (height / 2 - size), 0);
+                                    GL11.glTranslatef((VAL2 / 10), (VAL / 10), 0);
+                                    RenderHelperMW.renderImageAlpha(0, 0, overlayToRender, size * 2, size * 2, 1f - alpha);
 
                                     GL11.glPopMatrix();
                                 }
