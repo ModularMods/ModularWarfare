@@ -1,18 +1,15 @@
 package com.modularwarfare.client.fpp.enhanced.models;
 
 import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.transforms.DefaultTransform;
 import com.modularwarfare.common.type.BaseType;
-import com.modularwarfare.common.vector.Vector3f;
 import com.modularwarfare.utility.maths.MathUtils;
 import com.timlee9024.mcgltf.IGltfModelReceiver;
 import com.timlee9024.mcgltf.MCglTF;
 import com.timlee9024.mcgltf.RenderedGltfModel;
 import de.javagl.jgltf.model.GltfAnimations;
 import de.javagl.jgltf.model.GltfModel;
-import de.javagl.jgltf.model.MeshModel;
 import de.javagl.jgltf.model.NodeModel;
 import de.javagl.jgltf.model.animation.Animation;
 import net.minecraft.util.ResourceLocation;

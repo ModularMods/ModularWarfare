@@ -11,6 +11,8 @@ import com.modularwarfare.client.fpp.basic.animations.anims.*;
 import com.modularwarfare.client.fpp.basic.configs.*;
 import com.modularwarfare.client.fpp.basic.renderers.*;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
+import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
+import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
 import com.modularwarfare.client.handler.*;
 import com.modularwarfare.client.hud.AttachmentUI;
@@ -716,7 +718,11 @@ public class ClientProxy extends CommonProxy {
     public void onShootAnimation(EntityPlayer player, String wepType, int fireTickDelay, float recoilPitch, float recoilYaw) {
         GunType gunType = ModularWarfare.gunTypes.get(wepType).type;
         if (gunType != null) {
-            ClientRenderHooks.getAnimMachine(player).triggerShoot((ModelGun) gunType.model, gunType, fireTickDelay);
+            if (gunType.animationType == WeaponAnimationType.BASIC) {
+                ClientRenderHooks.getAnimMachine(player).triggerShoot((ModelGun) gunType.model, gunType, fireTickDelay);
+            } else {
+                ClientRenderHooks.getEnhancedAnimMachine(player).triggerShoot((ModelGun) gunType.model, gunType, fireTickDelay);
+            }
 
             RenderParameters.rate = Math.min(RenderParameters.rate + 0.07f, 1f);
 
@@ -762,7 +768,11 @@ public class ClientProxy extends CommonProxy {
         ClientTickHandler.playerReloadCooldown.put(player.getUniqueID(), reloadTime);
         ItemGun gunType = ModularWarfare.gunTypes.get(wepType);
         if (gunType != null) {
-            ClientRenderHooks.getAnimMachine(player).triggerReload(reloadTime, reloadCount, (ModelGun) gunType.type.model, ReloadType.getTypeFromInt(reloadType), player.isSprinting());
+            if (gunType.type.animationType == WeaponAnimationType.BASIC) {
+                ClientRenderHooks.getAnimMachine(player).triggerReload(reloadTime, reloadCount, (ModelGun) gunType.type.model, ReloadType.getTypeFromInt(reloadType), player.isSprinting());
+            } else {
+                ClientRenderHooks.getEnhancedAnimMachine(player).triggerReload(reloadTime, reloadCount, (ModelEnhancedGun) gunType.type.enhancedModel, ReloadType.getTypeFromInt(reloadType));
+            }
         }
     }
 

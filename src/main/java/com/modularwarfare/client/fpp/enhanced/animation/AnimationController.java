@@ -1,6 +1,7 @@
 package com.modularwarfare.client.fpp.enhanced.animation;
 
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
@@ -36,6 +37,8 @@ public class AnimationController {
     }
 
     public void onTickRender(float partialTick) {
+        EnhancedStateMachine stateMachine = ClientRenderHooks.getEnhancedAnimMachine(player);
+
         /** DRAW **/
         float drawSpeed = config.animations.get(AnimationType.DRAW).speed * partialTick;
         DRAW = Math.max(0, Math.min(1F, DRAW + drawSpeed));
@@ -44,11 +47,6 @@ public class AnimationController {
         float adsSpeed = config.animations.get(AnimationType.AIM_IN).speed * partialTick;
         float val = (Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1)) ? ADS + adsSpeed : ADS - adsSpeed;
         ADS = Math.max(0, Math.min(1, val));
-
-        /** RELOAD **/
-        float reloadSpeed = config.animations.get(AnimationType.RELOAD).speed * partialTick;
-        val = (Minecraft.getMinecraft().inGameHasFocus && Minecraft.getMinecraft().player.isSneaking()) ? RELOAD + reloadSpeed : RELOAD - reloadSpeed;
-        RELOAD = Math.max(0, Math.min(1, val));
 
         if (DRAW > 0F && DRAW < 1F && (oldCurrentItem != player.inventory.currentItem)) {
             this.playback.action = AnimationType.DRAW;

@@ -4,6 +4,7 @@ import com.modularwarfare.api.AnimationUtils;
 import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
 import com.modularwarfare.client.fpp.basic.renderers.*;
 import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
+import com.modularwarfare.client.fpp.enhanced.animation.EnhancedStateMachine;
 import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
 import com.modularwarfare.client.handler.ClientTickHandler;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
@@ -48,9 +49,10 @@ import java.util.HashMap;
 
 public class ClientRenderHooks extends ForgeEvent {
 
-    public static HashMap<EntityLivingBase, AnimStateMachine> weaponAnimations = new HashMap<EntityLivingBase, AnimStateMachine>();
-    public static AnimationController controller;
+    public static HashMap<EntityLivingBase, AnimStateMachine> weaponBasicAnimations = new HashMap<EntityLivingBase, AnimStateMachine>();
+    public static HashMap<EntityLivingBase, EnhancedStateMachine> weaponEnhancedAnimations = new HashMap<EntityLivingBase, EnhancedStateMachine>();
 
+    public static AnimationController controller;
 
     public static CustomItemRenderer[] customRenderers = new CustomItemRenderer[9];
     public static boolean isAimingScope;
@@ -73,11 +75,22 @@ public class ClientRenderHooks extends ForgeEvent {
 
     public static AnimStateMachine getAnimMachine(EntityPlayer entityPlayer) {
         AnimStateMachine animation = null;
-        if (weaponAnimations.containsKey(entityPlayer)) {
-            animation = weaponAnimations.get(entityPlayer);
+        if (weaponBasicAnimations.containsKey(entityPlayer)) {
+            animation = weaponBasicAnimations.get(entityPlayer);
         } else {
             animation = new AnimStateMachine();
-            weaponAnimations.put(entityPlayer, animation);
+            weaponBasicAnimations.put(entityPlayer, animation);
+        }
+        return animation;
+    }
+
+    public static EnhancedStateMachine getEnhancedAnimMachine(EntityPlayer entityPlayer) {
+        EnhancedStateMachine animation = null;
+        if (weaponEnhancedAnimations.containsKey(entityPlayer)) {
+            animation = weaponEnhancedAnimations.get(entityPlayer);
+        } else {
+            animation = new EnhancedStateMachine();
+            weaponEnhancedAnimations.put(entityPlayer, animation);
         }
         return animation;
     }
