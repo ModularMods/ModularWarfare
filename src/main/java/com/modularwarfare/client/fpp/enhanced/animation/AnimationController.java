@@ -26,6 +26,7 @@ public class AnimationController {
     public static float DRAW;
     public static float ADS;
     public static float RELOAD;
+    public static float SPRINT;
 
     public static int oldCurrentItem;
 
@@ -37,16 +38,26 @@ public class AnimationController {
     }
 
     public void onTickRender(float partialTick) {
-        EnhancedStateMachine stateMachine = ClientRenderHooks.getEnhancedAnimMachine(player);
+        EnhancedStateMachine anim = ClientRenderHooks.getEnhancedAnimMachine(player);
 
         /** DRAW **/
         float drawSpeed = config.animations.get(AnimationType.DRAW).speed * partialTick;
         DRAW = Math.max(0, Math.min(1F, DRAW + drawSpeed));
 
         /** ADS **/
+        boolean aimChargeMisc = ClientRenderHooks.getEnhancedAnimMachine(player).reloading;
         float adsSpeed = config.animations.get(AnimationType.AIM_IN).speed * partialTick;
-        float val = (Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1)) ? ADS + adsSpeed : ADS - adsSpeed;
+        float val = (Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && !aimChargeMisc) ? ADS + adsSpeed : ADS - adsSpeed;
         ADS = Math.max(0, Math.min(1, val));
+
+        /** SPRINT **/
+        float sprintSpeed = 0.15f * partialTick;
+        float sprintValue = (player.isSprinting()) ? SPRINT + sprintSpeed : SPRINT - sprintSpeed;
+        if(anim.gunRecoil > 0.1F){
+            sprintValue = SPRINT - sprintSpeed*3f;
+        }
+        
+        SPRINT = Math.max(0, Math.min(1, sprintValue));
 
         if (DRAW > 0F && DRAW < 1F && (oldCurrentItem != player.inventory.currentItem)) {
             this.playback.action = AnimationType.DRAW;
@@ -64,6 +75,7 @@ public class AnimationController {
             DRAW = 0;
             oldCurrentItem = player.inventory.currentItem;
         }
+
         updateTime();
     }
 

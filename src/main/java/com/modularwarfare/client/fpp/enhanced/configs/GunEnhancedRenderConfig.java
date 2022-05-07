@@ -46,7 +46,19 @@ public class GunEnhancedRenderConfig {
     }
 
     public static class Extra {
-        public Vector3f translateAll = new Vector3f(1F, -1.02F, -0.07F);
-        //Allows you to modify the ADS speed per gun, adjust in small increments (+/- 0.01)
+        public Vector3f translateAll = new Vector3f(0F, 0F, 0F);
+
+        /**
+         * Adds backwards recoil translations to the gun staticModel when firing
+         */
+        public float modelRecoilBackwards = 0.15F;
+        /**
+         * Adds upwards/downwards recoil translations to the gun staticModel when firing
+         */
+        public float modelRecoilUpwards = 1.0F;
+        /**
+         * Adds a left-right staticModel shaking motion when firing, default 0.5
+         */
+        public float modelRecoilShake = 0.5F;
     }
 }

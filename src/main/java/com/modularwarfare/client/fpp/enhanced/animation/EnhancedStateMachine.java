@@ -7,6 +7,10 @@ import com.modularwarfare.client.fpp.basic.models.ModelGun;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.common.guns.GunType;
+import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Mouse;
+
+import java.util.Random;
 
 public class EnhancedStateMachine {
 
@@ -21,6 +25,7 @@ public class EnhancedStateMachine {
      * Recoil
      */
     public float gunRecoil = 0F, lastGunRecoil = 0F;
+    public float recoilSide = 0F;
     /**
      * Slide
      */
@@ -31,7 +36,7 @@ public class EnhancedStateMachine {
      */
     public boolean shooting = false;
     private float shootTime;
-
+    private float shootProgress = 0f;
 
     public ModelEnhancedGun currentModel;
 
@@ -42,6 +47,7 @@ public class EnhancedStateMachine {
 
         shooting = true;
         shootTime = fireTickDelay;
+        recoilSide = (float) (-1F + Math.random() * (1F - (-1F)));
     }
 
     public void triggerReload(int reloadTime, int reloadCount, ModelEnhancedGun model, ReloadType reloadType) {
@@ -51,11 +57,26 @@ public class EnhancedStateMachine {
         this.currentModel = model;
     }
 
+    public void onTickUpdate() {
+        if (shooting) {
+            shootProgress += 1F / shootTime;
+
+            if (shootProgress >= 1F) {
+                shooting = false;
+                shootProgress = 0f;
+            }
+        }
+        // Recoil
+        lastGunRecoil = gunRecoil;
+        if (gunRecoil > 0)
+            gunRecoil *= 0.5F;
+    }
+
     public void onRenderTickUpdate(float partialTick) {
         if (reloading){
             /** RELOAD **/
             float reloadSpeed = currentModel.config.animations.get(AnimationType.RELOAD).speed * partialTick;
-            float val = AnimationController.RELOAD + reloadSpeed;
+            float val = (AnimationController.ADS == 0F) ? AnimationController.RELOAD + reloadSpeed : 0;
             AnimationController.RELOAD = Math.max(0, Math.min(1, val));
             if(AnimationController.RELOAD == 1F){
                 reloading = false;

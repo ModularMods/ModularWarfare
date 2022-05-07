@@ -132,7 +132,7 @@ public class GunUI {
                                     }
                                 }
                             }
-                        } else if(mc.gameSettings.thirdPersonView == 0 && adsSwitch > 0.9f && RenderParameters.collideFrontDistance <= 0.025f){
+                        } else if(mc.gameSettings.thirdPersonView == 0 && AnimationController.ADS > 0.8f && RenderParameters.collideFrontDistance <= 0.025f){
                             /**
                              * FOR TESTING PURPOSES REMOVE AFTER (OKP-7)
                              */

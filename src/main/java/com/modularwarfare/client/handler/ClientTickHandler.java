@@ -144,15 +144,6 @@ public class ClientTickHandler extends ForgeEvent {
                 float modeSwitchSpeed = 0.03f * renderTick;
                 float modeSwitchValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
                 RenderParameters.triggerPullSwitch = Math.max(0, Math.min(0.02f, triggerPullValue));
-            } else {
-                float adsSpeedFinal = (0.10f + adsSpeed) * renderTick;
-                boolean aimChargeMisc = ClientRenderHooks.getEnhancedAnimMachine(player).reloading;
-                float value = (Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && !aimChargeMisc) ? RenderParameters.adsSwitch + adsSpeedFinal : RenderParameters.adsSwitch - adsSpeedFinal;
-                RenderParameters.adsSwitch = Math.max(0, Math.min(1, value));
-
-                float sprintSpeed = 0.15f * renderTick;
-                float sprintValue = (player.isSprinting()) ? RenderParameters.sprintSwitch + sprintSpeed : RenderParameters.sprintSwitch - sprintSpeed;
-                RenderParameters.sprintSwitch = Math.max(0, Math.min(1, sprintValue));
             }
 
             float balancing_speed_x = 0.08f * renderTick;
@@ -326,6 +317,10 @@ public class ClientTickHandler extends ForgeEvent {
         RenderParameters.rate = Math.max(RenderParameters.rate - 0.05f , 0f);
 
         for (AnimStateMachine stateMachine : ClientRenderHooks.weaponBasicAnimations.values()) {
+            stateMachine.onTickUpdate();
+        }
+
+        for (EnhancedStateMachine stateMachine : ClientRenderHooks.weaponEnhancedAnimations.values()) {
             stateMachine.onTickUpdate();
         }
 
