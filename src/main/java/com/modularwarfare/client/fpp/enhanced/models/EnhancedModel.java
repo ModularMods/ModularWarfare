@@ -121,13 +121,6 @@ public class EnhancedModel implements IGltfModelReceiver {
         GL11.glPushMatrix();
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
 
-        for(NodeModel node : gltfModel.getNodeModels()){
-            DefaultTransform defaultTransform = defaultTransforms.get(node);
-            node.setTranslation(defaultTransform.translation);
-            node.setRotation(defaultTransform.rotation);
-            node.setScale(defaultTransform.scale);
-            node.setWeights(defaultTransform.weight);
-        }
 
         for(Animation animation : animations) {
             animation.update(time);

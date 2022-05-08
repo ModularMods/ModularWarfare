@@ -91,116 +91,119 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         final ItemStack itemstack = entity.getItem();
         if (itemstack.getItem() instanceof ItemGun) {
-            GlStateManager.alphaFunc(516, 0.1F);
-            GlStateManager.enableBlend();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.pushMatrix();
-            GlStateManager.translate((float) x, (float) y, (float) z);
-            GlStateManager.pushMatrix();
-            GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.translate(0.15, 0.2, -0.08);
-            double height = 0.2;
-            GlStateManager.translate(0, height, 0);
-            GlStateManager.rotate(entity.rotationPitch, 1, 0, 0.0F);
-            GlStateManager.translate(0, -height, 0);
-
-            ItemGun gun = (ItemGun) itemstack.getItem();
-            GunType gunType = gun.type;
-            ModelGun model = (ModelGun) gunType.model;
-            float modelScale = model.config.extra.modelScale;
-            GlStateManager.scale(modelScale*0.8, modelScale*0.8, modelScale*0.8);
-            float worldScale = 1F / 16F;
-            if (model != null) {
-                int skinId = 0;
-                if (itemstack.hasTagCompound()) {
-                    if (itemstack.getTagCompound().hasKey("skinId")) {
-                        skinId = itemstack.getTagCompound().getInteger("skinId");
-                    }
-                }
-
-                String path = skinId > 0 ? gunType.modelSkins[skinId].getSkin() : gunType.modelSkins[0].getSkin();
-                ClientRenderHooks.customRenderers[1].bindTexture("guns", path);
-                model.renderPart("gunModel", worldScale);
-                model.renderPart("slideModel", worldScale);
-                model.renderPart("boltModel", worldScale);
-                model.renderPart("defaultBarrelModel", worldScale);
-                model.renderPart("defaultStockModel", worldScale);
-                model.renderPart("defaultGripModel", worldScale);
-                model.renderPart("defaultGadgetModel", worldScale);
-                if (ItemGun.hasAmmoLoaded(itemstack)) {
-                    model.renderPart("ammoModel", worldScale);
-                }
-
-                boolean hasScopeAttachment = false;
+            if(((ItemGun)itemstack.getItem()).type.animationType == WeaponAnimationType.BASIC) {
+                GlStateManager.alphaFunc(516, 0.1F);
+                GlStateManager.enableBlend();
+                RenderHelper.enableStandardItemLighting();
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                 GlStateManager.pushMatrix();
-                for (AttachmentEnum attachment : AttachmentEnum.values()) {
-                    GlStateManager.pushMatrix();
-                    ItemStack itemStack = GunType.getAttachment(itemstack, attachment);
-                    if (itemStack != null && itemStack.getItem() != Items.AIR) {
-                        AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
-                        ModelAttachment attachmentModel = (ModelAttachment) attachmentType.model;
-                        if (attachmentType.attachmentType == AttachmentEnum.Sight)
-                            hasScopeAttachment = true;
-                        if (attachmentModel != null) {
+                GlStateManager.translate((float) x, (float) y, (float) z);
+                GlStateManager.pushMatrix();
+                GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.translate(0.15, 0.2, -0.08);
+                double height = 0.2;
+                GlStateManager.translate(0, height, 0);
+                GlStateManager.rotate(entity.rotationPitch, 1, 0, 0.0F);
+                GlStateManager.translate(0, -height, 0);
 
-                            Vector3f adjustedScale = new Vector3f(attachmentModel.config.extra.modelScale, attachmentModel.config.extra.modelScale, attachmentModel.config.extra.modelScale);
-                            GL11.glScalef(adjustedScale.x, adjustedScale.y, adjustedScale.z);
-
-                            if (model.config.attachments.attachmentPointMap != null && model.config.attachments.attachmentPointMap.size() >= 1) {
-                                if (model.config.attachments.attachmentPointMap.containsKey(attachment)) {
-                                    Vector3f attachmentVecTranslate = model.config.attachments.attachmentPointMap.get(attachment).get(0);
-                                    Vector3f attachmentVecRotate = model.config.attachments.attachmentPointMap.get(attachment).get(1);
-                                    GL11.glTranslatef(attachmentVecTranslate.x / attachmentModel.config.extra.modelScale, attachmentVecTranslate.y / attachmentModel.config.extra.modelScale, attachmentVecTranslate.z / attachmentModel.config.extra.modelScale);
-
-                                    GL11.glRotatef(attachmentVecRotate.x, 1F, 0F, 0F); //ROLL LEFT-RIGHT
-                                    GL11.glRotatef(attachmentVecRotate.y, 0F, 1F, 0F); //ANGLE LEFT-RIGHT
-                                    GL11.glRotatef(attachmentVecRotate.z, 0F, 0F, 1F); //ANGLE UP-DOWN
-                                }
-                            }
-
-                            if (model.config.attachments.positionPointMap != null) {
-                                for (String internalName : model.config.attachments.positionPointMap.keySet()) {
-                                    if (internalName.equals(attachmentType.internalName)) {
-                                        Vector3f trans = model.config.attachments.positionPointMap.get(internalName).get(0);
-                                        Vector3f rot = model.config.attachments.positionPointMap.get(internalName).get(1);
-                                        GL11.glTranslatef(trans.x / attachmentModel.config.extra.modelScale * worldScale, trans.y / attachmentModel.config.extra.modelScale * worldScale, trans.z / attachmentModel.config.extra.modelScale * worldScale);
-
-                                        GL11.glRotatef(rot.x, 1F, 0F, 0F); //ROLL LEFT-RIGHT
-                                        GL11.glRotatef(rot.y, 0F, 1F, 0F); //ANGLE LEFT-RIGHT
-                                        GL11.glRotatef(rot.z, 0F, 0F, 1F); //ANGLE UP-DOWN
-                                    }
-                                }
-                            }
-
-                            skinId = 0;
-                            if (itemStack.hasTagCompound()) {
-                                if (itemStack.getTagCompound().hasKey("skinId")) {
-                                    skinId = itemStack.getTagCompound().getInteger("skinId");
-                                }
-                            }
-                            path = skinId > 0 ? attachmentType.modelSkins[skinId].getSkin() : attachmentType.modelSkins[0].getSkin();
-                            if(attachmentType.sameTextureAsGun) {
-                                ClientRenderHooks.customRenderers[3].bindTexture("guns", path);
-                            }else {
-                                path = skinId > 0 ? attachmentType.modelSkins[skinId].getSkin() : attachmentType.modelSkins[0].getSkin();
-                                ClientRenderHooks.customRenderers[3].bindTexture("attachments", path);
-                            }
-                            attachmentModel.renderAttachment(worldScale);
+                ItemGun gun = (ItemGun) itemstack.getItem();
+                GunType gunType = gun.type;
+                ModelGun model = (ModelGun) gunType.model;
+                float modelScale = (model != null) ? model.config.extra.modelScale : 1f;
+                GlStateManager.scale(modelScale * 0.8, modelScale * 0.8, modelScale * 0.8);
+                float worldScale = 1F / 16F;
+                if (model != null) {
+                    int skinId = 0;
+                    if (itemstack.hasTagCompound()) {
+                        if (itemstack.getTagCompound().hasKey("skinId")) {
+                            skinId = itemstack.getTagCompound().getInteger("skinId");
                         }
                     }
+
+                    String path = skinId > 0 ? gunType.modelSkins[skinId].getSkin() : gunType.modelSkins[0].getSkin();
+                    ClientRenderHooks.customRenderers[1].bindTexture("guns", path);
+                    model.renderPart("gunModel", worldScale);
+                    model.renderPart("slideModel", worldScale);
+                    model.renderPart("boltModel", worldScale);
+                    model.renderPart("defaultBarrelModel", worldScale);
+                    model.renderPart("defaultStockModel", worldScale);
+                    model.renderPart("defaultGripModel", worldScale);
+                    model.renderPart("defaultGadgetModel", worldScale);
+                    if (ItemGun.hasAmmoLoaded(itemstack)) {
+                        model.renderPart("ammoModel", worldScale);
+                    }
+
+                    boolean hasScopeAttachment = false;
+                    GlStateManager.pushMatrix();
+                    for (AttachmentEnum attachment : AttachmentEnum.values()) {
+                        GlStateManager.pushMatrix();
+                        ItemStack itemStack = GunType.getAttachment(itemstack, attachment);
+                        if (itemStack != null && itemStack.getItem() != Items.AIR) {
+                            AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
+                            ModelAttachment attachmentModel = (ModelAttachment) attachmentType.model;
+                            if (attachmentType.attachmentType == AttachmentEnum.Sight)
+                                hasScopeAttachment = true;
+                            if (attachmentModel != null) {
+
+                                Vector3f adjustedScale = new Vector3f(attachmentModel.config.extra.modelScale, attachmentModel.config.extra.modelScale, attachmentModel.config.extra.modelScale);
+                                GL11.glScalef(adjustedScale.x, adjustedScale.y, adjustedScale.z);
+
+                                if (model.config.attachments.attachmentPointMap != null && model.config.attachments.attachmentPointMap.size() >= 1) {
+                                    if (model.config.attachments.attachmentPointMap.containsKey(attachment)) {
+                                        Vector3f attachmentVecTranslate = model.config.attachments.attachmentPointMap.get(attachment).get(0);
+                                        Vector3f attachmentVecRotate = model.config.attachments.attachmentPointMap.get(attachment).get(1);
+                                        GL11.glTranslatef(attachmentVecTranslate.x / attachmentModel.config.extra.modelScale, attachmentVecTranslate.y / attachmentModel.config.extra.modelScale, attachmentVecTranslate.z / attachmentModel.config.extra.modelScale);
+
+                                        GL11.glRotatef(attachmentVecRotate.x, 1F, 0F, 0F); //ROLL LEFT-RIGHT
+                                        GL11.glRotatef(attachmentVecRotate.y, 0F, 1F, 0F); //ANGLE LEFT-RIGHT
+                                        GL11.glRotatef(attachmentVecRotate.z, 0F, 0F, 1F); //ANGLE UP-DOWN
+                                    }
+                                }
+
+                                if (model.config.attachments.positionPointMap != null) {
+                                    for (String internalName : model.config.attachments.positionPointMap.keySet()) {
+                                        if (internalName.equals(attachmentType.internalName)) {
+                                            Vector3f trans = model.config.attachments.positionPointMap.get(internalName).get(0);
+                                            Vector3f rot = model.config.attachments.positionPointMap.get(internalName).get(1);
+                                            GL11.glTranslatef(trans.x / attachmentModel.config.extra.modelScale * worldScale, trans.y / attachmentModel.config.extra.modelScale * worldScale, trans.z / attachmentModel.config.extra.modelScale * worldScale);
+
+                                            GL11.glRotatef(rot.x, 1F, 0F, 0F); //ROLL LEFT-RIGHT
+                                            GL11.glRotatef(rot.y, 0F, 1F, 0F); //ANGLE LEFT-RIGHT
+                                            GL11.glRotatef(rot.z, 0F, 0F, 1F); //ANGLE UP-DOWN
+                                        }
+                                    }
+                                }
+
+                                skinId = 0;
+                                if (itemStack.hasTagCompound()) {
+                                    if (itemStack.getTagCompound().hasKey("skinId")) {
+                                        skinId = itemStack.getTagCompound().getInteger("skinId");
+                                    }
+                                }
+                                path = skinId > 0 ? attachmentType.modelSkins[skinId].getSkin() : attachmentType.modelSkins[0].getSkin();
+                                if (attachmentType.sameTextureAsGun) {
+                                    ClientRenderHooks.customRenderers[3].bindTexture("guns", path);
+                                } else {
+                                    path = skinId > 0 ? attachmentType.modelSkins[skinId].getSkin() : attachmentType.modelSkins[0].getSkin();
+                                    ClientRenderHooks.customRenderers[3].bindTexture("attachments", path);
+                                }
+                                attachmentModel.renderAttachment(worldScale);
+                            }
+                        }
+                        GlStateManager.popMatrix();
+                    }
+                    if (!hasScopeAttachment)
+                        model.renderPart("defaultScopeModel", worldScale);
+
                     GlStateManager.popMatrix();
                 }
-                if (!hasScopeAttachment)
-                    model.renderPart("defaultScopeModel", worldScale);
 
                 GlStateManager.popMatrix();
-            }
-            GlStateManager.popMatrix();
 
-            GlStateManager.popMatrix();
-            GlStateManager.disableRescaleNormal();
-            GlStateManager.disableBlend();
+                GlStateManager.popMatrix();
+                GlStateManager.disableRescaleNormal();
+                GlStateManager.disableBlend();
+            }
         } else {
             int i;
             if (itemstack != null && itemstack.getItem() != null) {

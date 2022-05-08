@@ -14,6 +14,7 @@ import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
 import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
+import com.modularwarfare.client.fpp.enhanced.renderers.RenderInfected;
 import com.modularwarfare.client.handler.*;
 import com.modularwarfare.client.hud.AttachmentUI;
 import com.modularwarfare.client.hud.FlashSystem;
@@ -36,6 +37,7 @@ import com.modularwarfare.common.armor.ItemSpecialArmor;
 import com.modularwarfare.common.backpacks.BackpackType;
 import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.entity.EntityBulletClient;
+import com.modularwarfare.common.entity.EntityInfected;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
@@ -56,12 +58,15 @@ import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWResourcePack;
 import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.ModUtil;
+import com.timlee9024.mcgltf.MCglTF;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.lingala.zip4j.core.ZipFile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -77,6 +82,7 @@ import net.minecraftforge.client.resource.IResourceType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -710,6 +716,14 @@ public class ClientProxy extends CommonProxy {
 
             RenderingRegistry.registerEntityRenderingHandler(EntityBulletClient.class, RenderBullet.FACTORY);
 
+            RenderingRegistry.registerEntityRenderingHandler(EntityInfected.class, new IRenderFactory<EntityInfected>() {
+                @Override
+                public Render<? super EntityInfected> createRenderFor(RenderManager manager) {
+                    RenderInfected render = new RenderInfected(manager);
+                    MCglTF.getInstance().addGltfModelReceiver(render);
+                    return render;
+                }
+            });
         }
 
     }
