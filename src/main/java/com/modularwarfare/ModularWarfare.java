@@ -194,7 +194,6 @@ public class ModularWarfare {
     /**
      * Gets all the render config json for each gun
      */
-
     public static <T> T getRenderConfig(BaseType baseType, Class<T> typeClass) {
         if (baseType.isInDirectory) {
             try {
