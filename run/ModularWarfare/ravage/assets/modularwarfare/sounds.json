@@ -1,0 +1,30 @@
+{
+  "ravage.akm.shoot": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:akm/shoot1",
+      "modularwarfare:akm/shoot2",
+      "modularwarfare:akm/shoot3",
+      "modularwarfare:akm/shoot4"
+    ]
+  },
+  "ravage.akm.reload": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:akm/reload"
+    ]
+  },
+  "ravage.akm.shoot.sup": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:akm/suppressed1",
+      "modularwarfare:akm/suppressed2"
+    ]
+  },
+  "ravage.akm.shoot.distant": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:akm/distant"
+    ]
+  }
+}

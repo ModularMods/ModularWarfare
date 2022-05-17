@@ -1,0 +1,20 @@
+{
+    "internalName": "ravage.military_body_lv1_tan",
+    "defense": "0.1",
+    "durability": 500,
+    "simpleArmor": true,
+    "armorTypes": 
+    {
+        "chest":
+        {
+            "displayName": "Military Body Body Tan Lv.1"
+        }
+    },
+    "modelSkins":
+    [
+      {
+        "skinAsset": "ravage.military_body_lv1_tan",
+        "displayName": "Military Body - Lv1 - Tan"
+      }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "internalName": "ravage.military_trousers_lv1_tan",
+    "defense": "0.1",
+    "durability": 500,
+    "simpleArmor": true,
+    "armorTypes": 
+    {
+        "legs":
+        {
+            "displayName": "Military Body Trousers Tan Lv.1"
+        }
+    },
+    "modelSkins":
+    [
+      {
+        "skinAsset": "ravage.military_trousers_lv1_tan",
+        "displayName": "Military Trousers - Lv1 - Tan"
+      }
+    ]
+}
