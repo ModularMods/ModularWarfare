@@ -11,20 +11,31 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.lang.reflect.Field;
+
 @SideOnly(Side.CLIENT)
 public class ScopeRenderGlobal extends RenderGlobal {
+    private Field fieldRenderDistanceChunks;
     private boolean shouldLoadRenderers = true;
-
     public ScopeRenderGlobal(Minecraft mcIn) {
         super(mcIn);
+        try {
+            fieldRenderDistanceChunks = getClass().getSuperclass().getDeclaredField("renderDistanceChunks");
+            fieldRenderDistanceChunks.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
-
     @Override
     public void setupTerrain(Entity viewEntity, double partialTicks, ICamera camera, int frameCount, boolean playerSpectator) {
+        try {
+            fieldRenderDistanceChunks.set(this, 2);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         shouldLoadRenderers = false;
         super.setupTerrain(viewEntity, partialTicks, camera, frameCount, playerSpectator);
     }
-
     @Override
     public void loadRenderers() {
         if (shouldLoadRenderers) {
