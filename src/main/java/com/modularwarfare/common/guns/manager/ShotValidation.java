@@ -2,6 +2,7 @@ package com.modularwarfare.common.guns.manager;
 
 import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemGun;
+import com.modularwarfare.common.guns.WeaponAnimationType;
 import com.modularwarfare.common.guns.WeaponFireMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,8 +18,12 @@ public class ShotValidation {
 
         // Can fire checks
         if (isValidShoot(clientFireTickDelay, recoilPitch, recoilYaw, recoilAimReducer, bulletSpread, itemGun.type)) {
-
-            if (ItemGun.isServerReloading(entityPlayer) || (!itemGun.type.allowSprintFiring && entityPlayer.isSprinting()) || !itemGun.type.hasFireMode(fireMode))
+            if(itemGun.type.animationType==WeaponAnimationType.BASIC) {
+                if(ItemGun.isServerReloading(entityPlayer)) {
+                    return false;
+                }
+            }
+            if ((!itemGun.type.allowSprintFiring && entityPlayer.isSprinting()) || !itemGun.type.hasFireMode(fireMode))
                 return false;
         }
         return true;

@@ -52,14 +52,13 @@ public class ClientRenderHooks extends ForgeEvent {
     public static HashMap<EntityLivingBase, AnimStateMachine> weaponBasicAnimations = new HashMap<EntityLivingBase, AnimStateMachine>();
     public static HashMap<EntityLivingBase, EnhancedStateMachine> weaponEnhancedAnimations = new HashMap<EntityLivingBase, EnhancedStateMachine>();
 
-    public static AnimationController controller;
-
     public static CustomItemRenderer[] customRenderers = new CustomItemRenderer[9];
     public static boolean isAimingScope;
     public static boolean isAiming;
     public float partialTicks;
     private Minecraft mc;
     private float equippedProgress = 1f, prevEquippedProgress = 1f;
+    public static boolean debug=false;
 
     public static final ResourceLocation grenade_smoke = new ResourceLocation("modularwarfare", "textures/particles/smoke.png");
 
@@ -182,17 +181,17 @@ public class ClientRenderHooks extends ForgeEvent {
                 if (OptifineHelper.isLoaded()) {
                     if (!OptifineHelper.isShadersEnabled()) {
                         GlStateManager.clear(256);
-                        GlStateManager.matrixMode(5889);
+                        GlStateManager.matrixMode(GL11.GL_PROJECTION);
                         GlStateManager.loadIdentity();
                     }
                 } else {
                     GlStateManager.clear(256);
-                    GlStateManager.matrixMode(5889);
+                    GlStateManager.matrixMode(GL11.GL_PROJECTION);
                     GlStateManager.loadIdentity();
                 }
 
                 Project.gluPerspective(getFOVModifier(partialTicks), (float) mc.displayWidth / (float) mc.displayHeight, 0.0001F, farPlaneDistance * 2.0F);
-                GlStateManager.matrixMode(5888);
+                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
                 GlStateManager.loadIdentity();
 
                 GlStateManager.pushMatrix();
@@ -228,7 +227,7 @@ public class ClientRenderHooks extends ForgeEvent {
 
                     GlStateManager.enableRescaleNormal();
                     GlStateManager.pushMatrix();
-
+                    
                     //Do vanilla weapon swing
                     float f7 = -0.4F * MathHelper.sin(MathHelper.sqrt(f2) * (float) Math.PI);
                     float f8 = 0.2F * MathHelper.sin(MathHelper.sqrt(f2) * (float) Math.PI * 2.0F);
@@ -244,7 +243,12 @@ public class ClientRenderHooks extends ForgeEvent {
                     GlStateManager.rotate(f11 * -20.0F, 0.0F, 0.0F, 1.0F);
                     GlStateManager.rotate(f11 * -80.0F, 1.0F, 0.0F, 0.0F);
                     GlStateManager.scale(0.4F, 0.4F, 0.4F);
-
+                    if(debug) {
+                        System.out.println(new float[] {
+                                f1,f2,f3,f4,f5,f6,f7,f8,f9,
+                                f10,f11
+                        });
+                    }
 
                     if (!OptifineHelper.isShadersEnabled()) {
                         ClientProxy.scopeUtils.initBlur();
@@ -265,7 +269,8 @@ public class ClientRenderHooks extends ForgeEvent {
                         if(((GunType)type).animationType.equals(WeaponAnimationType.BASIC)){
                             customRenderers[1].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
                         } else{
-                            customRenderers[0].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), stack, mc.world, mc.player);
+                            //客户端预测需要 必须是即时物品
+                            customRenderers[0].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), mc.player.getHeldItemMainhand(), mc.world, mc.player);
                         }
                     } else {
                         customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), stack, mc.world, mc.player);

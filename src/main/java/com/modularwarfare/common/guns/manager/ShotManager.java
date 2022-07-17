@@ -39,13 +39,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShotManager {
+    public static boolean defemptyclickLock=true;
 
     public static void fireClient(EntityPlayer entityPlayer, World world, ItemStack gunStack, ItemGun itemGun, WeaponFireMode fireMode) {
         GunType gunType = itemGun.type;
-
+        
+        if (gunType.allowReloadFiring && ClientRenderHooks.getEnhancedAnimMachine(entityPlayer).reloading) {
+            ClientRenderHooks.getEnhancedAnimMachine(entityPlayer).stopReload();
+            ClientRenderHooks.getEnhancedAnimMachine(entityPlayer).reset();
+            ClientRenderHooks.getEnhancedAnimMachine(entityPlayer).updateCurrentItem();
+        }
+        
         // Can fire checks
-        if (ItemGun.isOnShootCooldown(entityPlayer.getUniqueID()) || ItemGun.isClientReloading(entityPlayer) || ClientRenderHooks.getAnimMachine(entityPlayer).attachmentMode || (!itemGun.type.allowSprintFiring && entityPlayer.isSprinting()) || !itemGun.type.hasFireMode(fireMode))
+        if (!checkCanFireClient(entityPlayer, world, gunStack, itemGun, fireMode)) {
             return;
+        }
 
         int shotCount = fireMode == WeaponFireMode.BURST ? gunStack.getTagCompound().getInteger("shotsremaining") > 0 ? gunStack.getTagCompound().getInteger("shotsremaining") : gunType.numBurstRounds : 1;
 
@@ -57,10 +65,12 @@ public class ShotManager {
 
         if (preFireEvent.getResult() == Event.Result.DEFAULT || preFireEvent.getResult() == Event.Result.ALLOW) {
             if (!ItemGun.hasNextShot(gunStack)) {
-                if (fireMode == WeaponFireMode.SEMI) {
-                    ((ClientProxy)ModularWarfare.PROXY).playSound(new MWSound(entityPlayer.getPosition(), "defemptyclick", 1.0f, 1.0f));
-                }
                 if (fireMode == WeaponFireMode.BURST) gunStack.getTagCompound().setInteger("shotsremaining", 0);
+                if(defemptyclickLock) {
+                    ((ClientProxy)ModularWarfare.PROXY).playSound(new MWSound(entityPlayer.getPosition(), "defemptyclick", 1.0f, 1.0f));
+                    ModularWarfare.PROXY.onShootFailedAnimation(entityPlayer, gunType.internalName);
+                    defemptyclickLock=false;
+                }
                 return;
             }
         }
@@ -123,6 +133,26 @@ public class ShotManager {
         } else {
             fireClientSide(entityPlayer, itemGun);
         }
+    }
+    
+    public static boolean checkCanFireClient(EntityPlayer entityPlayer, World world, ItemStack gunStack, ItemGun itemGun, WeaponFireMode fireMode) {
+        if(itemGun.type.animationType==WeaponAnimationType.BASIC) {
+            if(ItemGun.isClientReloading(entityPlayer)) {
+                return false;
+            }
+        }
+        if (ItemGun.isOnShootCooldown(entityPlayer.getUniqueID())
+                || ClientRenderHooks.getAnimMachine(entityPlayer).attachmentMode
+                || (!itemGun.type.allowSprintFiring && entityPlayer.isSprinting())
+                || !itemGun.type.hasFireMode(fireMode)) {
+            return false;
+        }
+        if (ClientProxy.gunEnhancedRenderer.controller != null) {
+            if(!ClientProxy.gunEnhancedRenderer.controller.isCouldShoot()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

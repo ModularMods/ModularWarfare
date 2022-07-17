@@ -216,6 +216,9 @@ public class ItemGun extends BaseItem {
                 }
             }
             lastFireButtonHeld = fireButtonHeld;
+            if(!fireButtonHeld) {
+                ShotManager.defemptyclickLock=true;
+            }
         }
     }
 
@@ -301,7 +304,7 @@ public class ItemGun extends BaseItem {
         GunType.setFireMode(gunStack, fireMode);
 
         GunType gunType = itemGun.type;
-        if (WeaponSoundType.ModeSwitch != null) {
+        if (WeaponSoundType.ModeSwitch != null && !world.isRemote) {
             gunType.playSound(entityPlayer, WeaponSoundType.ModeSwitch, gunStack);
         }
     }

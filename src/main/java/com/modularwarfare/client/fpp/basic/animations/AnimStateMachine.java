@@ -5,6 +5,7 @@ import com.modularwarfare.api.WeaponAnimations;
 import com.modularwarfare.client.input.KeyBindingDisable;
 import com.modularwarfare.client.input.KeyBindingEnable;
 import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
 import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.guns.WeaponSoundType;
@@ -289,6 +290,10 @@ public class AnimStateMachine {
             }
         }
         return true;
+    }
+    
+    public boolean canSprint() {
+        return !shooting&&!reloading;
     }
 
     public boolean isReloadType(ReloadType type) {

@@ -1,5 +1,8 @@
 package com.modularwarfare.common.type;
 
+import javax.annotation.Nullable;
+
+import com.modularwarfare.api.IMWModel;
 import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
 import com.modularwarfare.common.guns.SkinType;
 import com.modularwarfare.loader.MWModelBase;
@@ -85,6 +88,17 @@ public class BaseType {
      */
     public boolean hasModel() {
         return (model != null || bipedModel != null || enhancedModel != null);
+    }
+    
+    @Nullable
+    public IMWModel getModel() {
+        if(enhancedModel!=null) {
+            return enhancedModel;
+        }
+        if(model!=null) {
+            return model;
+        }
+        return null;
     }
 
     /**

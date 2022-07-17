@@ -28,6 +28,9 @@ public class BulletType extends BaseType {
     public transient MWModelBase shell;
 
     public String shellSound = "casing";
+    
+    public boolean isDynamicBullet=false;
+    public boolean sameTextureAsGun=false;
 
     @Override
     public void loadExtraValues() {

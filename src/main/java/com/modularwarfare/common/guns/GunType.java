@@ -111,11 +111,13 @@ public class GunType extends BaseType {
 
     /**
      * Modifier for setting the maximum yaw divergence when randomizing recoil (Recoil 2 + rndRecoil 0.5 == 1.5-2.5 Recoil range)
+     * the first line is outdated;
      */
     public float randomRecoilYaw = 0.5F;
 
     /**
      * Modifier for setting the maximum yaw divergence when randomizing recoil (Recoil 2 + rndRecoil 0.5 == 1.5-2.5 Recoil range)
+     * the first line is outdated;
      */
     public float recoilAimReducer = 0.8F;
 
@@ -163,6 +165,19 @@ public class GunType extends BaseType {
     public String[] acceptedBullets;
     // Misc Settings
     public boolean allowSprintFiring = true;
+    
+    //Only Enhanced ASM
+    public boolean allowReloadFiring = false;
+    
+    //Only Enhanced ASM
+    public boolean allowReloadingSprint=true;
+    
+    //Only Enhanced ASM
+    public boolean allowFiringSprint=true;
+    
+    //Only Enhanced ASM
+    public boolean allowAimingSprint=true;
+    
     public boolean allowDefaultSounds = true;
 
     /**

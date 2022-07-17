@@ -52,18 +52,20 @@ public class PacketClientAnimation extends PacketBase {
         writeUTF(data, wepType);
 
         switch (animType) {
-            case Reload: {
-                data.writeInt(reloadTime);
-                data.writeInt(reloadCount);
-                data.writeInt(reloadType);
-                break;
-            }
-            case Shoot: {
-                data.writeInt(fireDelay);
-                data.writeFloat(recoilPitch);
-                data.writeFloat(recoilYaw);
-                break;
-            }
+        case Reload: {
+            data.writeInt(reloadTime);
+            data.writeInt(reloadCount);
+            data.writeInt(reloadType);
+            break;
+        }
+        case Shoot: {
+            data.writeInt(fireDelay);
+            data.writeFloat(recoilPitch);
+            data.writeFloat(recoilYaw);
+            break;
+        }
+        default:
+            break;
         }
     }
 
@@ -73,18 +75,20 @@ public class PacketClientAnimation extends PacketBase {
         wepType = readUTF(data);
 
         switch (animType) {
-            case Reload: {
-                reloadTime = data.readInt();
-                reloadCount = data.readInt();
-                reloadType = data.readInt();
-                break;
-            }
-            case Shoot: {
-                fireDelay = data.readInt();
-                recoilPitch = data.readFloat();
-                recoilYaw = data.readFloat();
-                break;
-            }
+        case Reload: {
+            reloadTime = data.readInt();
+            reloadCount = data.readInt();
+            reloadType = data.readInt();
+            break;
+        }
+        case Shoot: {
+            fireDelay = data.readInt();
+            recoilPitch = data.readFloat();
+            recoilYaw = data.readFloat();
+            break;
+        }
+        default:
+            break;
         }
     }
 
@@ -96,19 +100,28 @@ public class PacketClientAnimation extends PacketBase {
     @Override
     public void handleClientSide(EntityPlayer clientPlayer) {
         switch (animType) {
-            case Reload: {
-                ModularWarfare.PROXY.onReloadAnimation(clientPlayer, wepType, reloadTime, reloadCount, reloadType);
-                break;
-            }
-            case Shoot: {
-                ModularWarfare.PROXY.onShootAnimation(clientPlayer, wepType, fireDelay, recoilPitch, recoilYaw);
-                break;
-            }
+        case Reload: {
+            ModularWarfare.PROXY.onReloadAnimation(clientPlayer, wepType, reloadTime, reloadCount, reloadType);
+            break;
+        }
+        case Shoot: {
+            ModularWarfare.PROXY.onShootAnimation(clientPlayer, wepType, fireDelay, recoilPitch, recoilYaw);
+            break;
+        }
+        case ShootFailed:{
+            ModularWarfare.PROXY.onShootFailedAnimation(clientPlayer, wepType);
+            break;
+        }
+        case ModeChange:{
+            ModularWarfare.PROXY.onModeChangeAnimation(clientPlayer, wepType);
+        }
+        default:
+            break;
         }
     }
 
-    private enum AnimationType {
-        Shoot(0), Reload(1);
+    public static enum AnimationType {
+        Shoot(0), Reload(1),ShootFailed(2),ModeChange(3);
 
         public int i;
 
@@ -117,7 +130,18 @@ public class PacketClientAnimation extends PacketBase {
         }
 
         public static AnimationType getTypeFromInt(int i) {
-            return i == 0 ? Shoot : Reload;
+            switch (i) {
+            case 0:
+                return Shoot;
+            case 1:
+                return Reload;
+            case 2:
+                return ShootFailed;
+            case 3:
+                return ModeChange;
+            default:
+                return null;
+            }
         }
     }
 

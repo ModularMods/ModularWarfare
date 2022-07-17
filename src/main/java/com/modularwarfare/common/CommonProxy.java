@@ -151,6 +151,12 @@ public class CommonProxy extends ForgeEvent {
     public void onReloadAnimation(EntityPlayer player, String wepType, int reloadTime, int reloadCount, int reloadType) {
     }
 
+    public void onShootFailedAnimation(EntityPlayer player, String wepType) {
+    }
+    
+    public void onModeChangeAnimation(EntityPlayer player, String wepType) {
+    }
+
     public World getClientWorld() {
         return null;
     }

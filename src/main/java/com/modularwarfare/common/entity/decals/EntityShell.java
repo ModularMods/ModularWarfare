@@ -39,7 +39,11 @@ public class EntityShell extends Entity implements IProjectile {
 
     public EntityShell(World worldIn, EntityPlayer throwerIn, ItemGun gun, ItemBullet bullet) {
         super(worldIn);
-
+        
+        if(bullet==null) {
+            setDead();
+            return;
+        }
         this.setBulletType(bullet.type.internalName);
 
         Vec3d rotateYaw = new Vec3d(0, 0, 0);

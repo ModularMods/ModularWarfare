@@ -1,5 +1,6 @@
 package com.modularwarfare.client.gui.customization;
 
+import com.modularwarfare.api.IMWModel;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.gui.api.GuiMWContainer;
 import com.modularwarfare.client.gui.api.GuiMWScreen;
@@ -118,6 +119,14 @@ public class GuiMainScreen extends GuiMWScreen {
                 GlStateManager.scale(1.75f, 1.75f, 1.0f);
                 GlStateManager.scale(200F, 200F, 200F);
 
+                IMWModel model=null;
+                if(gun.type.model!=null) {
+                    model=gun.type.model;
+                }
+                if(gun.type.enhancedModel!=null) {
+                    model = gun.type.enhancedModel;
+                }
+                
                 for(String part : this.containerGunParts.partsSets.keySet()){
                     if(this.containerGunParts.partsSets.get(part)){
                         ClientRenderHooks.customRenderers[gun.type.id].bindTexture(gun.type.getAssetDir(), gun.type.modelSkins[0].getSkin());
@@ -132,25 +141,25 @@ public class GuiMainScreen extends GuiMWScreen {
                             GL11.glLineWidth(5.0F);
                             Color n = new ColorUtil(255,255,255);
                             OutlineUtils.setColor(n);
-                            gun.type.model.renderPart(part, 1/16F);
+                            model.renderPart(part, 1/16F);
                             OutlineUtils.renderOne(5f);
-                            gun.type.model.renderPart(part, 1/16F);
+                            model.renderPart(part, 1/16F);
                             OutlineUtils.renderTwo();
-                            gun.type.model.renderPart(part, 1/16F);
+                            model.renderPart(part, 1/16F);
                             OutlineUtils.renderThree();
                             OutlineUtils.renderFour();
                             OutlineUtils.setColor(n);
-                            gun.type.model.renderPart(part, 1/16F);
+                            model.renderPart(part, 1/16F);
                             OutlineUtils.renderFive();
                             OutlineUtils.setColor(Color.WHITE);
-                            gun.type.model.renderPart(part, 1/16F);
+                            model.renderPart(part, 1/16F);
 
                             GlStateManager.disableBlend();
                             GlStateManager.alphaFunc(516, 0.1F);
                             GlStateManager.popMatrix();
                             GlStateManager.depthMask(true);
                         }
-                        gun.type.model.renderPart(part, 1/16F*1.05f);
+                        model.renderPart(part, 1/16F*1.05f);
                     }
                 }
 

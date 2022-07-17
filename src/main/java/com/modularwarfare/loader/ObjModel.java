@@ -34,7 +34,7 @@ public class ObjModel extends AbstractObjModel {
 
     public ObjModelRenderer getPart(String name) {
         for (ObjModelRenderer part : parts) {
-            if (name.contains(part.getName())) {
+            if (name.equals(part.getName())) {
                 return part;
             }
         }
