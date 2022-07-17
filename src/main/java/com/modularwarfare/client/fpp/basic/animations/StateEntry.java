@@ -57,6 +57,7 @@ public class StateEntry {
                 }
             }
             ClientRenderHooks.getAnimMachine(Minecraft.getMinecraft().player).bulletsToRender++;
+            System.out.println("test");
             operationCount--;
         }
     }

@@ -37,6 +37,10 @@ public class ClientTickHandler extends ForgeEvent {
 
     public static ConcurrentHashMap<UUID, Integer> playerShootCooldown = new ConcurrentHashMap<UUID, Integer>();
     public static ConcurrentHashMap<UUID, Integer> playerReloadCooldown = new ConcurrentHashMap<UUID, Integer>();
+    public static ItemStack reloadEnhancedPrognosisAmmo = ItemStack.EMPTY;
+    public static ItemStack reloadEnhancedPrognosisAmmoRendering = ItemStack.EMPTY;
+    public static boolean reloadEnhancedIsQuickly=false;
+    public static boolean reloadEnhancedIsQuicklyRendering=false;
 
     public static int oldCurrentItem;
     public static ItemStack oldItemStack = ItemStack.EMPTY;
@@ -99,6 +103,20 @@ public class ClientTickHandler extends ForgeEvent {
             return;
 
         EntityPlayerSP player = minecraft.player;
+        
+        reloadEnhancedPrognosisAmmoRendering=reloadEnhancedPrognosisAmmo;
+        reloadEnhancedIsQuicklyRendering=reloadEnhancedIsQuickly;
+        
+        /**
+         *EnhancedGunRendered update currentItem 
+         */
+        if (ClientProxy.gunEnhancedRenderer.controller != null) {
+            ClientProxy.gunEnhancedRenderer.controller.updateCurrentItem();
+        }
+        
+        for (EnhancedStateMachine stateMachine : ClientRenderHooks.weaponEnhancedAnimations.values()) {
+            stateMachine.updateCurrentItem();
+        }
 
         if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemGun) {
             float adsSpeed = 0F;
@@ -224,14 +242,15 @@ public class ClientTickHandler extends ForgeEvent {
             /**
              * EnhancedGunRendered Updates
              */
-            if(((ItemGun) player.getHeldItemMainhand().getItem()).type.animationType.equals(WeaponAnimationType.ENHANCED)) {
-                if (ClientProxy.gunEnhancedRenderer.controller != null) {
+            if (ClientProxy.gunEnhancedRenderer.controller != null) {
+                if(((ItemGun) player.getHeldItemMainhand().getItem()).type.animationType.equals(WeaponAnimationType.ENHANCED)) {
                     ClientProxy.gunEnhancedRenderer.controller.onTickRender(renderTick);
                 }
             }
         } else {
             RenderParameters.resetRenderMods();
         }
+
     }
 
 

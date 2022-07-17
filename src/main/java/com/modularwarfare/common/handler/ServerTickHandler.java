@@ -1,6 +1,7 @@
 package com.modularwarfare.common.handler;
 
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.common.handler.data.DataGunReloadEnhancedTask;
 import com.modularwarfare.common.network.BackWeaponsManager;
 import com.modularwarfare.common.network.PacketAimingReponse;
 import com.modularwarfare.utility.event.ForgeEvent;
@@ -18,6 +19,7 @@ public class ServerTickHandler extends ForgeEvent {
 
     public static ConcurrentHashMap<String, Integer> playerAimShootCooldown = new ConcurrentHashMap<String, Integer>();
     public static ConcurrentHashMap<String, Boolean> playerAimInstant = new ConcurrentHashMap<String, Boolean>();
+    public static ConcurrentHashMap<UUID, DataGunReloadEnhancedTask> reloadEnhancedTask = new ConcurrentHashMap<UUID, DataGunReloadEnhancedTask>();
 
     int i = 0;
 

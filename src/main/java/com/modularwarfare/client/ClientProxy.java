@@ -735,7 +735,8 @@ public class ClientProxy extends CommonProxy {
             if (gunType.animationType == WeaponAnimationType.BASIC) {
                 ClientRenderHooks.getAnimMachine(player).triggerShoot((ModelGun) gunType.model, gunType, fireTickDelay);
             } else {
-                ClientRenderHooks.getEnhancedAnimMachine(player).triggerShoot((ModelGun) gunType.model, gunType, fireTickDelay);
+                ClientRenderHooks.getEnhancedAnimMachine(player).triggerShoot((ModelEnhancedGun) gunType.enhancedModel,
+                        gunType, fireTickDelay);
             }
 
             RenderParameters.rate = Math.min(RenderParameters.rate + 0.07f, 1f);
@@ -764,14 +765,37 @@ public class ClientProxy extends CommonProxy {
                     isCrawling = true;
                 }
             }
+            float offsetYaw = 0;
+            float offsetPitch = 0;
             if (!(ClientRenderHooks.isAiming || ClientRenderHooks.isAimingScope)) {
-                RenderParameters.playerRecoilPitch += (gunType.recoilPitch + (1.0f * (gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch)) * (recoilPitchGripFactor * recoilPitchBarrelFactor);
+                offsetPitch = gunType.recoilPitch;
+                offsetPitch += ((gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch);
+                offsetPitch *= (recoilPitchGripFactor * recoilPitchBarrelFactor);
 
-                RenderParameters.playerRecoilYaw += RenderParameters.rate * (isCrawling ? 0.2f : 1.0f) * (RenderParameters.phase ? 1 : -1 * gunType.recoilYaw + (new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw)) * (recoilYawGripFactor * recoilYawBarrelFactor);
+                offsetYaw = gunType.recoilYaw;
+                offsetYaw *= new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw;
+                offsetYaw *= recoilYawGripFactor * recoilYawBarrelFactor;
+                offsetYaw *= RenderParameters.rate * (isCrawling ? 0.2f : 1.0f);
+                offsetYaw *= RenderParameters.phase ? 1 : -1;
             } else {
-                RenderParameters.playerRecoilPitch += ((gunType.recoilPitch + (1.0f * (gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch)) * gunType.recoilAimReducer) * (recoilPitchGripFactor * recoilPitchBarrelFactor);
+                offsetYaw *= RenderParameters.phase ? 1 : -1;
+                offsetPitch = gunType.recoilPitch;
+                offsetPitch += ((gunType.randomRecoilPitch * 2) - gunType.randomRecoilPitch);
+                offsetPitch *= (recoilPitchGripFactor * recoilPitchBarrelFactor);
+                offsetPitch *= gunType.recoilAimReducer;
 
-                RenderParameters.playerRecoilYaw += RenderParameters.rate * (isCrawling ? 0.2f : 1.0f) * ((RenderParameters.phase ? 1 : -1 * gunType.recoilYaw + (new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw)) * gunType.recoilAimReducer) * (recoilYawGripFactor * recoilYawBarrelFactor);
+                offsetYaw = gunType.recoilYaw;
+                offsetYaw *= new Random().nextFloat() * (gunType.randomRecoilYaw * 2) - gunType.randomRecoilYaw;
+                offsetYaw *= recoilYawGripFactor * recoilYawBarrelFactor;
+                offsetYaw *= RenderParameters.rate * (isCrawling ? 0.2f : 1.0f);
+                offsetYaw *= gunType.recoilAimReducer;
+                offsetYaw *= RenderParameters.phase ? 1 : -1;
+            }
+            RenderParameters.playerRecoilPitch += offsetPitch;
+            if (Math.random() > 0.5f) {
+                RenderParameters.playerRecoilYaw += offsetYaw;
+            } else {
+                RenderParameters.playerRecoilYaw -= offsetYaw;
             }
             RenderParameters.phase = !RenderParameters.phase;
         }
@@ -786,6 +810,28 @@ public class ClientProxy extends CommonProxy {
                 ClientRenderHooks.getAnimMachine(player).triggerReload(reloadTime, reloadCount, (ModelGun) gunType.type.model, ReloadType.getTypeFromInt(reloadType), player.isSprinting());
             } else {
                 ClientRenderHooks.getEnhancedAnimMachine(player).triggerReload(reloadTime, reloadCount, (ModelEnhancedGun) gunType.type.enhancedModel, ReloadType.getTypeFromInt(reloadType));
+            }
+        }
+    }
+    
+    @Override
+    public void onShootFailedAnimation(EntityPlayer player, String wepType) {
+        ItemGun gunType = ModularWarfare.gunTypes.get(wepType);
+        if (gunType != null) {
+            if (gunType.type.animationType == WeaponAnimationType.ENHANCED) {
+                ClientRenderHooks.getEnhancedAnimMachine(player).triggerShoot((ModelEnhancedGun)gunType.type.enhancedModel, gunType.type, 0,true);
+            }
+        }
+    }
+    
+    @Override
+    public void onModeChangeAnimation(EntityPlayer player, String wepType) {
+        ItemGun gunType = ModularWarfare.gunTypes.get(wepType);
+        if (gunType != null) {
+            if (gunType.type.animationType == WeaponAnimationType.ENHANCED) {
+                if(gunEnhancedRenderer.controller!=null) {
+                    gunEnhancedRenderer.controller.MODE_CHANGE=0;
+                }
             }
         }
     }

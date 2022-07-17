@@ -4,12 +4,16 @@ import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
+import com.modularwarfare.client.fpp.basic.animations.ReloadType;
 import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
 import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
+import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
+import com.modularwarfare.client.fpp.enhanced.animation.EnhancedStateMachine;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RayUtil;
+import com.modularwarfare.utility.ReloadHelper;
 import com.modularwarfare.utility.RenderHelperMW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -68,7 +72,9 @@ public class GunUI {
                     case ALL:
                         GlStateManager.pushMatrix();
                         if (ModConfig.INSTANCE.hud.ammo_count) {
+                            GlStateManager.pushMatrix();
                             RenderPlayerAmmo(width, height);
+                            GlStateManager.popMatrix();
                         }
                         RenderHitMarker(Tessellator.getInstance(), width, height);
                         RenderPlayerSnap(width, height);
@@ -107,7 +113,7 @@ public class GunUI {
                                                             mc.renderEngine.bindTexture(reddot);
                                                             break;
                                                     }
-                                                    GL11.glColor4f(1.0f, 1.0f, 1.0f, 1 - alpha);
+                                                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1 - alpha);
                                                     Gui.drawModalRectWithCustomSizedTexture(width / 2, height / 2, 2.0f, 2.0f, 1, 1, 16.0f, 16.0f);
                                                 } else {
                                                     if (!OptifineHelper.isShadersEnabled()) {
@@ -133,9 +139,7 @@ public class GunUI {
                                 }
                             }
                         } else if(mc.gameSettings.thirdPersonView == 0 && AnimationController.ADS > 0.8f && RenderParameters.collideFrontDistance <= 0.025f){
-                            /**
-                             * FOR TESTING PURPOSES REMOVE AFTER (OKP-7)
-                             */
+                            /*
                             if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                                 float gunRotX = RenderParameters.GUN_ROT_X_LAST + (RenderParameters.GUN_ROT_X - RenderParameters.GUN_ROT_X_LAST) * ClientProxy.renderHooks.partialTicks;
                                 float gunRotY = RenderParameters.GUN_ROT_Y_LAST + (RenderParameters.GUN_ROT_Y - RenderParameters.GUN_ROT_Y_LAST) * ClientProxy.renderHooks.partialTicks;
@@ -165,12 +169,9 @@ public class GunUI {
                                     GL11.glPopMatrix();
                                 }
                             }
-                            /**
-                             * FOR TESTING PURPOSES REMOVE AFTER
-                             */
+                            */
                         }
 
-                        GlStateManager.popMatrix();
                         boolean showCrosshair = ((adsSwitch < 0.6F) && (AnimationController.ADS < 0.5F));
                         if (ModConfig.INSTANCE.hud.dynamic_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && showCrosshair && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
                             if(RenderParameters.collideFrontDistance <= 0.2f) {
@@ -180,20 +181,20 @@ public class GunUI {
                                 mc.renderEngine.bindTexture(crosshair);
                                 int xPos = width / 2;
                                 int yPos = height / 2;
-                                GlStateManager.enableAlpha();
                                 GlStateManager.enableBlend();
-                                GlStateManager.color(1f,1f,1f, (1F-AnimationController.ADS));
+                                GlStateManager.color(1f, 1f, 1f, 1f);
+                                GL11.glColor4f(1, 1, 1, 1);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos, yPos, 1.0f, 1.0f, 1, 1, 16.0f, 16.0f);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos, yPos + move, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos, yPos - move - 3, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos + move, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
                                 Gui.drawModalRectWithCustomSizedTexture(xPos - move - 3, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
                                 GlStateManager.disableBlend();
-                                GlStateManager.disableAlpha();
 
                                 GlStateManager.popMatrix();
                             }
                         }
+                        GlStateManager.popMatrix();
                         break;
                     default:
                         break;
@@ -250,95 +251,154 @@ public class GunUI {
 
             if (stack.getTagCompound() != null) {
                 ItemStack ammoStack = new ItemStack(stack.getTagCompound().getCompoundTag("ammo"));
-
-                int x = 0;
-                final int top = j - 38;
-                final int left = 2;
-                final int right = Math.min(left + 66, i / 2 - 60);
-                final int bottom = top + 22;
-                if (ItemGun.hasAmmoLoaded(stack)) {
-                    /** If gun use ammo/magazines **/
-                    if (ammoStack.getTagCompound() != null && ammoStack.getItem() instanceof ItemAmmo) {
-
-                        ItemAmmo itemAmmo = (ItemAmmo) ammoStack.getItem();
-                        int currentAmmoCount = ItemGun.getMagazineBullets(stack);
-
-                        GlStateManager.pushMatrix();
-
-                        GlStateManager.translate(i - 120, 0F, 0F);
-
-                        Gui.drawRect(left + right - 3, top, right * 2 - 18, bottom, Integer.MIN_VALUE);
-
-                        GlStateManager.pushMatrix();
-                        RenderHelper.enableGUIStandardItemLighting();
-                        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
-                        drawSlotInventory(mc.fontRenderer, ammoStack, left + 67, j - 35);
-                        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                        RenderHelper.disableStandardItemLighting();
-                        GlStateManager.popMatrix();
-
-                        String color = TextFormatting.WHITE + "";
-                        if (currentAmmoCount < itemAmmo.type.ammoCapacity / 6) {
-                            color = TextFormatting.RED + "";
-                            mc.fontRenderer.drawString(String.valueOf(TextFormatting.YELLOW + "[R]" + TextFormatting.WHITE + " Reload"), 10, j - 30, 0xffffff);
-                        }
-
-                        String s = String.valueOf(color + currentAmmoCount) + "/" + itemAmmo.type.ammoCapacity;
-
-                        RenderHelperMW.renderTextWithShadow(String.valueOf(s), left + 83, j - 30, 0xffffff);
-
-                        x += 16 + mc.fontRenderer.getStringWidth(s);
-
-                        ItemGun gun = (ItemGun) stack.getItem();
-                        if (gun.type.getFireMode(stack) != null) {
-                            RenderHelperMW.renderCenteredTextWithShadow(String.valueOf(gun.type.getFireMode(stack)), left + 90, j - 50, 0xffffff);
-                        }
-
-                        GlStateManager.popMatrix();
-
-                        /** If gun use bullets **/
+                GunType type=((ItemGun)stack.getItem()).type;
+                if(type.animationType.equals(WeaponAnimationType.BASIC)) {
+                    ammoStack.setItemDamage(0);
+                    if (ItemGun.hasAmmoLoaded(stack)) {
+                        renderAmmo(stack, ammoStack, i, j, 0);
+                    } else if (ItemGun.getUsedBullet(stack, ((ItemGun) (stack.getItem())).type) != null) {
+                        renderBullets(stack, null, i, j, 0,null);
                     }
-
-                } else if (ItemGun.getUsedBullet(stack, ((ItemGun) (stack.getItem())).type) != null) {
-                    ItemBullet itemBullet = ItemGun.getUsedBullet(stack, ((ItemGun) (stack.getItem())).type);
-
-                    int currentAmmoCount = stack.getTagCompound().getInteger("ammocount");
-                    int maxAmmo = (((ItemGun) (stack.getItem())).type.internalAmmoStorage == null) ? 0 : (((ItemGun) (stack.getItem())).type.internalAmmoStorage);
-
-                    GlStateManager.pushMatrix();
-
-                    GlStateManager.translate(i - 120, 0F, 0F);
-
-                    Gui.drawRect(left + right - 3, top, right * 2 - 18, bottom, Integer.MIN_VALUE);
-
-                    RenderHelper.enableGUIStandardItemLighting();
-                    GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
-                    drawSlotInventory(mc.fontRenderer, new ItemStack(itemBullet), left + 67, j - 35);
-                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-                    RenderHelper.disableStandardItemLighting();
-
-                    String color = TextFormatting.WHITE + "";
-                    if (currentAmmoCount < maxAmmo / 6) {
-                        color = TextFormatting.RED + "";
-                        mc.fontRenderer.drawString(String.valueOf(TextFormatting.YELLOW + "[R]" + TextFormatting.WHITE + " Reload"), 10, j - 30, 0xffffff);
+                }else {
+                    if(ClientProxy.gunEnhancedRenderer.controller!=null) {
+                        EnhancedStateMachine anim = ClientRenderHooks.getEnhancedAnimMachine(mc.player);
+                        AnimationType reloadAni=anim.getReloadAnimationType();
+                        if(type.acceptedAmmo!=null) {
+                            ammoStack=ClientProxy.gunEnhancedRenderer.controller.getRenderAmmo(ammoStack);
+                            ammoStack.setItemDamage(0);
+                            if(reloadAni==AnimationType.RELOAD_FIRST||reloadAni==AnimationType.RELOAD_FIRST_QUICKLY||reloadAni==AnimationType.UNLOAD) {
+                                ammoStack=ItemStack.EMPTY;
+                            }
+                            renderAmmo(stack, ammoStack, i, j, 0);
+                        }else{
+                            boolean flag=true;
+                            ItemStack bulletStack = new ItemStack(stack.getTagCompound().getCompoundTag("bullet"));
+                            if(anim.reloading) {
+                                bulletStack=ClientProxy.gunEnhancedRenderer.controller.getRenderAmmo(bulletStack);
+                                if(ClientProxy.gunEnhancedRenderer.controller.getPlayingAnimation() ==AnimationType.POST_UNLOAD) {
+                                    flag=false;
+                                }
+                            }
+                            bulletStack.setItemDamage(0);
+                            int offset = anim.getAmmoCountOffset();
+                            if(!anim.reloading) {
+                                offset=0;
+                            }
+                            if(flag) {
+                                renderBullets(stack, null, i, j, offset,bulletStack);  
+                            }
+                        }  
                     }
-
-                    String s = String.valueOf(color + currentAmmoCount) + "/" + maxAmmo;
-
-                    mc.fontRenderer.drawStringWithShadow(String.valueOf(s), left + 83, j - 30, 0xffffff);
-                    x += 16 + mc.fontRenderer.getStringWidth(s);
-
-                    ItemGun gun = (ItemGun) stack.getItem();
-                    if (gun.type.getFireMode(stack) != null) {
-                        RenderHelperMW.renderCenteredTextWithShadow(String.valueOf(gun.type.getFireMode(stack)), left + 90, j - 50, 0xffffff);
-                    }
-
-                    GlStateManager.popMatrix();
                 }
             }
         }
+    }
+    
+    public void renderAmmo(ItemStack stack,ItemStack ammoStack,int i, int j,int countOffset) {
+        Minecraft mc = Minecraft.getMinecraft();
+        int x = 0;
+        final int top = j - 38;
+        final int left = 2;
+        final int right = Math.min(left + 66, i / 2 - 60);
+        final int bottom = top + 22;
+        /** If gun use ammo/magazines **/
+        if (ammoStack.getTagCompound() != null && ammoStack.getItem() instanceof ItemAmmo) {
+
+            ItemAmmo itemAmmo = (ItemAmmo) ammoStack.getItem();
+            Integer currentMagcount=null;
+            if(ammoStack.getTagCompound().hasKey("magcount")) {
+                currentMagcount=ammoStack.getTagCompound().getInteger("magcount");
+            }
+            int currentAmmoCount =ReloadHelper.getBulletOnMag(ammoStack,currentMagcount) + countOffset;
+
+            GlStateManager.pushMatrix();
+
+            GlStateManager.translate(i - 120, 0F, 0F);
+
+            Gui.drawRect(left + right - 3, top, right * 2 - 18, bottom, Integer.MIN_VALUE);
+
+            GlStateManager.pushMatrix();
+            RenderHelper.enableGUIStandardItemLighting();
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
+            drawSlotInventory(mc.fontRenderer, ammoStack, left + 67, j - 35);
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            RenderHelper.disableStandardItemLighting();
+            GlStateManager.popMatrix();
+
+            String color = TextFormatting.WHITE + "";
+            if (currentAmmoCount < itemAmmo.type.ammoCapacity / 6) {
+                color = TextFormatting.RED + "";
+                mc.fontRenderer.drawString(String.valueOf(TextFormatting.YELLOW + "[R]" + TextFormatting.WHITE + " Reload"), 10, j - 30, 0xffffff);
+            }
+
+            String s = String.valueOf(color + currentAmmoCount) + "/" + itemAmmo.type.ammoCapacity;
+
+            RenderHelperMW.renderTextWithShadow(String.valueOf(s), left + 83, j - 30, 0xffffff);
+
+            x += 16 + mc.fontRenderer.getStringWidth(s);
+
+            ItemGun gun = (ItemGun) stack.getItem();
+            if (gun.type.getFireMode(stack) != null) {
+                RenderHelperMW.renderCenteredTextWithShadow(String.valueOf(gun.type.getFireMode(stack)), left + 90, j - 50, 0xffffff);
+            }
+
+            GlStateManager.popMatrix();
+        }
+    }
+
+    public void renderBullets(ItemStack stack, ItemStack ammoStack, int i, int j,int countOffset,ItemStack expectItemBullet) {
+        Minecraft mc = Minecraft.getMinecraft();
+        int x = 0;
+        final int top = j - 38;
+        final int left = 2;
+        final int right = Math.min(left + 66, i / 2 - 60);
+        final int bottom = top + 22;
+        /** If gun use bullets **/
+        ItemBullet itemBullet = null;
+        if (expectItemBullet.getItem() instanceof ItemBullet) {
+            itemBullet = (ItemBullet) expectItemBullet.getItem();
+        }
+        if (itemBullet == null) {
+            itemBullet = ItemGun.getUsedBullet(stack, ((ItemGun) (stack.getItem())).type);
+        }
+        if (itemBullet == null) {
+            return;
+        }
+
+        int currentAmmoCount = stack.getTagCompound().getInteger("ammocount") + countOffset;
+        int maxAmmo = (((ItemGun) (stack.getItem())).type.internalAmmoStorage == null) ? 0 : (((ItemGun) (stack.getItem())).type.internalAmmoStorage);
+
+        GlStateManager.pushMatrix();
+
+        GlStateManager.translate(i - 120, 0F, 0F);
+
+        Gui.drawRect(left + right - 3, top, right * 2 - 18, bottom, Integer.MIN_VALUE);
+
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
+        drawSlotInventory(mc.fontRenderer, new ItemStack(itemBullet), left + 67, j - 35);
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        RenderHelper.disableStandardItemLighting();
+
+        String color = TextFormatting.WHITE + "";
+        if (currentAmmoCount < maxAmmo / 6) {
+            color = TextFormatting.RED + "";
+            mc.fontRenderer.drawString(String.valueOf(TextFormatting.YELLOW + "[R]" + TextFormatting.WHITE + " Reload"), 10, j - 30, 0xffffff);
+        }
+
+        String s = String.valueOf(color + currentAmmoCount) + "/" + maxAmmo;
+
+        mc.fontRenderer.drawStringWithShadow(String.valueOf(s), left + 83, j - 30, 0xffffff);
+        x += 16 + mc.fontRenderer.getStringWidth(s);
+
+        ItemGun gun = (ItemGun) stack.getItem();
+        if (gun.type.getFireMode(stack) != null) {
+            RenderHelperMW.renderCenteredTextWithShadow(String.valueOf(gun.type.getFireMode(stack)), left + 90, j - 50, 0xffffff);
+        }
+
+        GlStateManager.popMatrix();
     }
 
     public void RenderPlayerSnap(int i, int j) {

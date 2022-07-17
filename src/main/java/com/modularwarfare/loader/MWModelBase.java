@@ -1,5 +1,6 @@
 package com.modularwarfare.loader;
 
+import com.modularwarfare.api.IMWModel;
 import com.modularwarfare.loader.api.model.AbstractObjModel;
 import com.modularwarfare.loader.api.model.ObjModelRenderer;
 import net.minecraft.client.model.ModelBase;
@@ -8,7 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-public class MWModelBase extends ModelBase {
+public class MWModelBase extends ModelBase implements IMWModel{
 
     /**
      * Main obj staticModel used for rendering.

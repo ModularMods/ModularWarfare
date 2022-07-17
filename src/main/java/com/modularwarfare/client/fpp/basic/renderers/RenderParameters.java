@@ -59,6 +59,7 @@ public class RenderParameters {
     public static float VAL2;
     public static float VALROT;
     public static float VALSPRINT;
+    public static float VALSPRINT2;
 
     // Resets render modifiers
     public static void resetRenderMods() {

@@ -3,6 +3,7 @@ package com.modularwarfare;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import com.modularwarfare.client.fpp.enhanced.AnimationType.AnimationTypeJsonAdapter.AnimationTypeException;
 import com.modularwarfare.common.CommonProxy;
 import com.modularwarfare.common.MWTab;
 import com.modularwarfare.common.armor.ItemMWArmor;
@@ -202,11 +203,13 @@ public class ModularWarfare {
                     File renderConfig = new File(contentPackDir, "/" + baseType.getAssetDir() + "/render");
                     File typeRender = new File(renderConfig, baseType.internalName + ".render.json");
                     JsonReader jsonReader = new JsonReader(new FileReader(typeRender));
-
                     return GSONUtils.fromJson(gson, jsonReader, typeClass);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+            } catch (AnimationTypeException err) {
+                ModularWarfare.LOGGER.info(baseType.internalName + " was loaded. But something was wrong.");
+                err.printStackTrace();
             }
         } else {
             if (zipContentsPack.containsKey(baseType.contentPack)) {
@@ -220,6 +223,9 @@ public class ModularWarfare {
                         return GSONUtils.fromJson(gson, jsonReader, typeClass);
                     } catch (ZipException e) {
                         e.printStackTrace();
+                    }catch (AnimationTypeException err) {
+                        ModularWarfare.LOGGER.info(baseType.internalName + " was loaded. But something was wrong.");
+                        err.printStackTrace();
                     }
                 } else {
                     ModularWarfare.LOGGER.info(baseType.internalName + ".render.json not found. Aborting");
