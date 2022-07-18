@@ -5,7 +5,7 @@
         "dstrgb": "zero"
     },
     "vertex": "sobel",
-    "fragment": "blurex",
+    "fragment": "modularwarfare:blurex",
     "attributes": [ "Position" ],
     "samplers": [
         { "name": "DiffuseSampler" }

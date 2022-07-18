@@ -133,27 +133,27 @@ public class ClientTickHandler extends ForgeEvent {
                 boolean aimChargeMisc = !anim.reloading;
                 float value = (Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && aimChargeMisc && !ClientRenderHooks.getAnimMachine(player).attachmentMode) ? RenderParameters.adsSwitch + adsSpeedFinal : RenderParameters.adsSwitch - adsSpeedFinal;
                 RenderParameters.adsSwitch = Math.max(0, Math.min(1, value));
-                ;
+                
 
                 float sprintSpeed = 0.15f * renderTick;
                 float sprintValue = (player.isSprinting() && !ClientRenderHooks.getAnimMachine(player).attachmentMode) ? RenderParameters.sprintSwitch + sprintSpeed : RenderParameters.sprintSwitch - sprintSpeed;
                 RenderParameters.sprintSwitch = Math.max(0, Math.min(1, sprintValue));
-                ;
+                
 
                 float attachmentSpeed = 0.15f * renderTick;
                 float attachmentValue = ClientRenderHooks.getAnimMachine(player).attachmentMode ? RenderParameters.attachmentSwitch + attachmentSpeed : RenderParameters.attachmentSwitch - attachmentSpeed;
                 RenderParameters.attachmentSwitch = Math.max(0, Math.min(1, attachmentValue));
-                ;
+                
 
                 float crouchSpeed = 0.15f * renderTick;
                 float crouchValue = player.isSneaking() ? RenderParameters.crouchSwitch + crouchSpeed : RenderParameters.crouchSwitch - crouchSpeed;
                 RenderParameters.crouchSwitch = Math.max(0, Math.min(1, crouchValue));
-                ;
+                
 
                 float reloadSpeed = 0.15f * renderTick;
                 float reloadValue = anim.reloading ? RenderParameters.reloadSwitch - reloadSpeed : RenderParameters.reloadSwitch + reloadSpeed;
                 RenderParameters.reloadSwitch = Math.max(0, Math.min(1, reloadValue));
-                ;
+                
 
                 float triggerPullSpeed = 0.03f * renderTick;
                 float triggerPullValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) && !ClientRenderHooks.getAnimMachine(player).attachmentMode ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
@@ -162,6 +162,10 @@ public class ClientTickHandler extends ForgeEvent {
                 float modeSwitchSpeed = 0.03f * renderTick;
                 float modeSwitchValue = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(0) ? RenderParameters.triggerPullSwitch + triggerPullSpeed : RenderParameters.triggerPullSwitch - triggerPullSpeed;
                 RenderParameters.triggerPullSwitch = Math.max(0, Math.min(0.02f, triggerPullValue));
+            }else {
+                if (ClientProxy.gunEnhancedRenderer.controller != null) {
+                    RenderParameters.adsSwitch = (float) ClientProxy.gunEnhancedRenderer.controller.ADS;
+                }
             }
 
             float balancing_speed_x = 0.08f * renderTick;

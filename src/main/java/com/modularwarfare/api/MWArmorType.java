@@ -2,6 +2,8 @@ package com.modularwarfare.api;
 
 import com.google.gson.annotations.SerializedName;
 
+import net.minecraft.inventory.EntityEquipmentSlot;
+
 public enum MWArmorType {
 
     @SerializedName("head") Head,
@@ -12,6 +14,22 @@ public enum MWArmorType {
 
     int[] validSlots;
 
+    public static MWArmorType fromVanillaSlot(EntityEquipmentSlot entityEquipmentSlot) {
+        if(entityEquipmentSlot==EntityEquipmentSlot.HEAD) {
+            return Head;
+        }
+        if(entityEquipmentSlot==EntityEquipmentSlot.CHEST) {
+            return Chest;
+        }
+        if(entityEquipmentSlot==EntityEquipmentSlot.LEGS) {
+            return Legs;
+        }
+        if(entityEquipmentSlot==EntityEquipmentSlot.FEET) {
+            return Feet;
+        }
+        return null;
+    }
+    
     private MWArmorType(int... validSlots) {
         this.validSlots = validSlots;
     }

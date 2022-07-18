@@ -1,10 +1,14 @@
 package com.modularwarfare.common.entity;
 
+import com.modularwarfare.common.entity.decals.EntityShell;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -23,14 +27,20 @@ public class EntityBullet extends EntityArrow implements IProjectile {
     private float damage;
     private int liveTime = 600;
 
+    private float velocity;
+
+    private static final DataParameter BULLET_NAME = EntityDataManager.createKey(EntityShell.class, DataSerializers.STRING);
+
     public EntityBullet(World world) {
         super(world);
         setSize(0.2F, 0.2F);
     }
 
-    public EntityBullet(World par1World, EntityPlayer par2EntityPlayer, float damage, float accuracy) {
+    public EntityBullet(World par1World, EntityPlayer par2EntityPlayer, float damage, float accuracy, float velocity, String bulletName) {
         super(par1World);
+        this.setBulletType(bulletName);
         this.player = par2EntityPlayer;
+        this.shootingEntity = par2EntityPlayer;
         setSize(0.2F, 0.2F);
         setLocationAndAngles(par2EntityPlayer.posX, par2EntityPlayer.posY + par2EntityPlayer.getEyeHeight(), par2EntityPlayer.posZ, par2EntityPlayer.rotationYaw, par2EntityPlayer.rotationPitch);
         this.posX -= MathHelper.cos(this.rotationYaw / 180.0F * 3.141593F) * 0.16F;
@@ -41,7 +51,7 @@ public class EntityBullet extends EntityArrow implements IProjectile {
         this.motionZ = (MathHelper.cos(this.rotationYaw / 180.0F * 3.141593F) * MathHelper.cos(this.rotationPitch / 180.0F * 3.141593F));
         this.motionY = (-MathHelper.sin(this.rotationPitch / 180.0F * 3.141593F));
         this.damage = damage;
-        shoot(this.motionX, this.motionY, this.motionZ, 0.5F, accuracy);
+        shoot(this.motionX, this.motionY, this.motionZ, velocity, accuracy);
     }
 
     public void onUpdate() {
@@ -116,6 +126,7 @@ public class EntityBullet extends EntityArrow implements IProjectile {
         par1NBTTagCompound.setByte("inData", (byte) this.inData);
         par1NBTTagCompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
         par1NBTTagCompound.setFloat("damage", this.damage);
+        par1NBTTagCompound.setFloat("velocity", this.velocity);
     }
 
     public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
@@ -131,10 +142,24 @@ public class EntityBullet extends EntityArrow implements IProjectile {
         if (par1NBTTagCompound.hasKey("damage")) {
             this.damage = par1NBTTagCompound.getFloat("damage");
         }
+        this.velocity = par1NBTTagCompound.getFloat("velocity");
     }
 
     @Override
     protected ItemStack getArrowStack() {
         return null;
+    }
+
+    @Override
+    protected void entityInit() {
+        this.dataManager.register(BULLET_NAME, "");
+    }
+
+    public String getBulletName() {
+        return (String) this.dataManager.get(BULLET_NAME);
+    }
+
+    public void setBulletType(String bulletType) {
+        this.dataManager.set(BULLET_NAME, bulletType);
     }
 }

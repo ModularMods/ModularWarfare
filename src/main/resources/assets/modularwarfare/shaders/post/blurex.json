@@ -4,7 +4,7 @@
     ],
     "passes": [
         {
-            "name": "blurex",
+            "name": "modularwarfare:blurex",
             "intarget": "minecraft:main",
             "outtarget": "swap",
             "uniforms": [
@@ -14,7 +14,7 @@
                 },
                 {
                     "name": "Radius",
-                    "values": [ 8.0 ]
+                    "values": [ 6.0 ]
                 },
                 {
                     "name": "Progress",
@@ -23,7 +23,7 @@
             ]
         },
         {
-            "name": "blurex",
+            "name": "modularwarfare:blurex",
             "intarget": "swap",
             "outtarget": "minecraft:main",
             "uniforms": [
@@ -33,45 +33,7 @@
                 },
                 {
                     "name": "Radius",
-                    "values": [ 8.0 ]
-                },
-                {
-                    "name": "Progress",
-                    "values": [ 0.0 ]
-                }
-            ]
-        },
-        {
-            "name": "blurex",
-            "intarget": "minecraft:main",
-            "outtarget": "swap",
-            "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 1.0, 0.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [ 8.0 ]
-                },
-                {
-                    "name": "Progress",
-                    "values": [ 0.0 ]
-                }
-            ]
-        },
-        {
-            "name": "blurex",
-            "intarget": "swap",
-            "outtarget": "minecraft:main",
-            "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 0.0, 1.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [ 8.0 ]
+                    "values": [ 6.0 ]
                 },
                 {
                     "name": "Progress",

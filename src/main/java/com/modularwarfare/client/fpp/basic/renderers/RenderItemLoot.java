@@ -5,6 +5,8 @@ import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
 import com.modularwarfare.client.fpp.basic.models.ModelGun;
 import com.modularwarfare.common.entity.item.EntityItemLoot;
 import com.modularwarfare.common.guns.*;
+import com.modularwarfare.loader.api.model.ObjModelRenderer;
+
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -88,6 +90,8 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
     }
 
     public void doRender(final EntityItemLoot entity, final double x, final double y, final double z, final float entityYaw, final float partialTicks) {
+        boolean glow = ObjModelRenderer.glowTxtureMode;
+        ObjModelRenderer.glowTxtureMode = true;
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         final ItemStack itemstack = entity.getItem();
         if (itemstack.getItem() instanceof ItemGun) {
@@ -95,6 +99,10 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                 GlStateManager.alphaFunc(516, 0.1F);
                 GlStateManager.enableBlend();
                 RenderHelper.enableStandardItemLighting();
+                /*
+                 * we need to use shadeModel(GL11.GL_SMOOTH)  after enableStandardItemLighting
+                 * */
+                GlStateManager.shadeModel(GL11.GL_SMOOTH);
                 GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                 GlStateManager.pushMatrix();
                 GlStateManager.translate((float) x, (float) y, (float) z);
@@ -180,7 +188,6 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                                         skinId = itemStack.getTagCompound().getInteger("skinId");
                                     }
                                 }
-                                path = skinId > 0 ? attachmentType.modelSkins[skinId].getSkin() : attachmentType.modelSkins[0].getSkin();
                                 if (attachmentType.sameTextureAsGun) {
                                     ClientRenderHooks.customRenderers[3].bindTexture("guns", path);
                                 } else {
@@ -220,6 +227,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
             GlStateManager.enableRescaleNormal();
             GlStateManager.alphaFunc(516, 0.1f);
             RenderHelper.enableStandardItemLighting();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.pushMatrix();
@@ -285,6 +293,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
             super.doRender(entity, x, y, z, entityYaw, partialTicks);
         }
         GlStateManager.shadeModel(GL11.GL_FLAT);
+        ObjModelRenderer.glowTxtureMode=glow;
     }
 
     protected ResourceLocation getEntityTexture(final EntityItemLoot entity) {

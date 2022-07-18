@@ -247,6 +247,9 @@ public class EnhancedStateMachine {
     }
 
     public void onRenderTickUpdate(float partialTick) {
+        if(ClientProxy.gunEnhancedRenderer.controller==null) {
+            return;
+        }
         PacketGunReloadEnhancedStop packet = null;
         ItemStack stack = heldItemstStack;
         Item item = stack.getItem();

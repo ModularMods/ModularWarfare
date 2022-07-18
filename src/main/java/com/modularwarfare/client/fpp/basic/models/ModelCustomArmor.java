@@ -5,22 +5,30 @@ import com.modularwarfare.api.RenderBonesEvent;
 import com.modularwarfare.api.RenderMWArmorEvent;
 import com.modularwarfare.client.fpp.basic.configs.ArmorRenderConfig;
 import com.modularwarfare.client.fpp.basic.models.ModelCustomArmor.Bones.BonePart.EnumBoneType;
-import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderer;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.loader.MWModelBipedBase;
 import com.modularwarfare.loader.api.ObjModelLoader;
 import com.modularwarfare.loader.api.model.ObjModelRenderer;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.function.Consumer;
+
 import org.lwjgl.opengl.GL11;
 
 public class ModelCustomArmor extends MWModelBipedBase {
-    private static CustomItemRenderer customItemRenderer = new CustomItemRenderer();
+
     public static Bones bones = new Bones(0, false);
     public static Bones bonesSmall = new Bones(0, true);
     private BaseType type;
@@ -57,12 +65,25 @@ public class ModelCustomArmor extends MWModelBipedBase {
         bones.armor = this;
         bones.setModelAttributes(this);
         bones.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        copyShowMode(bones.bipedHead, this.bipedHead);
-        copyShowMode(bones.bipedBody, this.bipedBody);
-        copyShowMode(bones.bipedLeftArm, this.bipedLeftArm);
-        copyShowMode(bones.bipedRightArm, this.bipedRightArm);
-        copyShowMode(bones.bipedLeftLeg, this.bipedLeftLeg);
-        copyShowMode(bones.bipedRightLeg, this.bipedRightLeg);
+        if (config.extra.isSuit) {
+            showHead(true);
+            showChest(true);
+            showLegs(true);
+            showFeet(true);
+            setShowMode(bones.bipedHead, true);
+            setShowMode(bones.bipedBody, true);
+            setShowMode(bones.bipedLeftArm, true);
+            setShowMode(bones.bipedRightArm, true);
+            setShowMode(bones.bipedLeftLeg, true);
+            setShowMode(bones.bipedRightLeg, true);
+        } else {
+            copyShowMode(bones.bipedHead, this.bipedHead);
+            copyShowMode(bones.bipedBody, this.bipedBody);
+            copyShowMode(bones.bipedLeftArm, this.bipedLeftArm);
+            copyShowMode(bones.bipedRightArm, this.bipedRightArm);
+            copyShowMode(bones.bipedLeftLeg, this.bipedLeftLeg);
+            copyShowMode(bones.bipedRightLeg, this.bipedRightLeg);
+        }
         bones.render(entity, f, f1, f2, f3, f4, f5);
 
         GL11.glPopMatrix();
@@ -119,35 +140,52 @@ public class ModelCustomArmor extends MWModelBipedBase {
         a.isHidden = b.isHidden;
     }
 
+    private void setShowMode(ModelRenderer a, boolean b) {
+        a.showModel = b;
+        a.isHidden = !b;
+    }
+
     public void render(String modelPart, ModelRenderer bodyPart, float f5, float scale) {
         if (this.staticModel != null) {
             GlStateManager.pushMatrix();
             ObjModelRenderer part = this.staticModel.getPart(modelPart);
             if (part != null) {
-                part.render(f5);
+                if (part != null) {
+                    ObjModelRenderer.glowType = "armor";
+                    ObjModelRenderer.glowPath = type.modelSkins[0].getSkin();
+                    boolean glow = ObjModelRenderer.glowTxtureMode;
+                    ObjModelRenderer.glowTxtureMode = true;
+                    part.render(f5);
+                    ObjModelRenderer.glowTxtureMode = glow;
+                }
             }
+
             GlStateManager.popMatrix();
         }
     }
 
     public void showHead(boolean result) {
         showGroup("headModel", result);
+        showGroup("headSlimModel", result);
     }
 
     public void showChest(boolean result) {
         showGroup("bodyModel", result);
         showGroup("leftArmModel", result);
         showGroup("rightArmModel", result);
+        showGroup("bodySlimModel", result);
+        showGroup("leftArmSlimModel", result);
+        showGroup("rightArmSlimModel", result);
     }
 
     public void showLegs(boolean result) {
-        showGroup("leftLegModel", result);
-        showGroup("rightLegModel", result);
+        showGroup("leftLegSlimModel", result);
+        showGroup("rightLegSlimModel", result);
     }
 
     public void showFeet(boolean result) {
-        showGroup("leftFootModel", result);
-        showGroup("rightFootModel", result);
+        showGroup("leftFootSlimModel", result);
+        showGroup("rightFootSlimModel", result);
     }
 
     public void showGroup(String part, boolean result) {
@@ -165,6 +203,7 @@ public class ModelCustomArmor extends MWModelBipedBase {
 
     public static class Bones extends net.minecraft.client.model.ModelPlayer {
         public ModelCustomArmor armor = null;
+        public boolean isSlim;
 
         public Bones(float modelSize, boolean smallArmsIn) {
             super(modelSize, smallArmsIn);
@@ -201,11 +240,12 @@ public class ModelCustomArmor extends MWModelBipedBase {
             this.bipedLeftLeg = new BonePart(EnumBoneType.LEFTLEG, this, 16, 48);
             this.bipedLeftLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 12, 4, modelSize);
             this.bipedLeftLeg.setRotationPoint(1.9F, 12.0F, 0.0F);
+            this.isSlim = smallArmsIn;
         }
 
         @Override
         public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-                                      float headPitch, float scaleFactor, Entity entityIn) {
+                float headPitch, float scaleFactor, Entity entityIn) {
             // TODO Auto-generated method stub
             super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor,
                     entityIn);
@@ -215,7 +255,7 @@ public class ModelCustomArmor extends MWModelBipedBase {
 
         @Override
         public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-                           float headPitch, float scale) {
+                float headPitch, float scale) {
             // TODO Auto-generated method stub
             GlStateManager.pushMatrix();
             if (entityIn.isSneaking()) {
@@ -271,41 +311,90 @@ public class ModelCustomArmor extends MWModelBipedBase {
                 if (this.rotateAngleX != 0.0F) {
                     GlStateManager.rotate(this.rotateAngleX * (180F / (float) Math.PI), 1.0F, 0.0F, 0.0F);
                 }
+                //GlStateManager.translate(-this.cubeList.get(0).posX1*scale,-this.cubeList.get(0).posY1*scale,-this.cubeList.get(0).posZ1*scale);
 
                 GlStateManager.translate(customOffestX, customOffestY, customOffestZ);
                 int texture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
                 MinecraftForge.EVENT_BUS.post(new RenderBonesEvent.Pre(this.baseModel.armor, type, scale));
                 MinecraftForge.EVENT_BUS.post(new RenderMWArmorEvent.Pre(this.baseModel.armor, type, scale));
-                if (!this.isHidden) {
-                    if (this.showModel) {
-                        switch (type) {
-                            case HEAD:
+
+                switch (type) {
+                case HEAD:
+                    if (!this.isHidden) {
+                        if (this.showModel) {
+                            if (baseModel.armor.config.extra.slimSupported && baseModel.isSlim) {
+                                baseModel.armor.render("headSlimModel", NonePart, scale, 1);
+                            } else {
                                 baseModel.armor.render("headModel", NonePart, scale, 1);
-                                break;
-                            case BODY:
-                                baseModel.armor.render("bodyModel", NonePart, scale, 1);
-                                break;
-                            case LEFTARM:
-                                GlStateManager.translate(-0.35 + 0.04, -0.17, 0);
-                                baseModel.armor.render("leftArmModel", NonePart, scale, 1);
-                                break;
-                            case RIGHTARM:
-                                GlStateManager.translate(0.35 - 0.04, -0.17, 0);
-                                baseModel.armor.render("rightArmModel", NonePart, scale, 1);
-                                break;
-                            case LEFTLEG:
-                                GlStateManager.translate(-0.12, -0.76, 0);
-                                baseModel.armor.render("leftLegModel", NonePart, scale, 1);
-                                baseModel.armor.render("leftFootModel", NonePart, scale, 1);
-                                break;
-                            case RIGHTLEG:
-                                GlStateManager.translate(0.12, -0.76, 0);
-                                baseModel.armor.render("rightLegModel", NonePart, scale, 1);
-                                baseModel.armor.render("rightFootModel", NonePart, scale, 1);
-                                break;
+                            }
                         }
                     }
+                    break;
+                case BODY:
+                    if (!this.isHidden) {
+                        if (this.showModel) {
+                            if (baseModel.armor.config.extra.slimSupported && baseModel.isSlim) {
+                                baseModel.armor.render("bodySlimModel", NonePart, scale, 1);
+                            } else {
+                                baseModel.armor.render("bodyModel", NonePart, scale, 1);
+                            }
+                        }
+                    }
+                    break;
+                case LEFTARM:
+                    GlStateManager.translate(-5.0F * scale, -2.0F * scale, 0);
+                    if (!this.isHidden) {
+                        if (this.showModel) {
+                            if (baseModel.armor.config.extra.slimSupported && baseModel.isSlim) {
+                                baseModel.armor.render("leftArmSlimModel", NonePart, scale, 1);
+                            } else {
+                                baseModel.armor.render("leftArmModel", NonePart, scale, 1);
+                            }
+                        }
+                    }
+                    break;
+                case RIGHTARM:
+                    GlStateManager.translate(5.0F * scale, -2.0F * scale, 0.0F);
+                    if (!this.isHidden) {
+                        if (this.showModel) {
+                            if (baseModel.armor.config.extra.slimSupported && baseModel.isSlim) {
+                                baseModel.armor.render("rightArmSlimModel", NonePart, scale, 1);
+                            } else {
+                                baseModel.armor.render("rightArmModel", NonePart, scale, 1);
+                            }
+                        }
+                    }
+                    break;
+                case LEFTLEG:
+                    GlStateManager.translate(-1.9F * scale, -12.0F * scale, 0.0F);
+                    if (!this.isHidden) {
+                        if (this.showModel) {
+                            if (baseModel.armor.config.extra.slimSupported && baseModel.isSlim) {
+                                baseModel.armor.render("leftLegSlimModel", NonePart, scale, 1);
+                                baseModel.armor.render("leftFootSlimModel", NonePart, scale, 1);
+                            } else {
+                                baseModel.armor.render("leftLegModel", NonePart, scale, 1);
+                                baseModel.armor.render("leftFootModel", NonePart, scale, 1);
+                            }
+                        }
+                    }
+                    break;
+                case RIGHTLEG:
+                    GlStateManager.translate(1.9F * scale, -12.0F * scale, 0.0F);
+                    if (!this.isHidden) {
+                        if (this.showModel) {
+                            if (baseModel.armor.config.extra.slimSupported && baseModel.isSlim) {
+                                baseModel.armor.render("rightLegSlimModel", NonePart, scale, 1);
+                                baseModel.armor.render("rightFootSlimModel", NonePart, scale, 1);
+                            } else {
+                                baseModel.armor.render("rightLegModel", NonePart, scale, 1);
+                                baseModel.armor.render("rightFootModel", NonePart, scale, 1);
+                            }
+                        }
+                    }
+                    break;
                 }
+
                 MinecraftForge.EVENT_BUS.post(new RenderBonesEvent.Post(this.baseModel.armor, type, scale));
                 MinecraftForge.EVENT_BUS.post(new RenderMWArmorEvent.Post(this.baseModel.armor, type, scale));
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);

@@ -20,7 +20,7 @@ public class GunEnhancedRenderConfig {
     public GunEnhancedRenderConfig.Aim aim = new GunEnhancedRenderConfig.Aim();
     public GunEnhancedRenderConfig.Extra extra = new GunEnhancedRenderConfig.Extra();
     public HashMap<String, Attachment> attachment=new HashMap<String, GunEnhancedRenderConfig.Attachment>();
-    public HashMap<String, Transform> attachmentGroup=new HashMap<String, GunEnhancedRenderConfig.Transform>();
+    public HashMap<String, AttachmentGroup> attachmentGroup=new HashMap<String, GunEnhancedRenderConfig.AttachmentGroup>();
     public HashSet<String> defaultHidePart=new HashSet<String>();
     
     public static class Transform{
@@ -81,6 +81,11 @@ public class GunEnhancedRenderConfig {
         public Vector3f sightAimPosOffset = new Vector3f(0F, 0F, 0F);
         public Vector3f sightAimRotOffset = new Vector3f(0F, 0F, 0F);
         public ArrayList<Transform> multiMagazineTransform;
+        public HashSet<String> hidePart=new HashSet<String>();
+        public HashSet<String> showPart=new HashSet<String>();
+    }
+    
+    public static class AttachmentGroup extends Transform {
         public HashSet<String> hidePart=new HashSet<String>();
         public HashSet<String> showPart=new HashSet<String>();
     }

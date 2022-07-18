@@ -44,20 +44,9 @@ public class RenderLayerHeldGun extends LayerHeldItem {
             }
             this.translateToHand(EnumHandSide.RIGHT);
             GlStateManager.translate(-0.06, 0.38, -0.02);
-            boolean isSneaking = entitylivingbaseIn.isSneaking();
-            if (entitylivingbaseIn instanceof EntityPlayerSP) {
-                ((EntityPlayerSP) entitylivingbaseIn).movementInput.sneak = false;
-            } else {
-                entitylivingbaseIn.setSneaking(false);
-            }
             if (ClientRenderHooks.customRenderers[type.id] != null) {
                 ClientRenderHooks.customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED, null, itemstack,
                         entitylivingbaseIn.world, entitylivingbaseIn, partialTicks);
-            }
-            if (entitylivingbaseIn instanceof EntityPlayerSP) {
-                ((EntityPlayerSP) entitylivingbaseIn).movementInput.sneak = isSneaking;
-            } else {
-                entitylivingbaseIn.setSneaking(isSneaking);
             }
             GlStateManager.popMatrix();
 

@@ -24,6 +24,8 @@ import com.modularwarfare.client.killchat.KillFeedRender;
 import com.modularwarfare.client.fpp.basic.models.ModelGun;
 import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBackpack;
 import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBody;
+import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerHeldGun;
+import com.modularwarfare.client.fpp.basic.models.layers.ResetHiddenModelLayer;
 import com.modularwarfare.client.patch.customnpc.CustomNPCListener;
 import com.modularwarfare.client.patch.galacticraft.GCCompatInterop;
 import com.modularwarfare.client.patch.galacticraft.GCDummyInterop;
@@ -37,6 +39,7 @@ import com.modularwarfare.common.armor.ItemSpecialArmor;
 import com.modularwarfare.common.backpacks.BackpackType;
 import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.entity.EntityBulletClient;
+import com.modularwarfare.common.entity.EntityExplosiveProjectile;
 import com.modularwarfare.common.entity.EntityInfected;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
@@ -51,6 +54,7 @@ import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.init.ModSounds;
 import com.modularwarfare.common.particle.EntityBloodFX;
 import com.modularwarfare.common.particle.ParticleExplosion;
+import com.modularwarfare.common.particle.ParticleRocket;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
@@ -65,6 +69,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.entity.MWFRenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -109,7 +114,7 @@ import java.util.function.Predicate;
 
 import static com.modularwarfare.ModularWarfare.contentPacks;
 
-public class ClientProxy extends CommonProxy implements ISelectiveResourceReloadListener{
+public class ClientProxy extends CommonProxy{
 
     public static String modelDir = "com.modularwarfare.client.fpp.basic.model.";
 
@@ -275,6 +280,7 @@ public class ClientProxy extends CommonProxy implements ISelectiveResourceReload
         WeaponAnimations.registerAnimation("sniper_top", new AnimationSniperTop());
         WeaponAnimations.registerAnimation("sideclip", new AnimationSideClip());
         WeaponAnimations.registerAnimation("toprifle", new AnimationTopRifle());
+        WeaponAnimations.registerAnimation("rocket_launcher", new AnimationRocketLauncher());
 
         final Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
         for (final RenderPlayer renderer : skinMap.values()) {
@@ -283,10 +289,13 @@ public class ClientProxy extends CommonProxy implements ISelectiveResourceReload
     }
 
     public void setupLayers(RenderPlayer renderer) {
+        MWFRenderHelper helper=new MWFRenderHelper(renderer);
+        helper.getLayerRenderers().add(0, new ResetHiddenModelLayer(renderer));
         renderer.addLayer(new RenderLayerBackpack(renderer, renderer.getMainModel().bipedBodyWear));
         renderer.addLayer(new RenderLayerBody(renderer, renderer.getMainModel().bipedBodyWear));
         // Disabled for animation third person test
         // renderer.addLayer(new RenderLayerHeldGun(renderer));
+        renderer.addLayer(new RenderLayerHeldGun(renderer));
     }
 
     @Override
@@ -299,7 +308,15 @@ public class ClientProxy extends CommonProxy implements ISelectiveResourceReload
             Minecraft.getMinecraft().getFramebuffer().enableStencil();
         }
         
-        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new ISelectiveResourceReloadListener() {
+
+            @Override
+            public void onResourceManagerReload(IResourceManager resourceManager,
+                    Predicate<IResourceType> resourcePredicate) {
+                loadTextures();
+            }
+
+        });
         loadTextures();
     }
 
@@ -724,6 +741,9 @@ public class ClientProxy extends CommonProxy implements ISelectiveResourceReload
             RenderingRegistry.registerEntityRenderingHandler(EntityItemLoot.class, RenderItemLoot.FACTORY);
 
             RenderingRegistry.registerEntityRenderingHandler(EntityBulletClient.class, RenderBullet.FACTORY);
+            
+            //RENDER PROJECTILES
+            RenderingRegistry.registerEntityRenderingHandler(EntityExplosiveProjectile.class, RenderProjectile.FACTORY);
 
             RenderingRegistry.registerEntityRenderingHandler(EntityInfected.class, new IRenderFactory<EntityInfected>() {
                 @Override
@@ -902,15 +922,15 @@ public class ClientProxy extends CommonProxy implements ISelectiveResourceReload
         Minecraft.getMinecraft().effectRenderer.addEffect(explosionParticle);
     }
 
+    public void spawnRocketParticle(World world, double x, double y, double z) {
+        final Particle rocketParticle = new ParticleRocket(world, x, y, z);
+        Minecraft.getMinecraft().effectRenderer.addEffect(rocketParticle);
+    }
+    
     @Override
     public void playFlashSound(EntityPlayer entityPlayer) {
         Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, (float) FlashSystem.flashValue / 1000, 1, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
         Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, 5.0f, 0.2f, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
         Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, 5.0f, 0.1f, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));
-    }
-    
-    @Override
-    public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-        loadTextures();
     }
 }

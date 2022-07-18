@@ -57,20 +57,13 @@ public class RenderLayerBody implements LayerRenderer<EntityPlayer> {
                 {
                     GlStateManager.pushMatrix();
                     if (ClientRenderHooks.customRenderers[type.id] != null) {
-                        GlStateManager.translate(0, -0.6, 0.35);
-                        boolean isSneaking = player.isSneaking();
-                        if (player instanceof EntityPlayerSP) {
-                            ((EntityPlayerSP) player).movementInput.sneak = false;
-                        } else {
-                            player.setSneaking(false);
+                        if (player.isSneaking()) {
+                            GlStateManager.translate(0.0f, 0.2f, 0.0f);
+                            GlStateManager.rotate(30.0f, 1.0f, 0.0f, 0.0f);
                         }
+                        GlStateManager.translate(0, -0.6, 0.35);
                         ClientRenderHooks.customRenderers[type.id].renderItem(CustomItemRenderType.BACK, null, gun, player.world,
                                 player, partialTicks);
-                        if (player instanceof EntityPlayerSP) {
-                            ((EntityPlayerSP) player).movementInput.sneak = isSneaking;
-                        } else {
-                            player.setSneaking(isSneaking);
-                        }
                     }
                     GlStateManager.popMatrix();
                 }
