@@ -375,7 +375,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             ItemStack itemStack = GunType.getAttachment(item, attachment);
             if (itemStack != null && itemStack.getItem() != Items.AIR) {
                 AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
-                String bindding = "gunModel";
+                String binding = "gunModel";
                 if(model.config.attachmentGroup.containsKey(attachment.typeName)) {
                     if (model.config.attachmentGroup.get(attachment.typeName).hidePart != null) {
                         exceptParts.addAll(model.config.attachmentGroup.get(attachment.typeName).hidePart);
@@ -393,7 +393,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             ItemStack itemStack = GunType.getAttachment(item, attachment);
             if (itemStack != null && itemStack.getItem() != Items.AIR) {
                 AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
-                String bindding = "gunModel";
+                String binding = "gunModel";
                 if(model.config.attachmentGroup.containsKey(attachment.typeName)) {
                     if (model.config.attachmentGroup.get(attachment.typeName).showPart != null) {
                         exceptParts.removeAll(model.config.attachmentGroup.get(attachment.typeName).showPart);
@@ -688,11 +688,11 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                     AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
                     ModelAttachment attachmentModel = (ModelAttachment) attachmentType.model;
                     if (attachmentModel != null) {
-                        String bindding = "gunModel";
+                        String binding = "gunModel";
                         if (model.config.attachment.containsKey(attachmentType.internalName)) {
-                            bindding = model.config.attachment.get(attachmentType.internalName).bindding;
+                            binding = model.config.attachment.get(attachmentType.internalName).binding;
                         }
-                        model.applyGobalTransform(bindding, () -> {
+                        model.applyGobalTransform(binding, () -> {
                             if (attachmentType.sameTextureAsGun) {
                                 bindTexture("guns", gunPath);
                             } else {
