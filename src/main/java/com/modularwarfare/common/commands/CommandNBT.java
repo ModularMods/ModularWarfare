@@ -5,8 +5,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -29,7 +28,7 @@ public class CommandNBT extends CommandBase {
             if (args.length != 1) {
                 if (sender instanceof EntityPlayerMP) {
                     EntityPlayerMP localPlayer = (EntityPlayerMP) sender;
-                    localPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY+"["+TextFormatting.RED+"ModularWarfare"+TextFormatting.GRAY+"] Item NBT copied to clipboard !"));
+                    localPlayer.sendMessage(new TextComponentTranslation("cmd.nbt.successful.copied"));
                     Toolkit.getDefaultToolkit()
                             .getSystemClipboard()
                             .setContents(

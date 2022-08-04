@@ -1,0 +1,13 @@
+mw.cmd.debug.change.hits=[ModularWarfare] Debugs hits set to : %s
+mw.cmd.nbt.successful.copied=§7[§cModularWarfare§7] Item NBT copied to clipboard !
+
+mw.cmd.kit.successful.received=§7[§cModularWarfare§7] §6%s §7has received the kit §6%s§7.
+mw.cmd.kit.failure.offline=§7[§cModularWarfare§7] §6%s §7is not online.
+mw.cmd.kit.failure.notexist=§7[§cModularWarfare§7] The kit §6%s §7doest not exist.
+mw.cmd.kit.failure.notconnected=§7[§cModularWarfare§7] §6%s §7is not connected.
+mw.cmd.kit.successful.saved=§7[§cModularWarfare§7] The kit §6%s §7has been saved.
+mw.cmd.kit.successful.deleted=§7[§cModularWarfare§7] The kit §6%s §7has been deleted.
+mw.cmd.kit.help=§7[§cModularWarfare§7] /mw-kit <save/delete/give> <name> [player]
+
+mw.warning.shot.ping=§7[§cModularWarfare§7] Your ping is too high, shot not registered.
+mw.warning.ammo.reload=You can only load bullets on a single magazine.
