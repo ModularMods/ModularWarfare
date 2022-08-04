@@ -1,5 +1,6 @@
 package com.modularwarfare.common.guns;
 
+import com.modularwarfare.client.hud.GunUI;
 import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
 import net.minecraft.client.util.ITooltipFlag;
@@ -32,7 +33,7 @@ public class ItemBullet extends BaseItem {
 
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-
+        if(!GunUI.renderToolTip) return;
         tooltip.add(generateLoreListEntry("Damage", type.bulletDamageFactor + "x"));
 
         if (type.bulletProperties != null) {

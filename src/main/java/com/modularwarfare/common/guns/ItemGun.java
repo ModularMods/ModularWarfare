@@ -8,6 +8,7 @@ import com.modularwarfare.api.WeaponHitEvent;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.anim.AnimStateMachine;
 import com.modularwarfare.client.handler.ClientTickHandler;
+import com.modularwarfare.client.hud.GunUI;
 import com.modularwarfare.client.model.renders.RenderParameters;
 import com.modularwarfare.common.armor.ArmorType;
 import com.modularwarfare.common.armor.ItemSpecialArmor;
@@ -374,6 +375,7 @@ public class ItemGun extends BaseItem {
      */
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        if(!GunUI.renderToolTip) return;
         GunType gunType = ((ItemGun) stack.getItem()).type;
 
         if (gunType == null)
