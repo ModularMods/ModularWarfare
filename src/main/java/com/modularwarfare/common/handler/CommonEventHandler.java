@@ -113,6 +113,7 @@ public class CommonEventHandler {
 
     @SubscribeEvent
     public void onEntityInteract(final PlayerInteractEvent.EntityInteractSpecific event) {
+        if(ModConfig.INSTANCE.drops.disable_only_pickup_with_click) return;
         if (event.getTarget() instanceof EntityItemLoot) {
             if (!event.getWorld().isRemote && event.getTarget().onGround && !event.getEntityPlayer().isSpectator()) {
                 final EntityItemLoot loot = (EntityItemLoot) event.getTarget();
@@ -140,7 +141,9 @@ public class CommonEventHandler {
                     if (item.getItem().getItem() instanceof BaseItem || ModConfig.INSTANCE.drops.advanced_drops_models_everything) {
                         final EntityItemLoot loot = new EntityItemLoot((EntityItem) event.getEntity());
                         event.getEntity().setDead();
-                        loot.setInfinitePickupDelay();
+                        if(!ModConfig.INSTANCE.drops.disable_only_pickup_with_click) {
+                            loot.setInfinitePickupDelay();
+                        }
                         event.setResult(Event.Result.DENY);
                         event.setCanceled(true);
                         event.getWorld().spawnEntity(loot);

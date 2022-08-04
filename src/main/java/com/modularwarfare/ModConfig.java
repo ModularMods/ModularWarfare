@@ -40,6 +40,7 @@ public class ModConfig {
     public static class Drops {
         public boolean advanced_drops_models = true;
         public int drops_despawn_time = 120;
+        public boolean disable_only_pickup_with_click = false;
         public boolean advanced_drops_models_everything = false;
     }
 
