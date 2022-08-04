@@ -20,7 +20,7 @@ public class ScopeRenderGlobal extends RenderGlobal {
     public ScopeRenderGlobal(Minecraft mcIn) {
         super(mcIn);
         try {
-            fieldRenderDistanceChunks = getClass().getSuperclass().getDeclaredField("renderDistanceChunks");
+            fieldRenderDistanceChunks = getClass().getSuperclass().getDeclaredField("field_72739_F"); // Fix NotSuchFieldException
             fieldRenderDistanceChunks.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
