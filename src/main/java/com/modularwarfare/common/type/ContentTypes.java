@@ -1,5 +1,6 @@
 package com.modularwarfare.common.type;
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.MWArmorType;
 import com.modularwarfare.client.config.*;
@@ -55,30 +56,32 @@ public class ContentTypes {
                 ((ModelAttachment) (type.model)).config = ModularWarfare.getRenderConfig(type, AttachmentRenderConfig.class);
         });
 
-        registerType("armor", ArmorType.class, (type, reload) -> {
-            ArmorType armorType = (ArmorType) type;
+        if(ModConfig.INSTANCE.content_pack.armor) {
+            registerType("armor", ArmorType.class, (type, reload) -> {
+                ArmorType armorType = (ArmorType) type;
 
-            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                ((ModelCustomArmor) (type.bipedModel)).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
+                if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+                    ((ModelCustomArmor) (type.bipedModel)).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
 
-            if (!reload) {
-                for (MWArmorType mwArmorType : armorType.armorTypes.keySet()) {
-                    if (MWArmorType.isVanilla(mwArmorType)) {
-                        ModularWarfare.armorTypes.put(armorType.internalName + "_" + mwArmorType.name().toLowerCase(), new ItemMWArmor(armorType, mwArmorType));
-                        if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                            ((ModelCustomArmor) type.bipedModel).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
-                    } else {
-                        ModularWarfare.specialArmorTypes.put(armorType.internalName, new ItemSpecialArmor(armorType, mwArmorType));
-                        if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                            ((ModelCustomArmor) ModularWarfare.specialArmorTypes.get(armorType.internalName).type.bipedModel).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
+                if (!reload) {
+                    for (MWArmorType mwArmorType : armorType.armorTypes.keySet()) {
+                        if (MWArmorType.isVanilla(mwArmorType)) {
+                            ModularWarfare.armorTypes.put(armorType.internalName + "_" + mwArmorType.name().toLowerCase(), new ItemMWArmor(armorType, mwArmorType));
+                            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+                                ((ModelCustomArmor) type.bipedModel).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
+                        } else {
+                            ModularWarfare.specialArmorTypes.put(armorType.internalName, new ItemSpecialArmor(armorType, mwArmorType));
+                            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+                                ((ModelCustomArmor) ModularWarfare.specialArmorTypes.get(armorType.internalName).type.bipedModel).config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
+                        }
+                    }
+                } else {
+                    if (ModularWarfare.armorTypes.containsKey(type.internalName)) {
+                        ModularWarfare.armorTypes.get(type.internalName).setType(type);
                     }
                 }
-            } else {
-                if (ModularWarfare.armorTypes.containsKey(type.internalName)) {
-                    ModularWarfare.armorTypes.get(type.internalName).setType(type);
-                }
-            }
-        });
+            });
+        }
 
         registerType("bullets", BulletType.class, (type, reload) -> {
             ContentTypes.<BulletType, ItemBullet>assignType(ModularWarfare.bulletTypes, ItemBullet.factory, (BulletType) type, reload);
@@ -88,12 +91,14 @@ public class ContentTypes {
             ContentTypes.<SprayType, ItemSpray>assignType(ModularWarfare.sprayTypes, ItemSpray.factory, (SprayType) type, reload);
         });
 
-        registerType("backpacks", BackpackType.class, (type, reload) -> {
-            ContentTypes.<BackpackType, ItemBackpack>assignType(ModularWarfare.backpackTypes, ItemBackpack.factory, (BackpackType) type, reload);
+        if(ModConfig.INSTANCE.content_pack.backpack) {
+            registerType("backpacks", BackpackType.class, (type, reload) -> {
+                ContentTypes.<BackpackType, ItemBackpack>assignType(ModularWarfare.backpackTypes, ItemBackpack.factory, (BackpackType) type, reload);
 
-            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                ((ModelBackpack) (type.model)).config = ModularWarfare.getRenderConfig(type, BackpackRenderConfig.class);
-        });
+                if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+                    ((ModelBackpack) (type.model)).config = ModularWarfare.getRenderConfig(type, BackpackRenderConfig.class);
+            });
+        }
 
         registerType("grenades", GrenadeType.class, (type, reload) -> {
             ContentTypes.<GrenadeType, ItemGrenade>assignType(ModularWarfare.grenadeTypes, ItemGrenade.factory, (GrenadeType) type, reload);

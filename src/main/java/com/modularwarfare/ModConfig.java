@@ -43,6 +43,14 @@ public class ModConfig {
         public boolean advanced_drops_models_everything = false;
     }
 
+    // item registration
+    public ContentPack content_pack = new ContentPack();
+
+    public static class ContentPack {
+        public boolean backpack = true;
+        public boolean armor = true;
+    }
+
     //hud ui
     public Hud hud = new Hud();
     public static class Hud {
