@@ -31,7 +31,7 @@ public class EntityItemLoot extends EntityItemNew {
         this.hoverStart = this.rand.nextFloat();
         this.setSize(0.65f, 0.65f);
         this.setCustomAge(0);
-        this.setPickupDelay(ModConfig.INSTANCE.drops.disable_only_pickup_with_click ? 40 : 0);
+        this.setPickupDelay(ModConfig.INSTANCE.drops.right_click_to_pickup ? 0 : 40);
     }
 
     public EntityItemLoot(final EntityItem orig) {
@@ -47,7 +47,7 @@ public class EntityItemLoot extends EntityItemNew {
             this.motionY = orig.motionY * tossSpd;
             this.motionZ = orig.motionZ * tossSpd;
         }
-        this.setPickupDelay(ModConfig.INSTANCE.drops.disable_only_pickup_with_click ? 40 : 0);
+        this.setPickupDelay(ModConfig.INSTANCE.drops.right_click_to_pickup ? 0 : 40);
         this.setCustomAge(0);
     }
 
@@ -57,7 +57,7 @@ public class EntityItemLoot extends EntityItemNew {
         this.hoverStart = this.rand.nextFloat();
         this.setSize(0.65f, 0.65f);
         this.setCustomAge(0);
-        this.setPickupDelay(ModConfig.INSTANCE.drops.disable_only_pickup_with_click ? 40 : 0);
+        this.setPickupDelay(ModConfig.INSTANCE.drops.right_click_to_pickup ? 0 : 40);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class EntityItemLoot extends EntityItemNew {
 
     @Override
     public void onCollideWithPlayer(final EntityPlayer player) {
-        if(ModConfig.INSTANCE.drops.disable_only_pickup_with_click) {
+        if(!ModConfig.INSTANCE.drops.right_click_to_pickup) {
             super.onCollideWithPlayer(player);
         }
     }
