@@ -2,6 +2,7 @@ package com.modularwarfare.client.hud;
 
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.api.RenderAmmoCountEvent;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.model.ModelAttachment;
@@ -26,6 +27,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -243,8 +245,13 @@ public class GunUI {
     }
 
     private void RenderPlayerAmmo(int i, int j) {
-        Minecraft mc = Minecraft.getMinecraft();
 
+        // Fire RenderAmmoCountEvent to create custom ammo count support
+        RenderAmmoCountEvent event = new RenderAmmoCountEvent(i, j);
+        MinecraftForge.EVENT_BUS.post(event);
+        if(event.isCanceled()) return;
+
+        Minecraft mc = Minecraft.getMinecraft();
         ItemStack stack = mc.player.getHeldItem(EnumHand.MAIN_HAND);
         if (stack != null && stack.getItem() instanceof ItemGun) {
 
