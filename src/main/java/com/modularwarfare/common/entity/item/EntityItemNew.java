@@ -289,28 +289,33 @@ public class EntityItemNew extends Entity {
         }
     }
 
+    @Override
     public void onCollideWithPlayer(final EntityPlayer entityIn) {
         if (!this.world.isRemote) {
             if (this.delayBeforeCanPickup > 0) {
                 return;
             }
             final ItemStack itemstack = this.getItem();
-            final Item item = itemstack.getItem();
             final int i = itemstack.getCount();
             final int hook = ForgeEventFactory.onItemPickup(new EntityItem(this.world, this.posX, this.posY, this.posZ, this.getItem()), entityIn);
-            if (hook < 0) {
-                return;
-            }
+            if (hook < 0) return;
             if (this.delayBeforeCanPickup <= 0 && (this.owner == null || this.lifespan - this.age <= 200 || this.owner.equals(entityIn.getName())) && (hook == 1 || i <= 0 || entityIn.inventory.addItemStackToInventory(itemstack))) {
-                FMLCommonHandler.instance().firePlayerItemPickupEvent(entityIn, new EntityItem(this.world, this.posX, this.posY, this.posZ, this.getItem()), this.getItem());
-                entityIn.onItemPickup((Entity) new EntityItem(this.world, this.posX, this.posY, this.posZ, this.getItem()), i);
-                if (itemstack.isEmpty()) {
-                    this.setDead();
-                    itemstack.setCount(i);
-                }
-                entityIn.addStat(StatList.getObjectsPickedUpStats(item), i);
+                onPickup(entityIn);
             }
         }
+    }
+
+    public void onPickup(final EntityPlayer entityIn) {
+        final ItemStack itemstack = this.getItem();
+        final Item item = itemstack.getItem();
+        final int i = itemstack.getCount();
+        FMLCommonHandler.instance().firePlayerItemPickupEvent(entityIn, new EntityItem(this.world, this.posX, this.posY, this.posZ, this.getItem()), this.getItem());
+        entityIn.onItemPickup((Entity) new EntityItem(this.world, this.posX, this.posY, this.posZ, this.getItem()), i);
+        if (itemstack.isEmpty()) {
+            this.setDead();
+            itemstack.setCount(i);
+        }
+        entityIn.addStat(StatList.getObjectsPickedUpStats(item), i);
     }
 
     public String getName() {

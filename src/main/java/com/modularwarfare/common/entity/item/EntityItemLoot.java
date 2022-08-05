@@ -31,6 +31,7 @@ public class EntityItemLoot extends EntityItemNew {
         this.hoverStart = this.rand.nextFloat();
         this.setSize(0.65f, 0.65f);
         this.setCustomAge(0);
+        this.setPickupDelay(ModConfig.INSTANCE.drops.right_click_to_pickup ? 0 : 40);
     }
 
     public EntityItemLoot(final EntityItem orig) {
@@ -46,7 +47,7 @@ public class EntityItemLoot extends EntityItemNew {
             this.motionY = orig.motionY * tossSpd;
             this.motionZ = orig.motionZ * tossSpd;
         }
-        this.setPickupDelay(0);
+        this.setPickupDelay(ModConfig.INSTANCE.drops.right_click_to_pickup ? 0 : 40);
         this.setCustomAge(0);
     }
 
@@ -56,6 +57,7 @@ public class EntityItemLoot extends EntityItemNew {
         this.hoverStart = this.rand.nextFloat();
         this.setSize(0.65f, 0.65f);
         this.setCustomAge(0);
+        this.setPickupDelay(ModConfig.INSTANCE.drops.right_click_to_pickup ? 0 : 40);
     }
 
     @Override
@@ -103,6 +105,9 @@ public class EntityItemLoot extends EntityItemNew {
 
     @Override
     public void onCollideWithPlayer(final EntityPlayer player) {
+        if(!ModConfig.INSTANCE.drops.right_click_to_pickup) {
+            super.onCollideWithPlayer(player);
+        }
     }
 
     public int getCustomAge() {
@@ -124,6 +129,11 @@ public class EntityItemLoot extends EntityItemNew {
             player.addItemStackToInventory(this.getItem());
             this.setDead();
         }
+    }
+
+    @Override
+    public void onPickup(final EntityPlayer entityIn) {
+        pickup(entityIn);
     }
 
     public void onItemPickup(final Entity entityIn, final int quantity, final EntityLivingBase player) {
