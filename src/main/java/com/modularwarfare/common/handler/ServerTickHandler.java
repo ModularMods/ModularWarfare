@@ -1,5 +1,6 @@
 package com.modularwarfare.common.handler;
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.common.network.BackWeaponsManager;
 import com.modularwarfare.common.network.PacketAimingReponse;
@@ -26,10 +27,12 @@ public class ServerTickHandler extends ForgeEvent {
     @SubscribeEvent
     public void onServerTick(ServerTickEvent event) {
         {
-            long currentTime = System.currentTimeMillis();
-            if (lastBackWeaponsSync == -1 || currentTime - this.lastBackWeaponsSync > 1000) {
-                this.lastBackWeaponsSync = currentTime;
-                BackWeaponsManager.INSTANCE.collect().sync();
+            if(ModConfig.INSTANCE.guns.render_weapon_on_back) {
+                long currentTime = System.currentTimeMillis();
+                if (lastBackWeaponsSync == -1 || currentTime - this.lastBackWeaponsSync > 1000) {
+                    this.lastBackWeaponsSync = currentTime;
+                    BackWeaponsManager.INSTANCE.collect().sync();
+                }
             }
         }
         switch (event.phase) {

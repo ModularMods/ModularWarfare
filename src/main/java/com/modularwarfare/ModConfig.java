@@ -33,6 +33,7 @@ public class ModConfig {
     public Guns guns = new Guns();
     public static class Guns {
         public boolean guns_interaction_hand = true;
+        public boolean render_weapon_on_back = true;
     }
 
     //drops
