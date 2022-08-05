@@ -12,7 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 
 public class PacketGunReload extends PacketBase {
@@ -66,7 +66,7 @@ public class PacketGunReload extends PacketBase {
             return;
 
         if(entityPlayer.getHeldItemMainhand().getCount() > 1){
-            entityPlayer.sendMessage(new TextComponentString("You can only load bullets on a single magazine."));
+            entityPlayer.sendMessage(new TextComponentTranslation("mw.warning.ammo.reload"));
             return;
         }
 

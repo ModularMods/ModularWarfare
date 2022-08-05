@@ -1,0 +1,13 @@
+mw.cmd.debug.change.hits=[ModularWarfare] Debug-Treffer auf : %s gesetzt
+mw.cmd.nbt.successful.copied=§7[§cModularWarfare§7] Element NBT in Zwischenablage kopiert !
+
+mw.cmd.kit.successful.received=§7[§cModularWarfare§7] §6%s §7hat das Kit §6%s§7 erhalten.
+mw.cmd.kit.failure.offline=§7[§cModularWarfare§7] §6%s §7ist nicht online.
+mw.cmd.kit.failure.notexist=§7[§cModularWarfare§7] Der Bausatz §6%s §7ist nicht vorhanden.
+mw.cmd.kit.failure.notconnected=§7[§cModularWarfare§7] §6%s §7ist nicht verbunden.
+mw.cmd.kit.successful.saved=§7[§cModularWarfare§7] Der Bausatz §6%s §7wurde gespeichert.
+mw.cmd.kit.successful.deleted=§7[§cModularWarfare§7] Der Bausatz §6%s §7wurde gelöscht.
+mw.cmd.kit.help=§7[§cModularWarfare§7] /mw-kit <save/delete/give> <Name> [Spieler]
+
+mw.warning.shot.ping=§7[§cModularWarfare§7] Dein Ping ist zu hoch, Schuss wurde nicht registriert.
+mw.warning.ammo.reload=Du kannst nur Kugeln in ein einzelnes Magazin laden.

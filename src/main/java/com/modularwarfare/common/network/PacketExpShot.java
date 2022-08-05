@@ -9,8 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IThreadListener;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -46,7 +45,7 @@ public class PacketExpShot extends PacketBase {
             public void run() {
                 if(ModConfig.INSTANCE.shots.client_sided_hit_registration) {
                     if (entityPlayer.ping > 100 * 20) {
-                        entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
+                        entityPlayer.sendMessage(new TextComponentTranslation("mw.warning.shot.ping"));
                         return;
                     }
                     if (entityPlayer != null) {

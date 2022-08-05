@@ -9,14 +9,11 @@ import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.io.*;
 
@@ -98,19 +95,19 @@ public class CommandKit extends CommandBase {
                                         }
                                     }
                                 }
-                                sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " " +TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " has received the kit "+ TextFormatting.YELLOW + name + TextFormatting.GRAY+"."));
+                                player.sendMessage(new TextComponentTranslation("mw.cmd.kit.successful.received", args[2], name));
                             } else {
-                                sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " " + TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " is not online."));
+                                player.sendMessage(new TextComponentTranslation("mw.cmd.kit.failure.offline", args[2]));
                             }
                         } else {
-                            sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " The kit " + TextFormatting.YELLOW + name + TextFormatting.GRAY + " doest not exist."));
+                            player.sendMessage(new TextComponentTranslation( "mw.cmd.kit.failure.notexist", name));
                         }
                     } catch (FileNotFoundException | NBTException e) {
                         e.printStackTrace();
                     }
 
                 } else {
-                    sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " " + TextFormatting.YELLOW + args[2] + TextFormatting.GRAY + " is not connected."));
+                    player.sendMessage(new TextComponentTranslation("mw.cmd.kit.failure.notconnected", args[2]));
                 }
             } else if (args[0].equalsIgnoreCase("save") && args.length == 2) {
                 if (sender instanceof EntityPlayerMP) {
@@ -154,7 +151,7 @@ public class CommandKit extends CommandBase {
 
                         try (Writer writer = new OutputStreamWriter(new FileOutputStream(KIT_FILE), "UTF-8")) {
                             gson.toJson(kits, writer);
-                            sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " The kit " + TextFormatting.YELLOW + args[1] + TextFormatting.GRAY + " has been saved."));
+                            player.sendMessage(new TextComponentTranslation("mw.cmd.kit.successful.saved", args[1]));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -179,21 +176,21 @@ public class CommandKit extends CommandBase {
                     if(found) {
                         try (Writer writer = new OutputStreamWriter(new FileOutputStream(KIT_FILE), "UTF-8")) {
                             gson.toJson(kits, writer);
-                            sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " The kit " + TextFormatting.YELLOW + args[1] + TextFormatting.GRAY + " has been deleted."));
+                            sender.sendMessage(new TextComponentTranslation("mw.cmd.kit.successful.deleted", args[1]));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
-                        sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " The kit " + TextFormatting.YELLOW + args[1] + TextFormatting.GRAY + " doesn't exist."));
+                        sender.sendMessage(new TextComponentTranslation("mw.cmd.kit.failure.notexist", args[1]));
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             } else {
-                sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " /mw-kit <save/delete/give> <name> [player]"));
+                sender.sendMessage(new TextComponentTranslation("mw.cmd.kit.help"));
             }
         } else {
-            sender.sendMessage(new TextComponentString(ModularWarfare.MOD_PREFIX + " /mw-kit <save/delete/give> <name> [player]"));
+            sender.sendMessage(new TextComponentTranslation("mw.cmd.kit.help"));
         }
     }
 }
