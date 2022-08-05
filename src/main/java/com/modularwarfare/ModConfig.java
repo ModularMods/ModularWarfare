@@ -19,6 +19,7 @@ public class ModConfig {
         public boolean prototype_pack_extraction = true;
         public boolean modified_pack_server_kick = true;
         public boolean drop_extra_slots_on_death = true;
+        public boolean disable_render_second_layer_on_equipped_armor = true;
     }
 
     //shots
