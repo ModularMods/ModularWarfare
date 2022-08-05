@@ -267,7 +267,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     public void setupLayers(RenderPlayer renderer) {
-        renderer.addLayer(new RenderLayerBackpack(renderer, renderer.getMainModel().bipedBodyWear));
+        if(ModConfig.INSTANCE.content_pack.backpack)renderer.addLayer(new RenderLayerBackpack(renderer, renderer.getMainModel().bipedBodyWear));
         renderer.addLayer(new RenderLayerBody(renderer, renderer.getMainModel().bipedBodyWear));
         renderer.addLayer(new RenderLayerHeldGun(renderer));
     }
