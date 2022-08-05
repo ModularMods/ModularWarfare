@@ -1,5 +1,6 @@
 package com.modularwarfare.client;
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.api.AnimationUtils;
 import com.modularwarfare.api.RenderBonesEvent;
 import com.modularwarfare.client.anim.AnimStateMachine;
@@ -264,26 +265,28 @@ public class ClientRenderHooks extends ForgeEvent {
         Render<AbstractClientPlayer> render = Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(event.getEntity());
         RenderPlayer renderplayer = (RenderPlayer) render;
 
-        if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()){
-            renderplayer.getMainModel().bipedHeadwear.isHidden = false;
-        } else {
-            renderplayer.getMainModel().bipedHeadwear.isHidden = true;
-        }
-        if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()){
-            renderplayer.getMainModel().bipedLeftArmwear.isHidden = false;
-            renderplayer.getMainModel().bipedRightArmwear.isHidden = false;
-            renderplayer.getMainModel().bipedBodyWear.isHidden = false;
-        } else {
-            renderplayer.getMainModel().bipedLeftArmwear.isHidden = true;
-            renderplayer.getMainModel().bipedRightArmwear.isHidden = true;
-            renderplayer.getMainModel().bipedBodyWear.isHidden = true;
-        }
-        if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty()){
-            renderplayer.getMainModel().bipedLeftLegwear.isHidden = false;
-            renderplayer.getMainModel().bipedRightLegwear.isHidden = false;
-        } else {
-            renderplayer.getMainModel().bipedLeftLegwear.isHidden = true;
-            renderplayer.getMainModel().bipedRightLegwear.isHidden = true;
+        if(ModConfig.INSTANCE.general.disable_render_second_layer_on_equipped_armor) {
+            if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()){
+                renderplayer.getMainModel().bipedHeadwear.isHidden = false;
+            } else {
+                renderplayer.getMainModel().bipedHeadwear.isHidden = true;
+            }
+            if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()){
+                renderplayer.getMainModel().bipedLeftArmwear.isHidden = false;
+                renderplayer.getMainModel().bipedRightArmwear.isHidden = false;
+                renderplayer.getMainModel().bipedBodyWear.isHidden = false;
+            } else {
+                renderplayer.getMainModel().bipedLeftArmwear.isHidden = true;
+                renderplayer.getMainModel().bipedRightArmwear.isHidden = true;
+                renderplayer.getMainModel().bipedBodyWear.isHidden = true;
+            }
+            if(clientPlayer.getItemStackFromSlot(EntityEquipmentSlot.LEGS).isEmpty()){
+                renderplayer.getMainModel().bipedLeftLegwear.isHidden = false;
+                renderplayer.getMainModel().bipedRightLegwear.isHidden = false;
+            } else {
+                renderplayer.getMainModel().bipedLeftLegwear.isHidden = true;
+                renderplayer.getMainModel().bipedRightLegwear.isHidden = true;
+            }
         }
 
         ItemStack itemstack = event.getEntity().getHeldItemMainhand();
