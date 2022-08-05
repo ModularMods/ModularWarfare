@@ -1,5 +1,6 @@
 package com.modularwarfare.client.model.layers;
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.model.ModelCustomArmor;
@@ -49,33 +50,35 @@ public class RenderLayerBody implements LayerRenderer<EntityPlayer> {
             }
         }
 
-        if (player instanceof AbstractClientPlayer) {
-            ItemStack gun = BackWeaponsManager.INSTANCE
-                    .getItemToRender((AbstractClientPlayer) player);
-            if (gun != ItemStack.EMPTY && !gun.isEmpty()) {
-                BaseType type = ((BaseItem) gun.getItem()).baseType;
-                {
-                    GlStateManager.pushMatrix();
-                    if (ClientRenderHooks.customRenderers[type.id] != null) {
-                        GlStateManager.translate(0, -0.6, 0.35);
-                        boolean isSneaking = player.isSneaking();
-                        if (player instanceof EntityPlayerSP) {
-                            ((EntityPlayerSP) player).movementInput.sneak = false;
-                        } else {
-                            player.setSneaking(false);
+        if(ModConfig.INSTANCE.guns.render_weapon_on_back) {
+            if (player instanceof AbstractClientPlayer) {
+                ItemStack gun = BackWeaponsManager.INSTANCE
+                        .getItemToRender((AbstractClientPlayer) player);
+                if (gun != ItemStack.EMPTY && !gun.isEmpty()) {
+                    BaseType type = ((BaseItem) gun.getItem()).baseType;
+                    {
+                        GlStateManager.pushMatrix();
+                        if (ClientRenderHooks.customRenderers[type.id] != null) {
+                            GlStateManager.translate(0, -0.6, 0.35);
+                            boolean isSneaking = player.isSneaking();
+                            if (player instanceof EntityPlayerSP) {
+                                ((EntityPlayerSP) player).movementInput.sneak = false;
+                            } else {
+                                player.setSneaking(false);
+                            }
+                            ClientRenderHooks.customRenderers[type.id].renderItem(CustomItemRenderType.BACK, null, gun, player.world,
+                                    player, partialTicks);
+                            if (player instanceof EntityPlayerSP) {
+                                ((EntityPlayerSP) player).movementInput.sneak = isSneaking;
+                            } else {
+                                player.setSneaking(isSneaking);
+                            }
                         }
-                        ClientRenderHooks.customRenderers[type.id].renderItem(CustomItemRenderType.BACK, null, gun, player.world,
-                                player, partialTicks);
-                        if (player instanceof EntityPlayerSP) {
-                            ((EntityPlayerSP) player).movementInput.sneak = isSneaking;
-                        } else {
-                            player.setSneaking(isSneaking);
-                        }
+                        GlStateManager.popMatrix();
                     }
-                    GlStateManager.popMatrix();
                 }
-            }
 
+            }
         }
     }
 
