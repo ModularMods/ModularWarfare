@@ -53,6 +53,7 @@ public class ModConfig {
         public boolean dynamic_crosshair = true;
         public boolean ammo_count = true;
         public boolean snap_fade_hit = true;
+        public boolean disable_lore = false; // add possibility to not display information on modularwarfare items
     }
 
     //walk sounds

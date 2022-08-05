@@ -1,6 +1,7 @@
 package com.modularwarfare.common.guns;
 
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.client.hud.GunUI;
 import com.modularwarfare.common.network.PacketGunReload;
 import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
@@ -127,6 +128,7 @@ public class ItemAmmo extends BaseItem {
      */
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack ammoStack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        if(!GunUI.renderToolTip) return;
         if (type.magazineCount == 1) {
             int currentAmmoCount = 0;
 

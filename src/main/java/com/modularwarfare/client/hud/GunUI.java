@@ -43,6 +43,7 @@ public class GunUI {
 
     public static int hitMarkerTime = 0;
     public static boolean hitMarkerheadshot;
+    public static boolean renderToolTip = true; // add possibility to not display information on modularwarfare items
 
     public static float bulletSnapFade;
 
