@@ -188,7 +188,6 @@ public class NetworkHandler extends MessageToMessageCodec<FMLProxyPacket, Packet
         registerPacket(PacketExpShot.class);
 
         registerPacket(PacketLoreDisable.class);
-        registerPacket(PacketBulletHoleDespawnTime.class);
     }
 
     /**
