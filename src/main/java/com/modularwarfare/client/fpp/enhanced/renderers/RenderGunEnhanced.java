@@ -4,7 +4,6 @@ import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.IProcessNodeModelHandler;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
 import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderer;
@@ -12,7 +11,6 @@ import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
 import com.modularwarfare.client.fpp.enhanced.animation.EnhancedStateMachine;
-import com.modularwarfare.client.fpp.enhanced.animation.EnhancedStateMachine.Phase;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig.Attachment;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig.Transform;
@@ -32,14 +30,11 @@ import com.modularwarfare.common.handler.data.VarBoolean;
 import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.utility.ReloadHelper;
 import com.modularwarfare.utility.maths.Interpolation;
-import com.timlee9024.mcgltf.DefaultMaterialHandler;
 
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.CullFace;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -54,7 +49,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Quaternion;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.nio.FloatBuffer;
@@ -157,15 +151,15 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         float adsModifier = (float) (0.95f - AnimationController.ADS);
         
         /**
-         *  GOBAL
+         *  GLOBAL
          * */
         mat.rotate(toRadians(90), new Vector3f(0, 1, 0));
-        mat.translate(new Vector3f(model.config.gobal.gobalTranslate.x, model.config.gobal.gobalTranslate.y, model.config.gobal.gobalTranslate.z));
-        mat.scale(new Vector3f(model.config.gobal.gobalScale.x,model.config.gobal.gobalScale.y,model.config.gobal.gobalScale.z));
+        mat.translate(new Vector3f(model.config.global.globalTranslate.x, model.config.global.globalTranslate.y, model.config.global.globalTranslate.z));
+        mat.scale(new Vector3f(model.config.global.globalScale.x,model.config.global.globalScale.y,model.config.global.globalScale.z));
         mat.rotate(toRadians(-90), new Vector3f(0, 1, 0));
-        mat.rotate(model.config.gobal.gobalRotate.y/180*3.14f, new Vector3f(0, 1, 0));
-        mat.rotate(model.config.gobal.gobalRotate.x/180*3.14f, new Vector3f(1, 0, 0));
-        mat.rotate(model.config.gobal.gobalRotate.z/180*3.14f, new Vector3f(0, 0, 1));
+        mat.rotate(model.config.global.globalRotate.y/180*3.14f, new Vector3f(0, 1, 0));
+        mat.rotate(model.config.global.globalRotate.x/180*3.14f, new Vector3f(1, 0, 0));
+        mat.rotate(model.config.global.globalRotate.z/180*3.14f, new Vector3f(0, 0, 1));
         
         /**
          * ACTION GUN MOTION
@@ -484,13 +478,13 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                         }
                         for (int bullet = 0; bullet < currentAmmoCount && bullet < BULLET_MAX_RENDER; bullet++) {
                             int renderBullet=bullet;
-                            model.applyGobalTransform("bulletModel_" + bullet, () -> {
+                            model.applyGlobalTransform("bulletModel_" + bullet, () -> {
                                 renderAttachment(model.config, "bullet", bulletType.internalName, () -> {
                                     bulletType.model.renderPart("bulletModel", worldScale);
                                 });
                             });
                         }
-                        model.applyGobalTransform("bulletModel", () -> {
+                        model.applyGlobalTransform("bulletModel", () -> {
                             renderAttachment(model.config, "bullet", bulletType.internalName, () -> {
                                 bulletType.model.renderPart("bulletModel", worldScale);
                             });
@@ -525,7 +519,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                     }
                     
                     if (controller.shouldRenderAmmo()) {
-                        model.applyGobalTransform("ammoModel", () -> {
+                        model.applyGlobalTransform("ammoModel", () -> {
                             GlStateManager.pushMatrix();
                             if(renderAmmo.getTagCompound().hasKey("magcount")) {
                                 if(model.config.attachment.containsKey(itemAmmo.type.internalName)) {
@@ -604,7 +598,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                             });
                             GlStateManager.popMatrix();
                         });
-                        model.applyGobalTransform("bulletModel", () -> {
+                        model.applyGlobalTransform("bulletModel", () -> {
                             renderAttachment(model.config, "bullet", ammoType.internalName, () -> {
                                 ammoType.model.renderPart("bulletModel", worldScale);
                             });
@@ -647,7 +641,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                         if (model.config.attachment.containsKey(attachmentType.internalName)) {
                             bindding = model.config.attachment.get(attachmentType.internalName).bindding;
                         }
-                        model.applyGobalTransform(bindding, () -> {
+                        model.applyGlobalTransform(bindding, () -> {
                             if (attachmentType.sameTextureAsGun) {
                                 bindTexture("guns", gunPath);
                             } else {
@@ -744,7 +738,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         GlStateManager.translate(in_pos.x,in_pos.y,in_pos.z);
         GlStateManager.scale(scale_matrix.m00, scale_matrix.m11, scale_matrix.m22);
         GlStateManager.rotate(in_quat);
-        model.applyGobalInverseTransform(hand, () -> {
+        model.applyGlobalInverseTransform(hand, () -> {
             runnable.run();
         });
         GlStateManager.popMatrix();

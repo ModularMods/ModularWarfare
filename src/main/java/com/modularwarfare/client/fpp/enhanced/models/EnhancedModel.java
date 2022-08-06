@@ -8,14 +8,12 @@ import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.transforms.DefaultTransform;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.utility.maths.MathUtils;
-import com.timlee9024.mcgltf.DefaultMaterialHandler;
 import com.timlee9024.mcgltf.IGltfModelReceiver;
 import com.timlee9024.mcgltf.IMaterialHandler;
 import com.timlee9024.mcgltf.MCglTF;
 import com.timlee9024.mcgltf.RenderedGltfModel;
 import de.javagl.jgltf.model.GltfAnimations;
 import de.javagl.jgltf.model.GltfModel;
-import de.javagl.jgltf.model.MaterialModel;
 import de.javagl.jgltf.model.NodeModel;
 import de.javagl.jgltf.model.SceneModel;
 import de.javagl.jgltf.model.animation.Animation;
@@ -319,7 +317,7 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
     }
     
     
-    public void applyGobalTransform(String part,Runnable run) {
+    public void applyGlobalTransform(String part, Runnable run) {
         if(transformStreamMap.containsKey(part)) {
             transformStreamMap.get(part).run();
             run.run();
@@ -327,7 +325,7 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
         }
     }
     
-    public void applyGobalInverseTransform(String part,Runnable run) {
+    public void applyGlobalInverseTransform(String part, Runnable run) {
         if(transformInverseStreamMap.containsKey(part)) {
             transformInverseStreamMap.get(part).run();
             run.run();
