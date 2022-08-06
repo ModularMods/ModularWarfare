@@ -50,6 +50,7 @@ public class ModConfig {
         public boolean dynamic_crosshair = true;
         public boolean ammo_count = true;
         public boolean snap_fade_hit = true;
+        public boolean ads_blur;
     }
 
     //walk sounds

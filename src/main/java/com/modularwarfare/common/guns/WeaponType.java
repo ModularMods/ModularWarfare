@@ -19,7 +19,8 @@ public enum WeaponType {
     @SerializedName("dmr") DMR("DMR"),
     @SerializedName("semisniper") SemiSniper("Semi-sniper"),
     @SerializedName("boltsniper") BoltSniper("Bolt-sniper"),
-    @SerializedName("shotgun") Shotgun("Shotgun");
+    @SerializedName("shotgun") Shotgun("Shotgun"),
+    @SerializedName("launcher") Launcher("Launcher");
 
 
     public String typeName;

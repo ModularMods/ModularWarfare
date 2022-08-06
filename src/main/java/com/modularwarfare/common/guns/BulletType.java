@@ -29,6 +29,13 @@ public class BulletType extends BaseType {
 
     public String shellSound = "casing";
     
+    /**
+     * Explosives type only for launcher
+     */
+    public float projectileVelocity;
+    public float explosionStrength = 4f;
+    public boolean damageWorld = true;
+    
     public boolean isDynamicBullet=false;
     public boolean sameTextureAsGun=false;
 

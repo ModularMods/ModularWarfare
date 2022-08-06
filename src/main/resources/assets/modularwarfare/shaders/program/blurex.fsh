@@ -16,15 +16,16 @@ void main() {
     float totalStrength = 0.0;
     float totalAlpha = 0.0;
     float totalSamples = 0.0;
-    float progRadius = floor(Radius * Progress);
+    float distence=0.2+abs(texCoord.x-0.5)+abs(texCoord.y-0.5);
+    float progRadius = floor(Radius * Progress*distence);
     for(float r = -progRadius; r <= progRadius; r += 1.0) {
         vec4 sample = texture2D(DiffuseSampler, texCoord + oneTexel * r * BlurDir);
 
-		// Accumulate average alpha
+        // Accumulate average alpha
         totalAlpha = totalAlpha + sample.a;
         totalSamples = totalSamples + 1.0;
 
-		// Accumulate smoothed blur
+        // Accumulate smoothed blur
         float strength = 1.0 - abs(r / progRadius);
         totalStrength = totalStrength + strength;
         blurred = blurred + sample;

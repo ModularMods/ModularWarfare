@@ -24,6 +24,8 @@ import com.modularwarfare.client.killchat.KillFeedRender;
 import com.modularwarfare.client.fpp.basic.models.ModelGun;
 import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBackpack;
 import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBody;
+import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerHeldGun;
+import com.modularwarfare.client.fpp.basic.models.layers.ResetHiddenModelLayer;
 import com.modularwarfare.client.patch.customnpc.CustomNPCListener;
 import com.modularwarfare.client.patch.galacticraft.GCCompatInterop;
 import com.modularwarfare.client.patch.galacticraft.GCDummyInterop;
@@ -37,6 +39,7 @@ import com.modularwarfare.common.armor.ItemSpecialArmor;
 import com.modularwarfare.common.backpacks.BackpackType;
 import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.entity.EntityBulletClient;
+import com.modularwarfare.common.entity.EntityExplosiveProjectile;
 import com.modularwarfare.common.entity.EntityInfected;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
@@ -51,6 +54,7 @@ import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.init.ModSounds;
 import com.modularwarfare.common.particle.EntityBloodFX;
 import com.modularwarfare.common.particle.ParticleExplosion;
+import com.modularwarfare.common.particle.ParticleRocket;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
@@ -65,9 +69,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.entity.MWFRenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -79,6 +86,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -102,10 +110,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static com.modularwarfare.ModularWarfare.contentPacks;
 
-public class ClientProxy extends CommonProxy {
+public class ClientProxy extends CommonProxy{
 
     public static String modelDir = "com.modularwarfare.client.fpp.basic.model.";
 
@@ -271,6 +280,7 @@ public class ClientProxy extends CommonProxy {
         WeaponAnimations.registerAnimation("sniper_top", new AnimationSniperTop());
         WeaponAnimations.registerAnimation("sideclip", new AnimationSideClip());
         WeaponAnimations.registerAnimation("toprifle", new AnimationTopRifle());
+        WeaponAnimations.registerAnimation("rocket_launcher", new AnimationRocketLauncher());
 
         final Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
         for (final RenderPlayer renderer : skinMap.values()) {
@@ -279,10 +289,13 @@ public class ClientProxy extends CommonProxy {
     }
 
     public void setupLayers(RenderPlayer renderer) {
+        MWFRenderHelper helper=new MWFRenderHelper(renderer);
+        helper.getLayerRenderers().add(0, new ResetHiddenModelLayer(renderer));
         renderer.addLayer(new RenderLayerBackpack(renderer, renderer.getMainModel().bipedBodyWear));
         renderer.addLayer(new RenderLayerBody(renderer, renderer.getMainModel().bipedBodyWear));
         // Disabled for animation third person test
         // renderer.addLayer(new RenderLayerHeldGun(renderer));
+        renderer.addLayer(new RenderLayerHeldGun(renderer));
     }
 
     @Override
@@ -294,12 +307,25 @@ public class ClientProxy extends CommonProxy {
         if(!Minecraft.getMinecraft().getFramebuffer().isStencilEnabled()) {
             Minecraft.getMinecraft().getFramebuffer().enableStencil();
         }
+        
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new ISelectiveResourceReloadListener() {
+
+            @Override
+            public void onResourceManagerReload(IResourceManager resourceManager,
+                    Predicate<IResourceType> resourcePredicate) {
+                loadTextures();
+            }
+
+        });
+        loadTextures();
     }
 
     public void loadTextures() {
         ModularWarfare.LOGGER.info("Preloading textures");
         long time = System.currentTimeMillis();
         preloadSkinTypes.forEach((skin, type) -> {
+            ModularWarfare.LOGGER.info("Loading texture for "+type.internalName);
+
             for (int i = 0; i < skin.textures.length; i++) {
                 ResourceLocation resource = new ResourceLocation(ModularWarfare.MOD_ID,
                         String.format(skin.textures[i].format, type.getAssetDir(), skin.getSkin()));
@@ -715,6 +741,9 @@ public class ClientProxy extends CommonProxy {
             RenderingRegistry.registerEntityRenderingHandler(EntityItemLoot.class, RenderItemLoot.FACTORY);
 
             RenderingRegistry.registerEntityRenderingHandler(EntityBulletClient.class, RenderBullet.FACTORY);
+            
+            //RENDER PROJECTILES
+            RenderingRegistry.registerEntityRenderingHandler(EntityExplosiveProjectile.class, RenderProjectile.FACTORY);
 
             RenderingRegistry.registerEntityRenderingHandler(EntityInfected.class, new IRenderFactory<EntityInfected>() {
                 @Override
@@ -893,6 +922,11 @@ public class ClientProxy extends CommonProxy {
         Minecraft.getMinecraft().effectRenderer.addEffect(explosionParticle);
     }
 
+    public void spawnRocketParticle(World world, double x, double y, double z) {
+        final Particle rocketParticle = new ParticleRocket(world, x, y, z);
+        Minecraft.getMinecraft().effectRenderer.addEffect(rocketParticle);
+    }
+    
     @Override
     public void playFlashSound(EntityPlayer entityPlayer) {
         Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(ModSounds.FLASHED, SoundCategory.PLAYERS, (float) FlashSystem.flashValue / 1000, 1, (float) entityPlayer.posX, (float) entityPlayer.posY, (float) entityPlayer.posZ));

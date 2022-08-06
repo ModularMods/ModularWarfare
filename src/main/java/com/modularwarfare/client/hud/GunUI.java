@@ -138,38 +138,6 @@ public class GunUI {
                                     }
                                 }
                             }
-                        } else if(mc.gameSettings.thirdPersonView == 0 && AnimationController.ADS > 0.8f && RenderParameters.collideFrontDistance <= 0.025f){
-                            /*
-                            if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
-                                float gunRotX = RenderParameters.GUN_ROT_X_LAST + (RenderParameters.GUN_ROT_X - RenderParameters.GUN_ROT_X_LAST) * ClientProxy.renderHooks.partialTicks;
-                                float gunRotY = RenderParameters.GUN_ROT_Y_LAST + (RenderParameters.GUN_ROT_Y - RenderParameters.GUN_ROT_Y_LAST) * ClientProxy.renderHooks.partialTicks;
-
-                                float alpha = gunRotX;
-                                alpha = Math.abs(alpha);
-
-                                if (gunRotX > -1.5 && gunRotX < 1.5 && gunRotY > -0.75 && gunRotY < 0.75 && RenderParameters.GUN_CHANGE_Y == 0F) {
-                                    GL11.glPushMatrix();
-
-                                    GL11.glRotatef(gunRotX, 0, -1, 0);
-                                    GL11.glRotatef(gunRotY, 0, 0, -1);
-
-                                    ResourceLocation overlayToRender = new ResourceLocation("modularwarfare", "textures/overlay/prototype.okp7.png");
-
-                                    float factor = 1;
-                                    if (width < 700) {
-                                        factor = 2;
-                                    }
-                                    float rectileScale = 1f;
-                                    int size = (32 * 2 / (int) (event.getResolution().getScaleFactor() * factor)) + ((int) (crouchSwitch) * 5);
-                                    size = (int) (((size * (1 + (playerRecoilYaw > 0.8 ? playerRecoilYaw : 0) * 0.2))) * rectileScale);
-                                    GL11.glTranslatef((width / 2 - size), (height / 2 - size), 0);
-                                    GL11.glTranslatef((VAL2 / 10), (VAL / 10), 0);
-                                    RenderHelperMW.renderImageAlpha(0, 0, overlayToRender, size * 2, size * 2, 1f - alpha);
-
-                                    GL11.glPopMatrix();
-                                }
-                            }
-                            */
                         }
 
                         boolean showCrosshair = ((adsSwitch < 0.6F) && (AnimationController.ADS < 0.5F));
