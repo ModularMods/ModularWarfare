@@ -3,6 +3,7 @@ package com.modularwarfare.common.capability.extraslots;
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
+import com.modularwarfare.common.network.PacketBulletHoleDespawnTime;
 import com.modularwarfare.common.network.PacketLoreDisable;
 import com.modularwarfare.common.network.PacketSyncExtraSlot;
 import net.minecraft.entity.Entity;
@@ -60,6 +61,7 @@ public class CapabilityExtra {
         }
         sync(target, Collections.singletonList(target));
         ModularWarfare.NETWORK.sendTo(new PacketLoreDisable(ModConfig.INSTANCE.hud.disable_lore), (EntityPlayerMP) event.getEntity());
+        ModularWarfare.NETWORK.sendTo(new PacketBulletHoleDespawnTime(ModConfig.INSTANCE.guns.bullet_hole_despawn_time), (EntityPlayerMP) event.getEntity());
     }
 
     @SubscribeEvent

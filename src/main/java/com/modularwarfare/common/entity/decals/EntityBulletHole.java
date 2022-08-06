@@ -5,10 +5,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class EntityBulletHole extends EntityDecal {
+    public static int timeAliveSeconds = 10;
+
 
     public EntityBulletHole(World worldIn) {
         super(worldIn);
-        this.maxTimeAlive = 200;
+        this.maxTimeAlive = timeAliveSeconds*20;
     }
 
     public ResourceLocation getDecalTexture() {
