@@ -35,6 +35,7 @@ public class ModConfig {
     public static class Guns {
         public boolean guns_interaction_hand = true;
         public boolean render_weapon_on_back = true;
+        public int bullet_hole_despawn_time = 10;
     }
 
     //drops
