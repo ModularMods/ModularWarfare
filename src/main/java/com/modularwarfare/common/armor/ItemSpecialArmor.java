@@ -1,5 +1,6 @@
 package com.modularwarfare.common.armor;
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.api.MWArmorType;
 import com.modularwarfare.common.capability.extraslots.CapabilityExtra;
 import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
@@ -12,7 +13,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class ItemSpecialArmor extends BaseItem {
 
@@ -31,6 +35,11 @@ public class ItemSpecialArmor extends BaseItem {
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World worldIn, final EntityPlayer playerIn, final EnumHand handIn) {
         final ItemStack itemstack = playerIn.getHeldItem(handIn);
+
+        if(!ModConfig.INSTANCE.general.customInventory) {
+            if(FMLCommonHandler.instance().getSide().equals(Side.SERVER))playerIn.sendMessage(new TextComponentTranslation("mw.failure.custom.inventory.equip"));
+            return new ActionResult<>(EnumActionResult.PASS, itemstack);
+        }
 
         if (playerIn.hasCapability(CapabilityExtra.CAPABILITY, null)) {
             final IExtraItemHandler backpack = playerIn.getCapability(CapabilityExtra.CAPABILITY, null);

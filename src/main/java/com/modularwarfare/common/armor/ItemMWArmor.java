@@ -1,5 +1,6 @@
 package com.modularwarfare.common.armor;
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.MWArmorType;
 import com.modularwarfare.client.model.ModelCustomArmor;
@@ -15,8 +16,10 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -92,6 +95,12 @@ public class ItemMWArmor extends ItemArmor implements ISpecialArmor {
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World worldIn, final EntityPlayer playerIn, final EnumHand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
+
+        if(!ModConfig.INSTANCE.general.customInventory) {
+            if(FMLCommonHandler.instance().getSide().equals(Side.SERVER))playerIn.sendMessage(new TextComponentTranslation("mw.failure.custom.inventory.equip"));
+            return new ActionResult<>(EnumActionResult.PASS, itemstack);
+        }
+
         EntityEquipmentSlot entityequipmentslot = EntityLiving.getSlotForItemStack(itemstack);
         ItemStack itemstack1 = playerIn.getItemStackFromSlot(entityequipmentslot);
 

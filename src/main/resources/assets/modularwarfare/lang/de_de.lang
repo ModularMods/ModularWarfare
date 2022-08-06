@@ -11,3 +11,5 @@ mw.cmd.kit.help=§7[§cModularWarfare§7] /mw-kit <save/delete/give> <Name> [Spi
 
 mw.warning.shot.ping=§7[§cModularWarfare§7] Dein Ping ist zu hoch, Schuss wurde nicht registriert.
 mw.warning.ammo.reload=Du kannst nur Kugeln in ein einzelnes Magazin laden.
+
+mw.failure.custom.inventory.equip=§7[§cModularWarfare§7] MW Rüstung ist deaktiviert während das MW Inventar in der Konfiguration deaktiviert ist.

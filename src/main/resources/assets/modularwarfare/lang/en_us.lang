@@ -11,3 +11,5 @@ mw.cmd.kit.help=§7[§cModularWarfare§7] /mw-kit <save/delete/give> <name> [pla
 
 mw.warning.shot.ping=§7[§cModularWarfare§7] Your ping is too high, shot not registered.
 mw.warning.ammo.reload=You can only load bullets on a single magazine.
+
+mw.failure.custom.inventory.equip=§7[§cModularWarfare§7] Custom Armor is disabled while Custom Inventory is deactivated.

@@ -1,5 +1,6 @@
 package com.modularwarfare.common.backpacks;
 
+import com.modularwarfare.ModConfig;
 import com.modularwarfare.common.capability.extraslots.CapabilityExtra;
 import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
 import com.modularwarfare.common.init.ModSounds;
@@ -14,8 +15,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -51,6 +55,11 @@ public class ItemBackpack extends BaseItem {
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World worldIn, final EntityPlayer playerIn, final EnumHand handIn) {
         final ItemStack itemstack = playerIn.getHeldItem(handIn);
+
+        if(!ModConfig.INSTANCE.general.customInventory) {
+            if(FMLCommonHandler.instance().getSide().equals(Side.SERVER))playerIn.sendMessage(new TextComponentTranslation("mw.failure.custom.inventory.equip"));
+            return new ActionResult<>(EnumActionResult.PASS, itemstack);
+        }
 
         if (playerIn.hasCapability(CapabilityExtra.CAPABILITY, null)) {
             final IExtraItemHandler backpack = playerIn.getCapability(CapabilityExtra.CAPABILITY, null);
