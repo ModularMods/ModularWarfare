@@ -39,9 +39,8 @@ public class KeyInputHandler extends ForgeEvent {
         keyBinds.add(new KeyEntry(KeyType.AddAttachment));
         keyBinds.add(new KeyEntry(KeyType.Flashlight));
 
-        if (!ModConfig.INSTANCE.general.customInventory) {
-            keyBinds.add(new KeyEntry(KeyType.Backpack));
-        }
+        keyBinds.add(new KeyEntry(KeyType.Backpack));
+        
 
         keyBinds.add(new KeyEntry(KeyType.Left));
         keyBinds.add(new KeyEntry(KeyType.Right));
@@ -160,10 +159,8 @@ public class KeyInputHandler extends ForgeEvent {
                     }
                     break;
                 case Backpack:
-                    if (!ModConfig.INSTANCE.general.customInventory) {
-                        if (!entityPlayer.isCreative()) {
-                            ModularWarfare.NETWORK.sendToServer(new PacketOpenGui(0));
-                        }
+                    if (!entityPlayer.isCreative()) {
+                        ModularWarfare.NETWORK.sendToServer(new PacketOpenGui(0));
                     }
                     break;
                 case Left:
