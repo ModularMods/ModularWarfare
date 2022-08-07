@@ -87,7 +87,6 @@ import paulscode.sound.SoundSystemConfig;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -191,11 +190,6 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preload() {
-        //Smooth Swing Ticker Runnable
-        SmoothSwingTicker smoothSwingTicker = new SmoothSwingTicker();
-        Thread smoothTickThread = new Thread(smoothSwingTicker, "SmoothSwingThread");
-        smoothTickThread.start();
-
         MinecraftForge.EVENT_BUS.register(this);
         startPatches();
     }
@@ -278,6 +272,11 @@ public class ClientProxy extends CommonProxy {
         if(ModUtil.isMac()){
             ModConfig.INSTANCE.model_optimization = false;
         }
+
+        //Smooth Swing Ticker Runnable
+        SmoothSwingTicker smoothSwingTicker = new SmoothSwingTicker();
+        Thread smoothTickThread = new Thread(smoothSwingTicker, "SmoothSwingThread");
+        smoothTickThread.start();
 
         ModularWarfare.LOGGER.info("Preloading textures");
         long time = System.currentTimeMillis();
