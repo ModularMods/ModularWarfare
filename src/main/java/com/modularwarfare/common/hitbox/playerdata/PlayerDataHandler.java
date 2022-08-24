@@ -25,6 +25,14 @@ public class PlayerDataHandler {
         return getPlayerData(username, Side.SERVER);
     }
 
+    public static void onPlayerLeave(String username, Side side) {
+        if(side.isClient()) {
+            clientSideData.remove(username);
+        } else {
+            serverSideData.remove(username);
+        }
+    }
+
     public static PlayerData getPlayerData(EntityPlayer player, Side side) {
         if (player == null)
             return null;
