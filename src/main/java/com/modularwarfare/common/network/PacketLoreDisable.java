@@ -10,6 +10,8 @@ public class PacketLoreDisable extends PacketBase  {
 
     private boolean disable = false;
 
+    public PacketLoreDisable() {}
+
     public PacketLoreDisable(boolean disable) {
         this.disable = disable;
     }
