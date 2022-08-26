@@ -29,6 +29,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class CommonEventHandler {
@@ -90,6 +91,20 @@ public class CommonEventHandler {
         if (entity instanceof EntityItemLoot) {
             return;
         }
+    }
+
+    private static final ModularWarfareWorldListener WORLD_LISTENER = new ModularWarfareWorldListener();
+
+    @SubscribeEvent
+    public void onInitWorld(WorldEvent.Load event) {
+        World world = event.getWorld();
+        world.addEventListener(WORLD_LISTENER);
+    }
+
+    @SubscribeEvent
+    public void onUnloadWorld(WorldEvent.Unload event) {
+        World world = event.getWorld();
+        world.removeEventListener(WORLD_LISTENER);
     }
 
     @SubscribeEvent

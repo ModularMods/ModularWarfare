@@ -4,6 +4,7 @@ import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.hud.FlashSystem;
 import com.modularwarfare.client.model.InstantBulletRenderer;
+import com.modularwarfare.common.hitbox.playerdata.PlayerDataHandler;
 import com.modularwarfare.common.init.ModSounds;
 import com.modularwarfare.common.network.PacketOpenGui;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -39,6 +41,14 @@ public class ClientEventHandler {
                 }
             }
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(player == null) return;
+        PlayerDataHandler.clientSideData.clear();
     }
 
     @SideOnly(Side.CLIENT)
