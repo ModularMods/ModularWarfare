@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -46,7 +47,7 @@ public class NetworkHandler extends MessageToMessageCodec<FMLProxyPacket, Packet
      * Store received packets in these queues and have the main Minecraft threads use these
      */
     private ConcurrentLinkedQueue<PacketBase> receivedPacketsClient = new ConcurrentLinkedQueue<PacketBase>();
-    private HashMap<String, ConcurrentLinkedQueue<PacketBase>> receivedPacketsServer = new HashMap<String, ConcurrentLinkedQueue<PacketBase>>();
+    private ConcurrentHashMap<String, ConcurrentLinkedQueue<PacketBase>> receivedPacketsServer = new ConcurrentHashMap<String, ConcurrentLinkedQueue<PacketBase>>();
 
     /**
      * Registers a packet with the handler
@@ -146,6 +147,10 @@ public class NetworkHandler extends MessageToMessageCodec<FMLProxyPacket, Packet
         for (String playerName : receivedPacketsServer.keySet()) {
             ConcurrentLinkedQueue<PacketBase> receivedPacketsFromPlayer = receivedPacketsServer.get(playerName);
             EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(playerName);
+            if(player == null) {
+                receivedPacketsFromPlayer.clear();
+                continue;
+            }
             for (PacketBase packet = receivedPacketsFromPlayer.poll(); packet != null; packet = receivedPacketsFromPlayer.poll()) {
                 packet.handleServerSide(player);
             }
