@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -151,6 +152,8 @@ public class PacketExpGunFire extends PacketBase {
                                                     }
                                                 }
                                             }
+                                        } else if (ModConfig.INSTANCE.general.modified_pack_server_kick) {
+                                            entityPlayer.connection.disconnect(new TextComponentString("[ModularWarfare] Kicked for client-side modified content-pack."));
                                         }
                                     } else {
                                         BlockPos blockPos = new BlockPos(posX, posY, posZ);
