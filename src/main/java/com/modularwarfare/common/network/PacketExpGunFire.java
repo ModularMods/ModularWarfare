@@ -153,7 +153,7 @@ public class PacketExpGunFire extends PacketBase {
                                                     }
                                                 }
                                                 if (!ModConfig.INSTANCE.shots.knockback_entity_damage) {
-                                                    RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(entityPlayer).setProjectile(), damage);
+                                                    RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(entityPlayer).setProjectile(), (hitboxType.contains("HEAD") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
                                                 } else {
                                                     target.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setProjectile(), damage);
                                                 }
