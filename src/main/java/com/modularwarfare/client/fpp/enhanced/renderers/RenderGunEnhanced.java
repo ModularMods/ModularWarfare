@@ -212,12 +212,12 @@ public class RenderGunEnhanced extends CustomItemRenderer {
          *  GOBAL
          * */
         mat.rotate(toRadians(90), new Vector3f(0, 1, 0));
-        mat.translate(new Vector3f(model.config.gobal.gobalTranslate.x, model.config.gobal.gobalTranslate.y, model.config.gobal.gobalTranslate.z));
-        mat.scale(new Vector3f(model.config.gobal.gobalScale.x,model.config.gobal.gobalScale.y,model.config.gobal.gobalScale.z));
+        mat.translate(new Vector3f(model.config.global.globalTranslate.x, model.config.global.globalTranslate.y, model.config.global.globalTranslate.z));
+        mat.scale(new Vector3f(model.config.global.globalScale.x,model.config.global.globalScale.y,model.config.global.globalScale.z));
         mat.rotate(toRadians(-90), new Vector3f(0, 1, 0));
-        mat.rotate(model.config.gobal.gobalRotate.y/180*3.14f, new Vector3f(0, 1, 0));
-        mat.rotate(model.config.gobal.gobalRotate.x/180*3.14f, new Vector3f(1, 0, 0));
-        mat.rotate(model.config.gobal.gobalRotate.z/180*3.14f, new Vector3f(0, 0, 1));
+        mat.rotate(model.config.global.globalRotate.y/180*3.14f, new Vector3f(0, 1, 0));
+        mat.rotate(model.config.global.globalRotate.x/180*3.14f, new Vector3f(1, 0, 0));
+        mat.rotate(model.config.global.globalRotate.z/180*3.14f, new Vector3f(0, 0, 1));
         
         /**
          * ACTION GUN MOTION

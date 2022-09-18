@@ -15,7 +15,7 @@ public class GunEnhancedRenderConfig {
 
     public HashMap<AnimationType, Animation> animations = new HashMap<>();
 
-    public GunEnhancedRenderConfig.Gobal gobal = new GunEnhancedRenderConfig.Gobal();
+    public GunEnhancedRenderConfig.Global global = new GunEnhancedRenderConfig.Global();
     public GunEnhancedRenderConfig.Sprint sprint = new GunEnhancedRenderConfig.Sprint();
     public GunEnhancedRenderConfig.Aim aim = new GunEnhancedRenderConfig.Aim();
     public GunEnhancedRenderConfig.Extra extra = new GunEnhancedRenderConfig.Extra();
@@ -52,11 +52,11 @@ public class GunEnhancedRenderConfig {
     }
 
     //1.translate 3.scale 2.rotate(yxz)
-    public static class Gobal {
-        public Vector3f gobalTranslate = new Vector3f(0, 0, 0);
+    public static class Global {
+        public Vector3f globalTranslate = new Vector3f(0, 0, 0);
         //注:这并不会让你的枪看起来变大或变小 但是会影响剪裁空间
-        public Vector3f gobalScale = new Vector3f(1, 1, 1);
-        public Vector3f gobalRotate = new Vector3f(0, 0, 0);
+        public Vector3f globalScale = new Vector3f(1, 1, 1);
+        public Vector3f globalRotate = new Vector3f(0, 0, 0);
     }
 
     public static class Sprint {
