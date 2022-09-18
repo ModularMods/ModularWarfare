@@ -169,7 +169,7 @@
     "modelScale": 1.2,
     "gunOffsetScoping": 0.0,
     "crouchZoom": -0.035,
-    "adsSpeed": 0.17,
+    "adsSpeed": 0.07,
     "gunSlideDistance": 0.1,
     "modelRecoilBackwards": 0.05,
     "modelRecoilUpwards": 1.0,

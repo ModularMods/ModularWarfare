@@ -10,6 +10,8 @@
   ],
   "sight": {
     "scopeType": "reddot",
-    "dotColorType": "red"
+    "dotColorType": "red",
+    "customOverlayTexture": "prototype.red_dot_cs",
+    "modeType": "simple"
   }
 }

@@ -10,6 +10,7 @@
   ],
   "sight": {
     "scopeType": "2x",
-    "customOverlayTexture": "prototype.scope2x"
+    "customOverlayTexture": "prototype.scope2x",
+    "modeType": "pip"
   }
 }

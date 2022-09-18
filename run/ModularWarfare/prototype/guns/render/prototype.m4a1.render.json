@@ -111,7 +111,7 @@
       "z": 0.0
     },
     "translateAimPosition": {
-      "x": 0.1,
+      "x": 0.2,
       "y": 0.04,
       "z": 0.0
     }
@@ -237,10 +237,10 @@
     "chargeHandleDistance": 0.15,
     "gunOffsetScoping": 0.0,
     "crouchZoom": -0.035,
-    "adsSpeed": 0.17,
+    "adsSpeed": 0.02,
     "gunSlideDistance": 0.25,
     "modelRecoilBackwards": 0.05,
-    "modelRecoilUpwards": 1.0,
+    "modelRecoilUpwards": 0.5,
     "modelRecoilShake": 0.5
   }
 }

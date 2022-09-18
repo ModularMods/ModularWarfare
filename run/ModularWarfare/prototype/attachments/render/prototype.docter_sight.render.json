@@ -5,7 +5,7 @@
   },
   "sight": {
     "DOCTER SIGHT DOES NOT HAVE ZOOM": 0,
-    "fovZoom": -1,
+    "fovZoom": 1,
     "mouseSensitivityFactor": 0.8,
     "rectileScale": 1.0
   }

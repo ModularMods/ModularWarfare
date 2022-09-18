@@ -5,7 +5,7 @@
   },
   "sight": {
     "fovZoom": 8.0,
-    "mouseSensitivityFactor": 0.6,
-    "rectileScale": 1.4
+    "mouseSensitivityFactor": 0.2,
+    "rectileScale": 2.0
   }
 }
