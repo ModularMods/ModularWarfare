@@ -92,6 +92,8 @@ dependencies {
     embed 'net.lingala.zip4j:zip4j:1.2.4'
 
     compile fileTree(dir: 'libs', include: '*.jar')
+    compileOnly fileTree(dir: 'optifine', include: '*.jar')
+
 }
 
 repositories {
