@@ -16,6 +16,7 @@ public class ArmorType extends BaseType {
     public Integer durability;
     public double defense;
 
+    @Deprecated
     public boolean simpleArmor = false;
 
     public HashMap<MWArmorType, ArmorInfo> armorTypes;

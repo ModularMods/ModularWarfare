@@ -29,7 +29,7 @@ public class AttachmentUI {
     public int sizeAttachTypeIndex;
     public int sizeAttachAttachIndex;
 
-    public AttachmentEnum selectedAttachEnum;
+    public AttachmentPresetEnum selectedAttachEnum;
 
     public AttachmentUI() {
         this.selectedAttachTypeIndex = 0;
@@ -55,9 +55,9 @@ public class AttachmentUI {
 
                                 if (gun.type.modelSkins != null && gun.type.acceptedAttachments != null) {
                                     if (!gun.type.acceptedAttachments.isEmpty() || gun.type.modelSkins.length > 1) {
-                                        List<AttachmentEnum> keys = new ArrayList<>(gun.type.acceptedAttachments.keySet());
+                                        List<AttachmentPresetEnum> keys = new ArrayList<>(gun.type.acceptedAttachments.keySet());
                                         if (gun.type.modelSkins.length > 1) {
-                                            keys.add(AttachmentEnum.Skin);
+                                            keys.add(AttachmentPresetEnum.Skin);
                                         }
                                         if ((selectedAttachTypeIndex < keys.size() && selectedAttachTypeIndex >= 0)) {
                                             selectedAttachEnum = keys.get(selectedAttachTypeIndex);
@@ -106,9 +106,9 @@ public class AttachmentUI {
 
                                 if (gun.type.modelSkins != null && gun.type.acceptedAttachments != null) {
                                     if (!gun.type.acceptedAttachments.isEmpty() || gun.type.modelSkins.length > 1) {
-                                        List<AttachmentEnum> keys = new ArrayList<>(gun.type.acceptedAttachments.keySet());
+                                        List<AttachmentPresetEnum> keys = new ArrayList<>(gun.type.acceptedAttachments.keySet());
                                         if (gun.type.modelSkins.length > 1) {
-                                            keys.add(AttachmentEnum.Skin);
+                                            keys.add(AttachmentPresetEnum.Skin);
                                         }
 
                                         GlStateManager.pushMatrix();
@@ -146,12 +146,12 @@ public class AttachmentUI {
     }
 
 
-    public List<Integer> checkAttach(EntityPlayer player, GunType gunType, AttachmentEnum attachmentEnum) {
+    public List<Integer> checkAttach(EntityPlayer player, GunType gunType, AttachmentPresetEnum attachmentEnum) {
         List<Integer> attachments = new ArrayList<>();
         attachments.add(-1);
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack itemStack = player.inventory.getStackInSlot(i);
-            if (attachmentEnum != AttachmentEnum.Skin) {
+            if (attachmentEnum != AttachmentPresetEnum.Skin) {
                 if (itemStack != null && itemStack.getItem() instanceof ItemAttachment) {
                     ItemAttachment itemAttachment = (ItemAttachment) itemStack.getItem();
                     AttachmentType attachType = itemAttachment.type;

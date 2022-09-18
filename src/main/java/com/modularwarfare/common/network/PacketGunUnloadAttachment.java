@@ -43,7 +43,7 @@ public class PacketGunUnloadAttachment extends PacketBase {
                 ItemStack gunStack = entityPlayer.getHeldItemMainhand();
                 InventoryPlayer inventory = entityPlayer.inventory;
                 if (unloadAll) {
-                    for (AttachmentEnum attachment : AttachmentEnum.values()) {
+                    for (AttachmentPresetEnum attachment : AttachmentPresetEnum.values()) {
                         ItemStack itemStack = GunType.getAttachment(gunStack, attachment);
                         if (itemStack != null && itemStack.getItem() != Items.AIR) {
                             ItemAttachment itemAttachment = (ItemAttachment) itemStack.getItem();
@@ -54,7 +54,7 @@ public class PacketGunUnloadAttachment extends PacketBase {
                         }
                     }
                 } else {
-                    ItemStack itemStack = GunType.getAttachment(gunStack, AttachmentEnum.getAttachment(attachmentType));
+                    ItemStack itemStack = GunType.getAttachment(gunStack, AttachmentPresetEnum.getAttachment(attachmentType));
                     if (itemStack != null && itemStack.getItem() != Items.AIR) {
                         ItemAttachment itemAttachment = (ItemAttachment) itemStack.getItem();
                         AttachmentType attachType = itemAttachment.type;

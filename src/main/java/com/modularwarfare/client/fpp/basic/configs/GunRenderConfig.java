@@ -3,7 +3,7 @@ package com.modularwarfare.client.fpp.basic.configs;
 import com.modularwarfare.api.WeaponAnimations;
 import com.modularwarfare.client.fpp.basic.models.objects.BreakActionData;
 import com.modularwarfare.client.fpp.basic.models.objects.RenderVariables;
-import com.modularwarfare.common.guns.AttachmentEnum;
+import com.modularwarfare.common.guns.AttachmentPresetEnum;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
@@ -125,7 +125,7 @@ public class GunRenderConfig {
     }
 
     public static class Attachments {
-        public HashMap<AttachmentEnum, ArrayList<Vector3f>> attachmentPointMap = new HashMap<AttachmentEnum, ArrayList<Vector3f>>();
+        public HashMap<AttachmentPresetEnum, ArrayList<Vector3f>> attachmentPointMap = new HashMap<AttachmentPresetEnum, ArrayList<Vector3f>>();
 
         public HashMap<String, ArrayList<Vector3f>> positionPointMap = new HashMap<String, ArrayList<Vector3f>>();
         public HashMap<String, ArrayList<Vector3f>> aimPointMap = new HashMap<String, ArrayList<Vector3f>>();

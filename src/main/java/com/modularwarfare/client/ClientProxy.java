@@ -31,6 +31,7 @@ import com.modularwarfare.client.patch.galacticraft.GCCompatInterop;
 import com.modularwarfare.client.patch.galacticraft.GCDummyInterop;
 import com.modularwarfare.client.patch.obfuscate.ObfuscateCompatInterop;
 import com.modularwarfare.client.scope.ScopeUtils;
+import com.modularwarfare.client.shader.Programs;
 import com.modularwarfare.common.CommonProxy;
 import com.modularwarfare.common.armor.ArmorType;
 import com.modularwarfare.common.armor.ArmorType.ArmorInfo;
@@ -304,9 +305,6 @@ public class ClientProxy extends CommonProxy{
         if(ModUtil.isMac()){
             ModConfig.INSTANCE.model_optimization = false;
         }
-        if(!Minecraft.getMinecraft().getFramebuffer().isStencilEnabled()) {
-            Minecraft.getMinecraft().getFramebuffer().enableStencil();
-        }
         
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new ISelectiveResourceReloadListener() {
 
@@ -318,6 +316,8 @@ public class ClientProxy extends CommonProxy{
 
         });
         loadTextures();
+        
+        Programs.init();
     }
 
     public void loadTextures() {
@@ -697,7 +697,7 @@ public class ClientProxy extends CommonProxy{
             ModularWarfare.LOGGER.error(String.format("The sound named '%s' does not exist. Skipping playSound", sound.soundName));
             return;
         }
-
+        //System.out.println(sound.soundName);
         Minecraft.getMinecraft().world.playSound(Minecraft.getMinecraft().player, sound.blockPos, soundEvent, SoundCategory.PLAYERS, sound.volume, sound.pitch);
     }
 
@@ -710,14 +710,16 @@ public class ClientProxy extends CommonProxy{
     @SubscribeEvent
     public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
         IForgeRegistry<SoundEvent> registry = event.getRegistry();
-        for (SoundEvent soundEvent : modSounds.values()) {
-            registry.register(soundEvent);
-        }
-
         for (WeaponSoundType weaponSoundType : WeaponSoundType.values()) {
             if (weaponSoundType.defaultSound != null) {
                 registerSound(weaponSoundType.defaultSound);
-                registry.register(modSounds.get(weaponSoundType.defaultSound));
+                //registry.register(modSounds.get(weaponSoundType.defaultSound));
+            }
+        }
+        
+        for (SoundEvent soundEvent : modSounds.values()) {
+            if(!registry.containsKey(soundEvent.getRegistryName())) {
+                registry.register(soundEvent);  
             }
         }
     }
@@ -776,14 +778,14 @@ public class ClientProxy extends CommonProxy{
             float recoilPitchBarrelFactor = 1.0f;
             float recoilYawBarrelFactor = 1.0f;
 
-            if (GunType.getAttachment(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Grip) != null) {
-                ItemAttachment gripAttachment = (ItemAttachment) GunType.getAttachment(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Grip).getItem();
+            if (GunType.getAttachment(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentPresetEnum.Grip) != null) {
+                ItemAttachment gripAttachment = (ItemAttachment) GunType.getAttachment(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentPresetEnum.Grip).getItem();
                 recoilPitchGripFactor = gripAttachment.type.grip.recoilPitchFactor;
                 recoilYawGripFactor = gripAttachment.type.grip.recoilYawFactor;
             }
 
-            if (GunType.getAttachment(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Barrel) != null) {
-                ItemAttachment barrelAttachment = (ItemAttachment) GunType.getAttachment(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Barrel).getItem();
+            if (GunType.getAttachment(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentPresetEnum.Barrel) != null) {
+                ItemAttachment barrelAttachment = (ItemAttachment) GunType.getAttachment(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentPresetEnum.Barrel).getItem();
                 recoilPitchBarrelFactor = barrelAttachment.type.barrel.recoilPitchFactor;
                 recoilYawBarrelFactor = barrelAttachment.type.barrel.recoilYawFactor;
             }

@@ -36,7 +36,7 @@ public class RenderAmmo extends CustomItemRenderer {
         if (model == null)
             return;
         {
-            renderAmmo(type, item, ammoType, data);
+            //renderAmmo(type, item, ammoType, data);
         }
     }
 

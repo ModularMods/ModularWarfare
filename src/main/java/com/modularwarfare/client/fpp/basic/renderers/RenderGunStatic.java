@@ -23,6 +23,7 @@ import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderer;
 import com.modularwarfare.client.fpp.basic.models.objects.RenderVariables;
 import com.modularwarfare.client.scope.ScopeUtils;
+import com.modularwarfare.client.shader.Programs;
 import com.modularwarfare.common.armor.ItemMWArmor;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.network.PacketAimingRequest;
@@ -39,6 +40,8 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -56,7 +59,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.optifine.shaders.Shaders;
+
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -255,11 +261,11 @@ public class RenderGunStatic extends CustomItemRenderer {
                     Vector3f customAimRotation = new Vector3f(model.config.aim.rotateAimPosition.x, model.config.aim.rotateAimPosition.y, model.config.aim.rotateAimPosition.z);
                     Vector3f customAimTranslate = new Vector3f(model.config.aim.translateAimPosition.x, model.config.aim.translateAimPosition.y, model.config.aim.translateAimPosition.z);
 
-                    for (AttachmentEnum attachment : AttachmentEnum.values()) {
+                    for (AttachmentPresetEnum attachment : AttachmentPresetEnum.values()) {
                         ItemStack itemStack = GunType.getAttachment(item, attachment);
                         if (itemStack != null && itemStack.getItem() != Items.AIR) {
                             AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
-                            if (attachmentType.attachmentType == AttachmentEnum.Sight) {
+                            if (attachmentType.attachmentType == AttachmentPresetEnum.Sight) {
                                 if (model.config.attachments.aimPointMap != null) {
                                     for (String internalName : model.config.attachments.aimPointMap.keySet()) {
                                         if (internalName.equals(attachmentType.internalName)) {
@@ -277,6 +283,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                     RenderParameters.VAL = (float) (Math.sin(RenderParameters.SMOOTH_SWING / 140) * 1.0f);
                     RenderParameters.VAL2 = (float) (Math.sin(RenderParameters.SMOOTH_SWING / 100) * 1.0f);
                     RenderParameters.VALROT = (float) (Math.sin(RenderParameters.SMOOTH_SWING / 90) * 1.2f);
+                    RenderParameters.CROSS_ROTATE = 0;
 
 
                     if (!anim.shooting) {
@@ -356,22 +363,20 @@ public class RenderGunStatic extends CustomItemRenderer {
                     GL11.glRotatef(-120 * (float) Math.sin(Math.PI* -GUN_CHANGE_Y), -1, 0, 0);
 
                     //Render Scope
-                    WeaponScopeType scopeType = gunType.scopeType;
+                    WeaponScopeModeType modeType = gunType.scopeModeType;
 
-                    if (GunType.getAttachment(item, AttachmentEnum.Sight) != null) {
-                        if (GunType.getAttachment(item, AttachmentEnum.Sight).getItem() != null) {
-                            ItemAttachment attachmentSight = (ItemAttachment) GunType.getAttachment(item, AttachmentEnum.Sight).getItem();
-                            if (attachmentSight != null && attachmentSight.type.sight.scopeType != WeaponScopeType.DEFAULT) {
-                                scopeType = attachmentSight.type.sight.scopeType;
+                    if (GunType.getAttachment(item, AttachmentPresetEnum.Sight) != null) {
+                        if (GunType.getAttachment(item, AttachmentPresetEnum.Sight).getItem() != null) {
+                            ItemAttachment attachmentSight = (ItemAttachment) GunType.getAttachment(item, AttachmentPresetEnum.Sight).getItem();
+                            if (attachmentSight != null) {
+                                modeType = attachmentSight.type.sight.modeType;
                             }
                         }
                     }
 
-                    if (scopeType != WeaponScopeType.DEFAULT) {
+                    if (modeType.isMirror) {
                         if (adsSwitch == 1.0F) {
-                            if (scopeType != WeaponScopeType.REDDOT) {
-                                GL11.glTranslatef(model.config.extra.gunOffsetScoping, 0F, 0F);
-                            }
+                            GL11.glTranslatef(model.config.extra.gunOffsetScoping, 0F, 0F);
                             if (!ClientRenderHooks.isAimingScope) {
                                 ClientRenderHooks.isAimingScope = true;
                                 ModularWarfare.NETWORK.sendToServer(new PacketAimingRequest(entityplayer.getDisplayNameString(), true));
@@ -427,7 +432,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                         this.slowDiff = Math.max(this.slowDiff - 0.1f, wantedDiff);
                     }
 
-                    if (isLightOn && GunType.getAttachment(item, AttachmentEnum.Flashlight) != null) {
+                    if (isLightOn && GunType.getAttachment(item, AttachmentPresetEnum.Flashlight) != null) {
                         final float alpha = 0.25f + this.slowDiff * 0.05f;
                         GlStateManager.rotate(-90, 0,1,0);
 
@@ -514,11 +519,11 @@ public class RenderGunStatic extends CustomItemRenderer {
                 model.renderPart("gunModel", worldScale);
 
                 //Render any attachments
-                if (GunType.getAttachment(item, AttachmentEnum.Sight) == null && !model.config.attachments.scopeIsOnSlide)
+                if (GunType.getAttachment(item, AttachmentPresetEnum.Sight) == null && !model.config.attachments.scopeIsOnSlide)
                     model.renderPart("defaultScopeModel", worldScale);
 
                 //Render any attachments
-                if (GunType.getAttachment(item, AttachmentEnum.Barrel) == null)
+                if (GunType.getAttachment(item, AttachmentPresetEnum.Barrel) == null)
                     model.renderPart("defaultBarrelModel", worldScale);
 
                 model.renderPart("defaultStockModel", worldScale);
@@ -591,7 +596,7 @@ public class RenderGunStatic extends CustomItemRenderer {
 
 
                 //Render Slide
-                if (GunType.getAttachment(item, AttachmentEnum.Slide) == null) {
+                if (GunType.getAttachment(item, AttachmentPresetEnum.Slide) == null) {
                     float currentCharge = currentReloadState.isPresent() ? (currentReloadState.get().stateType == StateType.Charge || currentReloadState.get().stateType == StateType.Uncharge) ? currentReloadState.get().currentValue : 1f : 1f;
                     float lastCharge = currentReloadState.isPresent() ? (currentReloadState.get().stateType == StateType.Charge || currentReloadState.get().stateType == StateType.Uncharge) ? currentReloadState.get().lastValue : 1f : 1f;
 
@@ -618,7 +623,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                         model.renderPart("slideModel", worldScale);
                         GL11.glPopMatrix();
 
-                        if (GunType.getAttachment(item, AttachmentEnum.Sight) == null && model.config.attachments.scopeIsOnSlide)
+                        if (GunType.getAttachment(item, AttachmentPresetEnum.Sight) == null && model.config.attachments.scopeIsOnSlide)
                             model.renderPart("defaultScopeModel", worldScale);
 
                         //Render the scope on the slide, if its set on slide
@@ -647,7 +652,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                         GL11.glRotatef(breakProgress * -breakAction.angle, 0F, 0F, 1F);
                         GL11.glTranslatef(-breakAction.breakPoint.x, -breakAction.breakPoint.y, -breakAction.breakPoint.z);
                         model.renderPart(breakAction.modelName, worldScale);
-                        if (GunType.getAttachment(item, AttachmentEnum.Sight) == null && model.config.breakAction.scopeIsOnBreakAction && breakAction.scopePart)
+                        if (GunType.getAttachment(item, AttachmentPresetEnum.Sight) == null && model.config.breakAction.scopeIsOnBreakAction && breakAction.scopePart)
                             model.renderPart("defaultScopeModel", worldScale);
                     }
                     GL11.glPopMatrix();
@@ -921,9 +926,9 @@ public class RenderGunStatic extends CustomItemRenderer {
 
                 boolean shouldRenderFlash = true;
 
-                if ((GunType.getAttachment(item, AttachmentEnum.Barrel) != null)) {
-                    AttachmentType attachmentType = ((ItemAttachment) GunType.getAttachment(item, AttachmentEnum.Barrel).getItem()).type;
-                    if (attachmentType.attachmentType == AttachmentEnum.Barrel) {
+                if ((GunType.getAttachment(item, AttachmentPresetEnum.Barrel) != null)) {
+                    AttachmentType attachmentType = ((ItemAttachment) GunType.getAttachment(item, AttachmentPresetEnum.Barrel).getItem()).type;
+                    if (attachmentType.attachmentType == AttachmentPresetEnum.Barrel) {
                         shouldRenderFlash = !attachmentType.barrel.hideFlash;
                     }
                 }
@@ -969,7 +974,7 @@ public class RenderGunStatic extends CustomItemRenderer {
 
                 GL11.glPushMatrix();
                 {
-                    for (AttachmentEnum attachment : AttachmentEnum.values()) {
+                    for (AttachmentPresetEnum attachment : AttachmentPresetEnum.values()) {
                         ItemStack itemStack = GunType.getAttachment(item, attachment);
                         if (itemStack != null && itemStack.getItem() != Items.AIR) {
                             AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
@@ -1020,7 +1025,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                                         bindTexture("attachments", path);
                                     }
 
-                                    if (attachmentType.attachmentType == AttachmentEnum.Sight && model.config.attachments.scopeIsOnSlide) {
+                                    if (attachmentType.attachmentType == AttachmentPresetEnum.Sight && model.config.attachments.scopeIsOnSlide) {
                                         float currentCharge = currentReloadState.isPresent() ? (currentReloadState.get().stateType == StateType.Charge || currentReloadState.get().stateType == StateType.Uncharge) ? currentReloadState.get().currentValue : 1f : 1f;
                                         float lastCharge = currentReloadState.isPresent() ? (currentReloadState.get().stateType == StateType.Charge || currentReloadState.get().stateType == StateType.Uncharge) ? currentReloadState.get().lastValue : 1f : 1f;
                                         if (!anim.isGunEmpty) {
@@ -1032,7 +1037,7 @@ public class RenderGunStatic extends CustomItemRenderer {
                                     }
 
                                     attachmentModel.renderAttachment(worldScale);
-                                    if (attachmentType.attachmentType == AttachmentEnum.Sight && mc.gameSettings.thirdPersonView == 0 && renderType == CustomItemRenderType.EQUIPPED_FIRST_PERSON) {
+                                    if (attachmentType.attachmentType == AttachmentPresetEnum.Sight && mc.gameSettings.thirdPersonView == 0 && renderType == CustomItemRenderType.EQUIPPED_FIRST_PERSON) {
                                         boolean glowTxtureMode=ObjModelRenderer.glowTxtureMode;
                                         ObjModelRenderer.glowTxtureMode = false;
                                         renderScopeGlass(attachmentType, attachmentModel, adsSwitch != 0F);
@@ -1130,7 +1135,7 @@ public class RenderGunStatic extends CustomItemRenderer {
         Vector3f leftArmOffset = new Vector3f(0, 0, 0);
         if (player.getHeldItemMainhand() != null) {
             if (player.getHeldItemMainhand().getItem() instanceof ItemGun) {
-                ItemStack itemStack = GunType.getAttachment(player.getHeldItemMainhand(), AttachmentEnum.Grip);
+                ItemStack itemStack = GunType.getAttachment(player.getHeldItemMainhand(), AttachmentPresetEnum.Grip);
                 if (itemStack != null && itemStack.getItem() != Items.AIR) {
                     ItemAttachment itemAttachment = (ItemAttachment) itemStack.getItem();
                     leftArmOffset = ((ModelAttachment) itemAttachment.type.model).config.grip.leftArmOffset;
@@ -1289,62 +1294,92 @@ public class RenderGunStatic extends CustomItemRenderer {
 
     @SideOnly(Side.CLIENT)
     public void renderScopeGlass(AttachmentType attachmentType, ModelAttachment modelAttachment, boolean isAiming) {
-        if (attachmentType.sight.scopeType != WeaponScopeType.REDDOT) {
+        if(ScopeUtils.isIndsideGunRendering) {
+            return;
+        }
 
-            if (Minecraft.getMinecraft().world != null) {
-                float gunRotX = RenderParameters.GUN_ROT_X_LAST + (RenderParameters.GUN_ROT_X - RenderParameters.GUN_ROT_X_LAST) * this.timer.renderPartialTicks;
-                if (isAiming&&(ClientProxy.scopeUtils.blurFramebuffer!=null||!ModConfig.INSTANCE.hud.ads_blur)) {
-                    Minecraft mc=Minecraft.getMinecraft();
-                    boolean blurFlag=false;
-                    if(!OptifineHelper.isShadersEnabled()&&ModConfig.INSTANCE.hud.ads_blur) {
-                        blurFlag=true;
-                    }
-                    if(blurFlag) {
-                        ClientProxy.scopeUtils.blurFramebuffer.framebufferClear();
-                        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, mc.getFramebuffer().framebufferObject);
-                        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, ClientProxy.scopeUtils.blurFramebuffer.framebufferObject);
-                        GL30.glBlitFramebuffer(0, 0, mc.displayWidth, mc.displayHeight, 0, 0, mc.displayWidth, mc.displayHeight, GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
-                        ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);  
-                    }
-                    GL11.glPushMatrix();
-                    renderWorldOntoScope(attachmentType, modelAttachment);
-
-                    /** Render Overlay when moving too fast **/
-                    float alpha = 1f;
-                    if (adsSwitch < 1.0f) {
-                        alpha = 1 - adsSwitch;
-                    } else {
-                        alpha = gunRotX;
-                        alpha = Math.abs(alpha / 8);
-                    }
-
-                    GlStateManager.disableLighting();
-                    if(blurFlag) {
-                    GlStateManager.colorMask(true, true, true, false);
-                    }
-                    GlStateManager.depthMask(false);
-                    GlStateManager.enableBlend();
-                    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-
-                    GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
-                    renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
-                    modelAttachment.renderOverlay(0.0625f);
-                    GlStateManager.disableBlend();
-                    GlStateManager.colorMask(true, true, true, true);
-                    GlStateManager.depthMask(true);
-                    GlStateManager.enableLighting();
-                    GL11.glPopMatrix();
-                    if(blurFlag) {
-                        mc.getFramebuffer().bindFramebuffer(false);  
-                    }
-                } else {
-                    GL11.glPushMatrix();
-                    renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
-                    modelAttachment.renderOverlay(0.0625f);
-                    GL11.glPopMatrix();
+        if (Minecraft.getMinecraft().world != null) {
+            float gunRotX = RenderParameters.GUN_ROT_X_LAST + (RenderParameters.GUN_ROT_X - RenderParameters.GUN_ROT_X_LAST) * this.timer.renderPartialTicks;
+            if (isAiming&&(ClientProxy.scopeUtils.blurFramebuffer!=null||!ModConfig.INSTANCE.hud.ads_blur)) {
+                if(OptifineHelper.isShadersEnabled()) {
+                    Shaders.pushProgram();  
                 }
+                Minecraft mc=Minecraft.getMinecraft();
+                
+                GL20.glUseProgram(Programs.overlayProgram);
+                GL20.glUniform2f(GL20.glGetUniformLocation(Programs.overlayProgram, "size"), mc.displayWidth,mc.displayHeight);
+                
+                GL11.glPushMatrix();
+                
+                int tex=ClientProxy.scopeUtils.blurFramebuffer.framebufferTexture;
+                ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
+                GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, ScopeUtils.OVERLAY_TEX, 0);
+                GlStateManager.clearColor(0, 0, 0, 0);
+                GL11.glClearColor(0, 0, 0, 0);
+                GlStateManager.colorMask(true, true, true, true);
+                GlStateManager.depthMask(true);
+                GlStateManager.clear (GL11.GL_DEPTH_BUFFER_BIT);
+                copyDepthBuffer();
+                ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
+                GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
+                
+                /** Render Overlay when moving too fast **/
+                float alpha = 1 - adsSwitch;
+                
+                GlStateManager.disableLighting();
+                GlStateManager.enableBlend();
+                GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ZERO);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                modelAttachment.renderOverlaySolid(0.0625f);
+                
+                GL20.glUseProgram(0);
+                if(OptifineHelper.isShadersEnabled()) {
+                    Shaders.popProgram();  
+                }
+                
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, alpha);
+                if(attachmentType.sight.usedDefaultOverlayModelTexture) {
+                    renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));  
+                }
+                modelAttachment.renderOverlay(0.0625f);
+                GlStateManager.disableBlend();
+                GlStateManager.enableLighting();
+                
+                GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, tex, 0);
+                GlStateManager.clear (GL11.GL_DEPTH_BUFFER_BIT);
+                copyDepthBuffer();
+                ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
+                GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                
+                GlStateManager.disableBlend();
+                renderWorldOntoScope(attachmentType, modelAttachment);
+                GlStateManager.enableBlend();
+                
+                OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, OptifineHelper.getDrawFrameBuffer());  
+                
+                GL11.glPopMatrix();
+                
+            } else {
+                GL11.glPushMatrix();
+                renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
+                modelAttachment.renderOverlay(0.0625f);
+                GL11.glPopMatrix();
             }
         }
+        
+    }
+    
+    public void copyDepthBuffer() {
+        Minecraft mc=Minecraft.getMinecraft();
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, OptifineHelper.getDrawFrameBuffer());
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, ClientProxy.scopeUtils.blurFramebuffer.framebufferObject);
+        GlStateManager.colorMask(false,false,false,false);
+        GL30.glBlitFramebuffer(0, 0, mc.displayWidth, mc.displayHeight, 0, 0, mc.displayWidth, mc.displayHeight, GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
+        GlStateManager.colorMask(true,true,true,true);
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, GL11.GL_NONE);
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, GL11.GL_NONE);
     }
 
 
@@ -1353,7 +1388,7 @@ public class RenderGunStatic extends CustomItemRenderer {
         GL11.glPushMatrix();
 
         if (isLightOn) {
-            GlStateManager.bindTexture(ScopeUtils.MIRROR_TEX);
+            renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
             GL11.glDisable(2896);
             Minecraft.getMinecraft().entityRenderer.disableLightmap();
             ModelGun.glowOn(1);
@@ -1362,7 +1397,7 @@ public class RenderGunStatic extends CustomItemRenderer {
             GL11.glEnable(2896);
             Minecraft.getMinecraft().entityRenderer.enableLightmap();
         } else {
-            GlStateManager.bindTexture(ScopeUtils.MIRROR_TEX);
+            renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
             ModelGun.glowOn(1);
             modelAttachment.renderScope(0.0625f);
             ModelGun.glowOff();
@@ -1371,7 +1406,7 @@ public class RenderGunStatic extends CustomItemRenderer {
         if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && mc.gameSettings.thirdPersonView == 0) {
             if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                 final ItemStack gunStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
-                if (GunType.getAttachment(gunStack, AttachmentEnum.Flashlight) != null) {
+                if (GunType.getAttachment(gunStack, AttachmentPresetEnum.Flashlight) != null) {
                     if (isLightOn) {
                         GL11.glDisable(2896);
                         Minecraft.getMinecraft().entityRenderer.disableLightmap();

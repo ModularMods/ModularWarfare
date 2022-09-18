@@ -78,13 +78,13 @@ public class GunUI {
                         }
                         RenderHitMarker(Tessellator.getInstance(), width, height);
                         RenderPlayerSnap(width, height);
-                        if (mc.gameSettings.thirdPersonView == 0 && ClientRenderHooks.isAimingScope && RenderParameters.collideFrontDistance <= 0.025f) {
+                        if (mc.gameSettings.thirdPersonView == 0 && (ClientRenderHooks.isAimingScope||ClientRenderHooks.isAiming) && RenderParameters.collideFrontDistance <= 0.025f) {
                             if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                                 final ItemStack gunStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
-                                if (GunType.getAttachment(gunStack, AttachmentEnum.Sight) != null) {
-                                    final ItemAttachment itemAttachment = (ItemAttachment) GunType.getAttachment(gunStack, AttachmentEnum.Sight).getItem();
+                                if (GunType.getAttachment(gunStack, AttachmentPresetEnum.Sight) != null) {
+                                    final ItemAttachment itemAttachment = (ItemAttachment) GunType.getAttachment(gunStack, AttachmentPresetEnum.Sight).getItem();
                                     if (itemAttachment != null) {
-                                        if (itemAttachment.type.sight.scopeType != null) {
+                                        if (itemAttachment.type.sight.modeType != null) {
 
                                             float gunRotX = RenderParameters.GUN_ROT_X_LAST + (RenderParameters.GUN_ROT_X - RenderParameters.GUN_ROT_X_LAST) * ClientProxy.renderHooks.partialTicks;
                                             float gunRotY = RenderParameters.GUN_ROT_Y_LAST + (RenderParameters.GUN_ROT_Y - RenderParameters.GUN_ROT_Y_LAST) * ClientProxy.renderHooks.partialTicks;
@@ -98,7 +98,7 @@ public class GunUI {
                                                 GL11.glRotatef(gunRotX, 0, -1, 0);
                                                 GL11.glRotatef(gunRotY, 0, 0, -1);
 
-                                                if (itemAttachment.type.sight.scopeType == WeaponScopeType.REDDOT) {
+                                                if (itemAttachment.type.sight.modeType.isDot) {
                                                     switch (itemAttachment.type.sight.dotColorType) {
                                                         case RED:
                                                             mc.renderEngine.bindTexture(reddot);
@@ -116,7 +116,6 @@ public class GunUI {
                                                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1 - alpha);
                                                     Gui.drawModalRectWithCustomSizedTexture(width / 2, height / 2, 2.0f, 2.0f, 1, 1, 16.0f, 16.0f);
                                                 } else {
-                                                    if (!OptifineHelper.isShadersEnabled()) {
                                                         ResourceLocation overlayToRender = itemAttachment.type.sight.overlayType.resourceLocations.get(0);
 
                                                         float factor = 1;
@@ -124,11 +123,16 @@ public class GunUI {
                                                             factor = 2;
                                                         }
                                                         int size = (32 * 2 / (int) (event.getResolution().getScaleFactor() * factor)) + ((int) (crouchSwitch) * 5);
-                                                        size = (int) (((size * (1 + (playerRecoilYaw > 0.8 ? playerRecoilYaw : 0) * 0.2))) * ((ModelAttachment) itemAttachment.type.model).config.sight.rectileScale);
-                                                        GL11.glTranslatef((width / 2 - size), (height / 2 - size), 0);
+                                                        float scale=Math.abs(playerRecoilYaw)+Math.abs(playerRecoilPitch);
+                                                        scale*=((ModelAttachment) itemAttachment.type.model).config.sight.factorCrossScale;
+                                                        size = (int) (((size * (1 + (scale > 0.8 ? scale : 0) * 0.2))) * ((ModelAttachment) itemAttachment.type.model).config.sight.rectileScale);
+                                                        GL11.glTranslatef((width / 2), (height / 2), 0);
+                                                        if(!itemAttachment.type.sight.plumbCrossHair) {
+                                                            GlStateManager.rotate(CROSS_ROTATE,0,0,1);  
+                                                        }
+                                                        GL11.glTranslatef(-size, -size, 0);
                                                         GL11.glTranslatef((VAL2 / 10), (VAL / 10), 0);
                                                         RenderHelperMW.renderImageAlpha(0, 0, overlayToRender, size * 2, size * 2, 1f - alpha);
-                                                    }
                                                 }
 
                                                 GL11.glPopMatrix();
@@ -244,11 +248,11 @@ public class GunUI {
                             if(anim.reloading) {
                                 bulletStack=ClientProxy.gunEnhancedRenderer.controller.getRenderAmmo(bulletStack);
                                 if(ClientProxy.gunEnhancedRenderer.controller.getPlayingAnimation() ==AnimationType.POST_UNLOAD) {
-                                    flag=false;
+                                    //flag=false;
                                 }
                             }
                             bulletStack.setItemDamage(0);
-                            int offset = anim.getAmmoCountOffset();
+                            int offset = anim.getAmmoCountOffset(false);
                             if(!anim.reloading) {
                                 offset=0;
                             }
@@ -324,7 +328,7 @@ public class GunUI {
         final int bottom = top + 22;
         /** If gun use bullets **/
         ItemBullet itemBullet = null;
-        if (expectItemBullet.getItem() instanceof ItemBullet) {
+        if (expectItemBullet!=null && expectItemBullet.getItem() instanceof ItemBullet) {
             itemBullet = (ItemBullet) expectItemBullet.getItem();
         }
         if (itemBullet == null) {
@@ -387,8 +391,8 @@ public class GunUI {
             return;
         itemRenderer.renderItemIntoGUI(itemstack, i, j);
         itemRenderer.renderItemOverlayIntoGUI(fontRenderer, itemstack, i, j, null); //May be something other than null
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
         GlStateManager.disableBlend();
         GlStateManager.disableAlpha();
         GL11.glPopMatrix();

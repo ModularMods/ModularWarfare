@@ -6,20 +6,25 @@ import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
 import com.modularwarfare.common.textures.TextureEnumType;
 import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
+
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class AttachmentType extends BaseType {
 
-    public AttachmentEnum attachmentType;
+    public AttachmentPresetEnum attachmentType;
 
     public Grip grip = new Grip();
 
     public Barrel barrel = new Barrel();
 
     public Sight sight = new Sight();
+    
+    public Stock stock = new Stock();
 
     public boolean sameTextureAsGun = false;
+    
 
 
     @Override
@@ -46,6 +51,7 @@ public class AttachmentType extends BaseType {
     @Override
     public void reloadModel() {
         model = new ModelAttachment(ModularWarfare.getRenderConfig(this, AttachmentRenderConfig.class), this);
+        ((ModelAttachment)model).config.init();
     }
 
     @Override
@@ -54,11 +60,15 @@ public class AttachmentType extends BaseType {
     }
 
     public static class Sight {
-        public WeaponScopeType scopeType = WeaponScopeType.DEFAULT;
+        //public WeaponScopeType scopeType = WeaponScopeType.DEFAULT;
         public WeaponDotColorType dotColorType = WeaponDotColorType.RED;
+        public WeaponScopeModeType modeType = WeaponScopeModeType.NORMAL;
 
         public String customOverlayTexture;
         public transient TextureType overlayType;
+        public boolean plumbCrossHair = false;
+        
+        public boolean usedDefaultOverlayModelTexture=true;
     }
 
     public static class Barrel {
@@ -72,6 +82,10 @@ public class AttachmentType extends BaseType {
     public static class Grip {
         public float recoilPitchFactor = 1.0f;
         public float recoilYawFactor = 1.0f;
+    }
+    
+    public static class Stock{
+        
     }
 
 }

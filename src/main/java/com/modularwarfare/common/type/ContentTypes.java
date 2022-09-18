@@ -57,8 +57,11 @@ public class ContentTypes {
         registerType("attachments", AttachmentType.class, (type, reload) -> {
             ContentTypes.<AttachmentType, ItemAttachment>assignType(ModularWarfare.attachmentTypes, ItemAttachment.factory, (AttachmentType) type, reload);
 
-            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+            if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
                 ((ModelAttachment) (type.model)).config = ModularWarfare.getRenderConfig(type, AttachmentRenderConfig.class);
+                ((ModelAttachment) (type.model)).config.init();
+            }
+                
         });
 
         registerType("armor", ArmorType.class, (type, reload) -> {

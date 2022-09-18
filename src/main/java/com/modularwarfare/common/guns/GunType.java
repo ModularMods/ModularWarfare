@@ -39,7 +39,8 @@ public class GunType extends BaseType {
      */
     public WeaponType weaponType;
 
-    public WeaponScopeType scopeType = WeaponScopeType.DEFAULT;
+    //public WeaponScopeType scopeType = WeaponScopeType.DEFAULT;
+    public WeaponScopeModeType scopeModeType = WeaponScopeModeType.SIMPLE;
 
     public WeaponAnimationType animationType = WeaponAnimationType.BASIC;
 
@@ -68,6 +69,12 @@ public class GunType extends BaseType {
      * The number of bullet entities created by each shot
      */
     public int numBullets = 1;
+    
+    /**
+     * 卸子弹时,要求客户端少播放unload动画的次数。
+     * Reduce the actual playing times of unload animation on the client.
+     * */
+    public int modifyUnloadBullets = 0;
 
     /**
      * The amount that bullets spread out when fired from this gun
@@ -129,7 +136,7 @@ public class GunType extends BaseType {
     /**
      * Attachment Types
      */
-    public HashMap<AttachmentEnum, ArrayList<String>> acceptedAttachments;
+    public HashMap<AttachmentPresetEnum, ArrayList<String>> acceptedAttachments;
 
     // Reload Variables
     /**
@@ -146,6 +153,8 @@ public class GunType extends BaseType {
      * Ammo types which can be used in the gun
      */
     public String[] acceptedAmmo;
+    
+    public int chamberCapacity = 1;
 
     public boolean dropBulletCasing = true;
 
@@ -234,7 +243,7 @@ public class GunType extends BaseType {
         }
     }
 
-    public static ItemStack getAttachment(ItemStack heldStack, AttachmentEnum type) {
+    public static ItemStack getAttachment(ItemStack heldStack, AttachmentPresetEnum type) {
         if (heldStack.getTagCompound() != null) {
             NBTTagCompound nbtTagCompound = heldStack.getTagCompound();
             return nbtTagCompound.hasKey("attachment_" + type.typeName) ? new ItemStack(nbtTagCompound.getCompoundTag("attachment_" + type.typeName)) : null;
@@ -242,14 +251,14 @@ public class GunType extends BaseType {
         return null;
     }
 
-    public static void addAttachment(ItemStack heldStack, AttachmentEnum type, ItemStack attachment) {
+    public static void addAttachment(ItemStack heldStack, AttachmentPresetEnum type, ItemStack attachment) {
         if (heldStack.getTagCompound() != null) {
             NBTTagCompound nbtTagCompound = heldStack.getTagCompound();
             nbtTagCompound.setTag("attachment_" + type.typeName, attachment.writeToNBT(new NBTTagCompound()));
         }
     }
 
-    public static void removeAttachment(ItemStack heldStack, AttachmentEnum type) {
+    public static void removeAttachment(ItemStack heldStack, AttachmentPresetEnum type) {
         if (heldStack.getTagCompound() != null) {
             NBTTagCompound nbtTagCompound = heldStack.getTagCompound();
             nbtTagCompound.removeTag("attachment_" + type.typeName);
@@ -358,7 +367,7 @@ public class GunType extends BaseType {
                 World world = entityPlayer.world;
                 Random random = new Random();
                 for (SoundEntry soundEntry : weaponSoundMap.get(weaponSoundType)) {
-                    int soundRange = soundEntry.soundRange != null ? soundEntry.soundRange : weaponSoundType.defaultRange;
+                    float soundRange = soundEntry.soundRange != null ? soundEntry.soundRange : weaponSoundType.defaultRange;
                     if (soundEntry.soundNameDistant != null && soundEntry.soundMaxRange != null) {
                         int maxSoundRange = soundEntry.soundMaxRange;
                         for (EntityPlayer hearingPlayer : world.getEntities(EntityPlayer.class, e -> e.getPosition().getDistance(originPos.getX(), originPos.getY(), originPos.getZ()) <= maxSoundRange)) {
