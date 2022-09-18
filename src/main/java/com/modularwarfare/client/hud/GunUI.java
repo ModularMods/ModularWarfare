@@ -58,9 +58,13 @@ public class GunUI {
 
     @SubscribeEvent
     public void onRenderPre(RenderGameOverlayEvent.Pre event) {
-        GlStateManager.pushMatrix();
-        Minecraft mc = Minecraft.getMinecraft();
         if (event.isCancelable()) {
+            Minecraft mc = Minecraft.getMinecraft();
+            if (mc.getRenderViewEntity() != mc.player) {
+                return;
+            }
+
+            GlStateManager.pushMatrix();
             int width = event.getResolution().getScaledWidth();
             int height = event.getResolution().getScaledHeight();
             ItemStack stack = mc.player.getHeldItemMainhand();
@@ -131,6 +135,8 @@ public class GunUI {
                                                             GlStateManager.rotate(CROSS_ROTATE,0,0,1);  
                                                         }
                                                         GL11.glTranslatef(-size, -size, 0);
+                                                        size = (int) (((size * (1 + (playerRecoilYaw > 0.8 ? playerRecoilYaw : 0) * 0.2))) * ((ModelAttachment) itemAttachment.type.model).config.sight.rectileScale);
+                                                        GL11.glTranslatef((width / 2 - size), (height / 2 - size), 0);
                                                         GL11.glTranslatef((VAL2 / 10), (VAL / 10), 0);
                                                         RenderHelperMW.renderImageAlpha(0, 0, overlayToRender, size * 2, size * 2, 1f - alpha);
                                                 }
@@ -153,8 +159,8 @@ public class GunUI {
                                 showCrosshair = false;
                             }
                         }
-                        if (ModConfig.INSTANCE.hud.enable_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && showCrosshair && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
-                            if(RenderParameters.collideFrontDistance <= 0.2f) {
+                        if (ModConfig.INSTANCE.hud.dynamic_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && adsSwitch < 0.6F && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
+                            if (RenderParameters.collideFrontDistance <= 0.2f) {
                                 GlStateManager.pushMatrix();
 
                                 if(ModConfig.INSTANCE.hud.dynamic_crosshair) {
@@ -188,7 +194,6 @@ public class GunUI {
                                 GlStateManager.popMatrix();
                             }
                         }
-                        GlStateManager.popMatrix();
                         break;
                     default:
                         break;
@@ -408,11 +413,9 @@ public class GunUI {
     private void drawSlotInventory(FontRenderer fontRenderer, ItemStack itemstack, int i, int j) {
         if (itemstack == null || itemstack.isEmpty())
             return;
-
         GL11.glPushMatrix();
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
-
         itemRenderer.renderItemIntoGUI(itemstack, i, j);
         itemRenderer.renderItemOverlayIntoGUI(fontRenderer, itemstack, i, j, null); //May be something other than null
         GlStateManager.disableLighting();
