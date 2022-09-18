@@ -660,9 +660,12 @@ public class PacketGunReload extends PacketBase {
                 if (bulletCount != null && bulletCount > 0) {
                     WeaponReloadEvent.Post postReloadEvent = new WeaponReloadEvent.Post(entityPlayer, gunStack, itemGun, false, false, true, preReloadEvent.getReloadTime(), bulletCount);
                     MinecraftForge.EVENT_BUS.post(postReloadEvent);
-
+                    
+                    /*
                     if (postReloadEvent.isUnload())
                         gunType.playSound(entityPlayer, WeaponSoundType.Unload, gunStack);
+                    */
+                    
                     int reloadType = (postReloadEvent.isLoadOnly() ? ReloadType.Load : postReloadEvent.isUnload() ? ReloadType.Unload : ReloadType.Full).i;
                     ServerTickHandler.reloadEnhancedTask.put(entityPlayer.getUniqueID(), new DataGunReloadEnhancedTask(entityPlayer.inventory.currentItem,gunStack,true,bulletCount));
                     ModularWarfare.NETWORK.sendTo(new PacketGunReloadEnhancedTask(UNLOAD_EMPTY), entityPlayer);
@@ -838,11 +841,13 @@ public class PacketGunReload extends PacketBase {
             MinecraftForge.EVENT_BUS.post(postReloadEvent);
             int reloadType = (postReloadEvent.isLoadOnly() ? ReloadType.Load : postReloadEvent.isUnload() ? ReloadType.Unload : ReloadType.Full).i;
             
+            /*
             if (postReloadEvent.isLoadOnly()) {
                 gunType.playSound(entityPlayer, WeaponSoundType.Load, gunStack);
             } else if (!postReloadEvent.isLoadOnly() && !postReloadEvent.isUnload()) {
                 gunType.playSound(entityPlayer, WeaponSoundType.Reload, gunStack);
             }
+            */
             
             ServerTickHandler.playerReloadCooldown.put(entityPlayer.getUniqueID(), reloadTime);
             ServerTickHandler.reloadEnhancedTask.put(entityPlayer.getUniqueID(), new DataGunReloadEnhancedTask(entityPlayer.inventory.currentItem,gunStack, loadingItemStack.copy(),postReloadEvent.getReloadCount(),ammoStackToLoad==currentAmmoToLoad,ammoStackToLoad==multiAmmoToLoad,multiMagToLoad));
@@ -859,9 +864,12 @@ public class PacketGunReload extends PacketBase {
                 WeaponReloadEvent.Post postReloadEvent = new WeaponReloadEvent.Post(entityPlayer, gunStack, itemGun, false, false, false, true, preReloadEvent.getReloadTime());
                 MinecraftForge.EVENT_BUS.post(postReloadEvent);
 
+                /*
                 if (postReloadEvent.isUnload()) {
                     gunType.playSound(entityPlayer, WeaponSoundType.Unload, gunStack);
                 }
+                */
+                
                 int reloadType = (postReloadEvent.isLoadOnly() ? ReloadType.Load : postReloadEvent.isUnload() ? ReloadType.Unload : ReloadType.Full).i;
                 ServerTickHandler.reloadEnhancedTask.put(entityPlayer.getUniqueID(), new DataGunReloadEnhancedTask(entityPlayer.inventory.currentItem,gunStack,true));
                 ModularWarfare.NETWORK.sendTo(new PacketGunReloadEnhancedTask(UNLOAD_EMPTY), entityPlayer);

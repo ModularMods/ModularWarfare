@@ -9,6 +9,7 @@ import com.modularwarfare.client.gui.customization.containers.ContainerGunParts;
 import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.shader.ProjectionHelper;
 import com.modularwarfare.common.guns.ItemGun;
+import com.modularwarfare.common.guns.WeaponAnimationType;
 import com.modularwarfare.utility.ColorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -120,10 +121,9 @@ public class GuiMainScreen extends GuiMWScreen {
                 GlStateManager.scale(200F, 200F, 200F);
 
                 IMWModel model=null;
-                if(gun.type.model!=null) {
+                if(gun.type.animationType.equals(WeaponAnimationType.BASIC)) {
                     model=gun.type.model;
-                }
-                if(gun.type.enhancedModel!=null) {
+                }else {
                     model = gun.type.enhancedModel;
                 }
                 

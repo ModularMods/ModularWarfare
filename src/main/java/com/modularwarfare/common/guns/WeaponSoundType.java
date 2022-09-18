@@ -25,10 +25,18 @@ public enum WeaponSoundType {
      */
     @SerializedName("weaponFireLast") FireLast("weaponFireLast", 16, null),
 
+    @SerializedName("weaponPreReload") PreReload("weaponPreReload", 16, null),
+    
     /**
      * The sound to play upon reloading
      */
     @SerializedName("weaponReload") Reload("weaponReload", 16, "reload"),
+    
+    @SerializedName("weaponReloadSecond") ReloadSecond("weaponReloadSecond", 16, null),
+    
+    @SerializedName("weaponPostReload") PostReload("weaponPostReload", 16, null),
+    
+    @SerializedName("weaponPostReloadEmpty") PostReloadEmpty("weaponPostReloadEmpty", 16, null),
 
     /**
      * The sound to play upon reloading
@@ -60,15 +68,23 @@ public enum WeaponSoundType {
      */
     @SerializedName("penetration") Penetration("penetration", 20, "penetration"),
 
+    @SerializedName("weaponPreLoad") PreLoad("weaponPreLoad", 12, null),
+    
     /**
      * The sound to play upon reloading
      */
     @SerializedName("weaponLoad") Load("weaponLoad", 12, "load"),
+    
+    @SerializedName("weaponPostLoad") PostLoad("weaponPostLoad", 12, null),
 
+    @SerializedName("weaponPreUnload") PreUnload("weaponPreUnload", 12, null),
+    
     /**
      * The sound to play upon reloading
      */
     @SerializedName("weaponUnload") Unload("weaponUnload", 12, "unload"),
+    
+    @SerializedName("weaponPostUnload") PostUnload("weaponPostUnload", 12, null),
 
     /**
      * The sound to play upon reloading when empty

@@ -103,6 +103,7 @@ public class ModelGun extends MWModelBase {
     }
 
     public static void glowOff() {
+        RenderHelper.enableStandardItemLighting();
         if (!optifineBreak) {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
         }

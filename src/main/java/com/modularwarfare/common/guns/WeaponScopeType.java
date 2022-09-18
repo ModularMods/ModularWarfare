@@ -2,6 +2,11 @@ package com.modularwarfare.common.guns;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * WTF???
+ * R.I.P
+ * */
+@Deprecated
 public enum WeaponScopeType {
 
     @SerializedName("default") DEFAULT,

@@ -143,13 +143,13 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
 
                     boolean hasScopeAttachment = false;
                     GlStateManager.pushMatrix();
-                    for (AttachmentEnum attachment : AttachmentEnum.values()) {
+                    for (AttachmentPresetEnum attachment : AttachmentPresetEnum.values()) {
                         GlStateManager.pushMatrix();
                         ItemStack itemStack = GunType.getAttachment(itemstack, attachment);
                         if (itemStack != null && itemStack.getItem() != Items.AIR) {
                             AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
                             ModelAttachment attachmentModel = (ModelAttachment) attachmentType.model;
-                            if (attachmentType.attachmentType == AttachmentEnum.Sight)
+                            if (attachmentType.attachmentType == AttachmentPresetEnum.Sight)
                                 hasScopeAttachment = true;
                             if (attachmentModel != null) {
 

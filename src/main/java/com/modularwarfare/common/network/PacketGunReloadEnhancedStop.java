@@ -7,6 +7,7 @@ import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemAmmo;
 import com.modularwarfare.common.guns.ItemBullet;
 import com.modularwarfare.common.guns.ItemGun;
+import com.modularwarfare.common.guns.WeaponAnimationType;
 import com.modularwarfare.common.guns.WeaponSoundType;
 import com.modularwarfare.common.handler.ServerTickHandler;
 import com.modularwarfare.common.handler.data.DataGunReloadEnhancedTask;
@@ -68,7 +69,7 @@ public class PacketGunReloadEnhancedStop extends PacketBase {
                     return;
                 }
                 
-                if (gunType.enhancedModel != null) {
+                if (gunType.animationType.equals(WeaponAnimationType.ENHANCED)) {
                     if (gunType.acceptedAmmo != null) {
                         handleMagGunReloadEnhanced(entityPlayer, gunStack, itemGun, gunType, inventory);
                     } else {

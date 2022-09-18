@@ -417,11 +417,11 @@ public class GuiUtils {
 
         GL11.glPushMatrix();
 
-        GL11.glDepthMask(false);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.depthMask(false);
+        GlStateManager.disableDepth();
         renderPositionedImage(par1, par2, par3, par4, par5, width, height);
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.depthMask(true);
+        GlStateManager.enableDepth();
 
         GL11.glPopMatrix();
 

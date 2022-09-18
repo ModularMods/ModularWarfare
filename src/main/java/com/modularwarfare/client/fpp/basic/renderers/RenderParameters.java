@@ -60,6 +60,8 @@ public class RenderParameters {
     public static float VALROT;
     public static float VALSPRINT;
     public static float VALSPRINT2;
+    
+    public static float CROSS_ROTATE=0;
 
     // Resets render modifiers
     public static void resetRenderMods() {

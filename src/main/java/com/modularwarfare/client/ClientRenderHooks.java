@@ -12,6 +12,9 @@ import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
 import com.modularwarfare.client.fpp.enhanced.animation.EnhancedStateMachine;
 import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
 import com.modularwarfare.client.handler.ClientTickHandler;
+import com.modularwarfare.client.scope.ScopeUtils;
+import com.modularwarfare.client.shader.Programs;
+import com.modularwarfare.client.fpp.basic.models.ModelCustomArmor;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderer;
 import com.modularwarfare.common.armor.ArmorType;
@@ -30,6 +33,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBiped.ArmPose;
@@ -50,10 +54,21 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.optifine.shaders.Shaders;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL21;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.Project;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.HashMap;
 
 public class ClientRenderHooks extends ForgeEvent {
@@ -109,6 +124,9 @@ public class ClientRenderHooks extends ForgeEvent {
             case START: {
                 RenderParameters.smoothing = event.renderTickTime;
                 SetPartialTick(event.renderTickTime);
+                if(!Minecraft.getMinecraft().getFramebuffer().isStencilEnabled()) {
+                    Minecraft.getMinecraft().getFramebuffer().enableStencil();
+                }
                 break;
             }
             case END: {
@@ -160,49 +178,55 @@ public class ClientRenderHooks extends ForgeEvent {
         }
     }
 
+    @SuppressWarnings("unused")
     @SubscribeEvent
-    public void renderHeldItem(RenderSpecificHandEvent event) {
+    public void onRenderHeldItem(RenderSpecificHandEvent event) {
+        event.setCanceled(renderHeldItem(event.getItemStack(), event.getHand(), event.getPartialTicks(),getFOVModifier(event.getPartialTicks())));
+    }
+    
+    public boolean renderHeldItem(ItemStack stack,EnumHand hand,float partialTicksTime,float fov) {
         EntityPlayer player = mc.player;
-        ItemStack stack = event.getItemStack();
+        boolean result=false;
 
         if (stack != null && stack.getItem() instanceof BaseItem) {
             BaseType type = ((BaseItem) stack.getItem()).baseType;
             BaseItem item = ((BaseItem) stack.getItem());
 
-            if (event.getHand() != EnumHand.MAIN_HAND) {
-                event.setCanceled(true);
-                return;
+            if (hand != EnumHand.MAIN_HAND) {
+                result=true;
+                return result;
             }
 
             if (type.id > customRenderers.length)
-                return;
+                return result;
 
             if (item.render3d && customRenderers[type.id] != null && type.hasModel() && !type.getAssetDir().equalsIgnoreCase("attachments")) {
-                //Cancel the hand render event so that we can do our own.
-                event.setCanceled(true);
+                result=true;
 
-                float partialTicks = event.getPartialTicks();
+                float partialTicks = partialTicksTime;
                 EntityRenderer renderer = mc.entityRenderer;
                 float farPlaneDistance = mc.gameSettings.renderDistanceChunks * 16F;
                 ItemRenderer itemRenderer = mc.getItemRenderer();
-
-                if (OptifineHelper.isLoaded()) {
-                    if (!OptifineHelper.isShadersEnabled()) {
-                        GlStateManager.clear(256);
-                        GlStateManager.matrixMode(5889);
-                        GlStateManager.loadIdentity();
-                    }
-                } else {
-                    GlStateManager.clear(256);
-                    GlStateManager.matrixMode(5889);
-                    GlStateManager.loadIdentity();
-                }
-
-                Project.gluPerspective(getFOVModifier(partialTicks), (float) mc.displayWidth / (float) mc.displayHeight, 0.0001F, farPlaneDistance * 2.0F);
-                GlStateManager.matrixMode(5888);
-                GlStateManager.loadIdentity();
-
+                
+                GL11.glDepthRange(0, ModConfig.INSTANCE.hud.handDepthRange);
+                
+                GlStateManager.matrixMode(GL11.GL_PROJECTION);
                 GlStateManager.pushMatrix();
+                GlStateManager.loadIdentity();
+                
+                float zFar=2*farPlaneDistance;
+                Project.gluPerspective(fov, (float) mc.displayWidth / (float) mc.displayHeight, 0.00001F, zFar);
+                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+                GlStateManager.pushMatrix();
+                GlStateManager.loadIdentity();
+                GlStateManager.scale(1 / zFar, 1 / zFar, 1 / zFar);
+                
+                /**
+                 * Fixed the bug gun renders bug
+                 * */
+                if(Double.isNaN(RenderParameters.collideFrontDistance)) {
+                    RenderParameters.collideFrontDistance=0;
+                }
 
                 boolean flag = mc.getRenderViewEntity() instanceof EntityLivingBase && ((EntityLivingBase) mc.getRenderViewEntity()).isPlayerSleeping();
 
@@ -258,86 +282,94 @@ public class ClientRenderHooks extends ForgeEvent {
                                 f10,f11
                         });
                     }
-                    
-                    if (!OptifineHelper.isShadersEnabled()&&ModConfig.INSTANCE.hud.ads_blur) {
-                        ClientProxy.scopeUtils.initBlur();
-                        GlStateManager.pushMatrix();
+                    if(!ScopeUtils.isIndsideGunRendering) {
+                        ClientProxy.scopeUtils.initBlur();  
+                        OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, OptifineHelper.getDrawFrameBuffer());  
+                    }
+                    GlStateManager.pushMatrix();
 
-                        //Check if model is Basic or Enhanced for gun render
-                        if(item instanceof ItemGun) {
-                            if(((GunType)type).animationType.equals(WeaponAnimationType.BASIC)){
-                                customRenderers[1].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
-                            } else{
-                                //客户端预测需要 必须是即时物品
-                                customRenderers[0].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), mc.player.getHeldItemMainhand(), mc.world, mc.player);
-                            }
-                        } else {
-                            customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), stack, mc.world, mc.player);
-                        }
-
-                        boolean needBlur = false;
-                        if(RenderParameters.adsSwitch != 0F) {
-                            if (GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight) != null) {
-                                final ItemAttachment itemAttachment = (ItemAttachment) GunType.getAttachment(mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), AttachmentEnum.Sight).getItem();
-                                if (itemAttachment != null) {
-                                    if (itemAttachment.type != null) {
-                                        if (itemAttachment.type.sight.scopeType != WeaponScopeType.REDDOT) {
-                                            if (!OptifineHelper.isShadersEnabled()) {
-                                                needBlur = true;
-                                                ClientProxy.scopeUtils.renderBlur();
-                                            }
-                                        }
-                                    }
+                    //Check if model is Basic or Enhanced for gun render
+                    if(item instanceof ItemGun) {
+                        if(((GunType)type).animationType.equals(WeaponAnimationType.BASIC)){
+                            customRenderers[1].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, hand, (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
+                        } else{
+                            
+                            //客户端预测需要 必须是即时物品
+                            if (GunType.getAttachment(mc.player.getHeldItemMainhand(), AttachmentPresetEnum.Sight) != null) {
+                                final ItemAttachment itemAttachment = (ItemAttachment) GunType.getAttachment(mc.player.getHeldItemMainhand(), AttachmentPresetEnum.Sight).getItem();
+                                if(itemAttachment.type.sight.modeType.insideGunRendering) {
+                                    renderInsideGun(stack, hand, partialTicksTime, fov);
+                                    GL11.glDepthRange(0, ModConfig.INSTANCE.hud.handDepthRange);
                                 }
                             }
+                            customRenderers[0].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, hand, mc.player.getHeldItemMainhand(), mc.world, mc.player);
+                             
+                            ScopeUtils.needRenderHand1=true;
                         }
-                        GL11.glColor4f(1,1,1,1);
-                        mc.getFramebuffer().bindFramebuffer(false);
-                        GlStateManager.pushMatrix();
-                        ScaledResolution resolution = new ScaledResolution(mc);
-                        
-                        GlStateManager.disableRescaleNormal();
-                        RenderHelper.disableStandardItemLighting();
-                        renderer.disableLightmap();
-                        if (needBlur) {
-                            GlStateManager.enableBlend();
-                            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                            GL11.glColor4f(1,1,1,1);
-                            ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
-                            ClientProxy.scopeUtils.borderBlurShader.render(event.getPartialTicks());
-                            mc.getFramebuffer().bindFramebuffer(false);
-                            ClientProxy.scopeUtils.blurFramebuffer.bindFramebufferTexture();
-                            Minecraft.getMinecraft().entityRenderer.setupOverlayRendering();
-                            ClientProxy.scopeUtils.drawScaledCustomSizeModalRectFlipY(0, 0, 0, 0, 1, 1, resolution.getScaledWidth(), resolution.getScaledHeight(), 1, 1);
-                            GlStateManager.disableBlend();
-                        }
-                        GlStateManager.popMatrix();
-                        
-                        GlStateManager.popMatrix();
-                    }else {
-                        if(item instanceof ItemGun) {
-                            if(((GunType)type).animationType.equals(WeaponAnimationType.BASIC)){
-                                customRenderers[1].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), (ClientTickHandler.lastItemStack.isEmpty() ? stack : ClientTickHandler.lastItemStack), mc.world, mc.player);
-                            } else{
-                                //客户端预测需要 必须是即时物品
-                                customRenderers[0].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), mc.player.getHeldItemMainhand(), mc.world, mc.player);
-                            }
-                        } else {
-                            customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, event.getHand(), stack, mc.world, mc.player);
-                        }
+                    } else {
+                        customRenderers[type.id].renderItem(CustomItemRenderType.EQUIPPED_FIRST_PERSON, hand, stack, mc.world, mc.player);
                     }
-                    GlStateManager.disableRescaleNormal();
-                    RenderHelper.disableStandardItemLighting();
-                    renderer.disableLightmap();
+                    
+                    GlStateManager.popMatrix();
+                    
                     GlStateManager.popMatrix();
                 }
+                
+                GlStateManager.matrixMode(GL11.GL_PROJECTION);
                 GlStateManager.popMatrix();
-
+                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+                GlStateManager.popMatrix();
+                
+                GL11.glDepthRange(0, 1);
                 if (mc.gameSettings.thirdPersonView == 0 && !flag) {
-                    itemRenderer.renderOverlays(partialTicks);
+                    if(!ScopeUtils.isIndsideGunRendering) {
+                        itemRenderer.renderOverlays(partialTicks);  
+                    }
                 }
+                
             }
         }
+        return result;
+    }
+    
+    public void renderInsideGun(ItemStack stack,EnumHand hand,float partialTicksTime,float fov) {
+        if(ScopeUtils.isIndsideGunRendering) {
+            return;
+        }
+        if(!ScopeUtils.isRenderHand0&&OptifineHelper.isShadersEnabled()) {
+            return;
+        }
+        ScopeUtils.isIndsideGunRendering=true;
+        
+        int tex=ClientProxy.scopeUtils.blurFramebuffer.framebufferTexture;
+        ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
+        GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, ScopeUtils.INSIDE_GUN_TEX, 0);
+        GlStateManager.clearColor(0, 0, 0, 0);
+        GL11.glClearColor(0, 0, 0, 0);
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.depthMask(true);
+        GlStateManager.clear (GL11.GL_DEPTH_BUFFER_BIT);
+        copyDepthBuffer();
+        ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
+        GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
+        renderHeldItem(stack, hand, partialTicksTime, fov);
+        ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
+        GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, tex, 0);
+        ClientProxy.scopeUtils.blurFramebuffer.framebufferClear();
+        
+        OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, OptifineHelper.getDrawFrameBuffer());  
+        ScopeUtils.isIndsideGunRendering=false;
+    }
+    
+    public void copyDepthBuffer() {
+        Minecraft mc=Minecraft.getMinecraft();
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, OptifineHelper.getDrawFrameBuffer());
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, ClientProxy.scopeUtils.blurFramebuffer.framebufferObject);
+        GlStateManager.colorMask(false,false,false,false);
+        GL30.glBlitFramebuffer(0, 0, mc.displayWidth, mc.displayHeight, 0, 0, mc.displayWidth, mc.displayHeight, GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
+        GlStateManager.colorMask(true,true,true,true);
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, GL11.GL_NONE);
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, GL11.GL_NONE);
     }
 
     public void SetPartialTick(float dT) {
@@ -398,7 +430,7 @@ public class ClientRenderHooks extends ForgeEvent {
                 type = ((ItemSpecialArmor) stack.getItem()).type;
             }
             if (type != null) {
-                ArmorRenderConfig config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
+                ArmorRenderConfig config = ((ModelCustomArmor)type.bipedModel).config;
                 if (config.extra.hidePlayerModel) {
                     boolean hide = true;
                     if (config.extra.isSuit) {

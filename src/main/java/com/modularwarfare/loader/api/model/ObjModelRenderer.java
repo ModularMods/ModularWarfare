@@ -159,13 +159,13 @@ public class ObjModelRenderer {
             glowTxtureMode=false;
             GlStateManager.depthMask(false);
             GlStateManager.enableBlend();
-            GlStateManager.depthFunc(514);
+            GlStateManager.depthFunc(GL11.GL_EQUAL);
             GlStateManager.disableLighting();
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
             render(scale);
             GlStateManager.enableLighting();
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, x, y);
-            GlStateManager.depthFunc(515);
+            GlStateManager.depthFunc(GL11.GL_LEQUAL);
             GlStateManager.disableBlend();
             GlStateManager.depthMask(true);
             glowTxtureMode=true;

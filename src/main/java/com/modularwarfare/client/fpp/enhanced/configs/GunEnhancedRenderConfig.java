@@ -83,6 +83,8 @@ public class GunEnhancedRenderConfig {
         public ArrayList<Transform> multiMagazineTransform;
         public HashSet<String> hidePart=new HashSet<String>();
         public HashSet<String> showPart=new HashSet<String>();
+        public boolean renderInsideSightModel=false;
+        public float renderInsideGunOffset=5;
     }
     
     public static class AttachmentGroup extends Transform {

@@ -38,7 +38,7 @@ public class AnimationController {
     public static double SPRINT;
     public static double SPRINT_LOOP;
     public static double SPRINT_RANDOM;
-    public static double INSPECT;
+    public static double INSPECT=1;
     public static double FIRE;
     public static double MODE_CHANGE;
     
@@ -46,6 +46,7 @@ public class AnimationController {
     public static long sprintLoopCoolTime=0;
 
     public static int oldCurrentItem;
+    public static ItemStack oldItemstack;
     public static boolean isJumping=false;
     
     public static boolean nextResetDefault=false;
@@ -122,8 +123,18 @@ public class AnimationController {
         /** ADS **/
         boolean aimChargeMisc = ClientRenderHooks.getEnhancedAnimMachine(player).reloading;
         double adsSpeed = config.animations.get(AnimationType.AIM).getSpeed(config.FPS) * partialTick;
-        double val = (Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && !aimChargeMisc) ? ADS + adsSpeed : ADS - adsSpeed;
-        ADS = Math.max(0, Math.min(1, val));
+        double val = 0;
+        if(Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && !aimChargeMisc) {
+            val = ADS + adsSpeed * (2 - ADS);
+        } else {
+            val = ADS - adsSpeed * (1 + ADS);
+        }  
+        
+        if(!isDrawing()) {
+            ADS = Math.max(0, Math.min(1, val));
+        }else {
+            ADS = 0;
+        }
         
         if(!anim.shooting) {
             FIRE=0;
@@ -232,6 +243,12 @@ public class AnimationController {
         if(oldCurrentItem != player.inventory.currentItem){
             reset(true);
             oldCurrentItem = player.inventory.currentItem;
+        }
+        if(oldItemstack != player.getHeldItemMainhand()) {
+            if(oldItemstack==null||oldItemstack.isEmpty()) {
+                reset(true);
+            }
+            oldItemstack=player.getHeldItemMainhand();
         }
     }
     
@@ -375,7 +392,7 @@ public class AnimationController {
                     || reloadAni == AnimationType.RELOAD_FIRST || reloadAni == AnimationType.RELOAD_FIRST_QUICKLY)) {
                 return ammo;
             }
-            if (reloadAni == AnimationType.PRE_UNLOAD || reloadAni == AnimationType.UNLOAD) {
+            if (reloadAni == AnimationType.PRE_UNLOAD || reloadAni == AnimationType.UNLOAD|| reloadAni == AnimationType.POST_UNLOAD) {
                 return ammo;
             }  
         }

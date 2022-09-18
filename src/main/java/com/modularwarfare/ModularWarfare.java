@@ -325,7 +325,7 @@ public class ModularWarfare {
                 LOGGER.info("Created ModularWarfare folder, it's recommended to install content packs.");
                 LOGGER.info("As the mod itself doesn't come with any content.");
             }
-            new ModConfig(new File(MOD_DIR, "mod_config.json"));
+            loadConfig();
             DEV_ENV = true;
 
             contentPacks = PROXY.getContentList();
@@ -342,6 +342,10 @@ public class ModularWarfare {
 
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
         MinecraftForge.EVENT_BUS.register(this);
+    }
+    
+    public static void loadConfig() {
+        new ModConfig(new File(MOD_DIR, "mod_config.json"));
     }
 
     /**
