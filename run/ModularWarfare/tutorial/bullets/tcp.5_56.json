@@ -1,0 +1,9 @@
+{
+  "internalName": "tcp.5_56",
+  "maxStackSize": 64,
+  "displayName": "Tutorial 5.56 Bullet",
+  "renderBulletModel": true,
+  "isDynamicBullet": false,
+  "sameTextureAsGun": false,
+  "shellModelFileName": "tcp.5_56_shell.obj"
+}

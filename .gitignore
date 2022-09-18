@@ -22,7 +22,7 @@ eclipse
 run/*
 libs/*
 build.bat
-# !run/ModularWarfare/
+!run/ModularWarfare/
 
 # Files from Forge MDK
 forge*changelog.txt

@@ -1,0 +1,9 @@
+{
+  "internalName": "tcp._45",
+  "maxStackSize": 64,
+  "displayName": "Tutorial .45 ACP Bullet",
+  "renderBulletModel": true,
+  "isDynamicBullet": false,
+  "sameTextureAsGun": false,
+  "shellModelFileName": "tcp._45_shell.obj"
+}

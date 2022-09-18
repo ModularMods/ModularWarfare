@@ -1,0 +1,16 @@
+{
+  "displayName": "Tutorial M24A2 FOV Scope",
+  "internalName": "tcp.scope_m24a2",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "scope_m24a2",
+	  "textures": ["basic","specular","normal"],
+      "displayName": "Default"
+    }
+  ],
+  "sight": {
+	"customOverlayTexture": "prototype.scope8x",
+	"modeType": "normal"
+  }
+}

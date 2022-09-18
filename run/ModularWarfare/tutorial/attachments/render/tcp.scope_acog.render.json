@@ -1,0 +1,20 @@
+{
+  "modelFileName": "scope_acog.obj",
+  "extra": {
+    "modelScale": 1.0
+  },
+  "sight": {
+    "fovZoom": 4.0,
+    "mouseSensitivityFactor": 0.33,
+	"rectileScale": 1.5,
+	
+	"maskTexture": "scope_back_big",
+	"maskSize": 2.7,
+	"uniformMaskRange": 0.3,
+	"uniformDrawRange": 0.353125,
+	"uniformStrength": 3.0,
+	"uniformScaleRangeY": 1.0,
+	"uniformScaleStrengthY": 1.0,
+	"uniformVerticality": 0.0
+  }
+}

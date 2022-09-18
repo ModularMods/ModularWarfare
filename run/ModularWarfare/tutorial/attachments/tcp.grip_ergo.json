@@ -1,0 +1,16 @@
+{
+  "displayName": "Tutorial Ergonomic Foregrip",
+  "internalName": "tcp.grip_ergo",
+  "attachmentType": "grip",
+  "modelSkins": [
+    {
+      "skinAsset": "grip_ergo",
+	  "textures": ["basic","specular","normal"],
+      "displayName": "Default"
+    }
+  ],
+  "grip": {
+    "recoilPitchFactor": 0.5,
+    "recoilYawFactor": 0.5
+  }
+}

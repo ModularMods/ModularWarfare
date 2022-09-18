@@ -1,0 +1,16 @@
+{
+  "displayName": "Tutorial ACOG FOV Scope",
+  "internalName": "tcp.scope_acog",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "scope_acog",
+	  "textures": ["basic","specular","normal"],
+      "displayName": "Default"
+    }
+  ],
+  "sight": {
+	"customOverlayTexture": "prototype.scope4x",
+	"modeType": "normal"
+  }
+}

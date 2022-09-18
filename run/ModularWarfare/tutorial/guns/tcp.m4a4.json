@@ -1,0 +1,98 @@
+{
+    "internalName": "tcp.m4a4",
+    "displayName": "Tutorial M4A4",
+    "weaponType": "carbine",
+	"animationType": "enhanced",
+    "customFlashTexture": "prototype.advanced.flash",
+	
+    "gunDamage": 9,
+    "gunDamageHeadshotBonus": 2,
+    "roundsPerMin": 580,
+	
+    
+    "recoilPitch": 4.0,
+    "recoilYaw": 0.8,
+    "randomRecoilPitch": 0.0,
+    "randomRecoilYaw": 0.8,
+    "bulletSpread": 0.5,
+    "accuracySneakFactor": 0.75,
+	
+	"modifyUnloadBullets": 0,
+	
+    "moveSpeedModifier": 1,
+    "allowSprintFiring": true,
+	
+	"allowReloadFiring": true,
+	"allowReloadSprint": true,
+	"allowFiringSprint": true,
+	"allowAimingSprint": true,
+	
+    "fireModes": [
+        "full",
+        "semi"
+    ],
+    "acceptedAmmo": [
+        "tcp.m4a4ammo"
+    ],
+	"allowEmptyMagazines": true,
+	
+    "dropBulletCasing": true,
+    "shellEjectOffsetNormal": {
+        "x": -1,
+        "y": 0,
+        "z": 1
+    },
+    "shellEjectOffsetAiming": {
+        "x": -0.2,
+        "y": 0.12,
+        "z": 0.5
+    },
+    "weaponSoundMap": {
+        "weaponFire": [
+            {
+                "soundEvent": "weaponFire",
+                "soundName": "prototype.hk416.shoot",
+                "soundNameDistant": "prototype.hk416.shoot.distant",
+                "soundRange": 64,
+                "soundMaxRange": 96,
+                "soundFadeMultiplier": 1
+            }
+        ],
+        "weaponUnload": [
+            {
+                "soundEvent": "weaponUnload",
+                "soundName": "prototype.generic.unload"
+            }
+        ],
+        "weaponFireSuppressed": [
+            {
+                "soundEvent": "weaponFireSuppressed",
+                "soundName": "prototype.hk416.shoot.sup",
+                "soundRange": 30,
+                "soundMaxRange": 50,
+                "soundFadeMultiplier": 1
+            }
+        ]
+    },
+    "acceptedAttachments": {
+        "sight": [
+            "tcp.sight_reddot",
+            "tcp.scope_acog",
+            "tcp.scope_pm"
+        ],
+        "barrel": [
+            "tcp.suppressor_normal"
+        ],
+        "grip": [
+            "tcp.grip_ergo"
+        ]
+    },
+    "modelSkins": [
+        {
+            "internalName": "tcp.m4a4",
+            "skinAsset": "m4a4",
+            "displayName": "Default",
+            "textures": ["basic","specular","normal"]
+        }
+    ]
+}

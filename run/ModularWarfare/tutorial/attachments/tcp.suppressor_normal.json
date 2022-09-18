@@ -1,0 +1,16 @@
+{
+  "displayName": "Tutorial Normal Suppressor",
+  "internalName": "tcp.suppressor_normal",
+  "attachmentType": "barrel",
+  "modelSkins": [
+    {
+      "skinAsset": "suppressor_normal",
+	  "textures": ["basic","specular","normal"],
+      "displayName": "Default"
+    }
+  ],
+  "barrel": {
+    "isSuppressor": true,
+	"hideFlash": true
+  }
+}

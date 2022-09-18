@@ -1,0 +1,11 @@
+{
+  "modelFileName": "sight_reddot.obj",
+  "extra": {
+    "modelScale": 1.0
+  },
+  "sight": {
+    "fovZoom": 1.0,
+    "mouseSensitivityFactor": 1.0,
+	"rectileScale": 0.7
+  }
+}

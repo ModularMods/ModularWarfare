@@ -1,0 +1,454 @@
+{
+  "modelFileName": "m4a4.glb",
+  "animations": {
+    "default": {
+      "startTime": 730,
+	  "endTime": 731,
+	  "speed": 0.015
+    },
+    "draw": {
+      "startTime": 1,
+      "endTime": 30,
+	  "speed": 0.036
+    },
+	"sprint": {
+      "startTime": 430,
+      "endTime": 470,
+	  "speed": 0.07
+    },
+    "aim": {
+	  "speed": 0.007
+    },
+	"preFire": {
+      "startTime": 40,
+      "endTime": 45,
+	  "speed": 1.0
+    },
+	"fire": {
+      "startTime": 45, 
+      "endTime": 46,
+	  "speed": 0.15
+    },
+	"postFire": {
+      "startTime": 46, 
+      "endTime": 54,
+	  "speed": 0.1
+    },
+    "preReload": {
+      "startTime": 60,
+      "endTime": 73,
+	  "speed": 0.036
+    },
+	"reloadFirst": {
+      "startTime": 73,
+      "endTime": 88,
+	  "speed": 0.036
+    },
+	"reloadSecond": {
+      "startTime": 88,
+      "endTime": 102,
+	  "speed": 0.036
+    },
+	"postReload": {
+      "startTime": 99,
+      "endTime": 114,
+	  "speed": 0.036
+    },
+	"postReloadEmpty": {
+      "startTime": 172,
+      "endTime": 199,
+	  "speed": 0.04
+    },
+	"reloadFirstQuickly": {
+      "startTime": 73,
+      "endTime": 88,
+	  "speed": 0.04
+    },
+	"reloadSecondQuickly": {
+      "startTime": 88,
+      "endTime": 102,
+	  "speed": 0.04
+    },
+	"preLoad": {
+      "startTime": 210,
+      "endTime": 252,
+	  "speed": 0.036
+    },
+	"load": {
+      "startTime": 252,
+      "endTime": 285,
+	  "speed": 0.036
+    },
+	"preUnload": {
+      "startTime": 320,
+      "endTime": 336,
+	  "speed": 0.036
+    },
+	"unload": {
+      "startTime": 336,
+      "endTime": 351,
+	  "speed": 0.036
+    },
+	"modeChange": {
+      "startTime": 520,
+      "endTime": 535,
+	  "speed": 0.05
+    },
+    "inspect": {
+      "startTime": 540,
+      "endTime": 674,
+	  "speed": 0.035
+    }
+  },
+  "sprint": {
+    "sprintRotate": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "sprintTranslate": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    }
+  },
+  "thirdPerson": {
+    "thirdPersonOffset": {
+      "x": 0.06,
+      "y": -0.1,
+      "z": 0.0
+    },
+    "backPersonOffset": {
+      "x": 0.1,
+      "y": -0.1,
+      "z": 0.1
+    },
+    "thirdPersonScale": 0.8
+  },
+  "aim": {
+    "rotateHipPosition": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "translateHipPosition": {
+      "x": 10.0,
+      "y": -2.0,
+      "z": 2.0
+    },
+    "rotateAimPosition": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.9
+    },
+    "translateAimPosition": {
+      "x": -3.5,
+      "y": 0.98,
+      "z": -2.0
+    }
+  },
+  "attachmentGroup": {
+    "barrel": {
+	  "hidePart": [
+	    "defaultBarrelModel"
+	  ],
+	  "translate": {
+	    "x": 10.0,
+	    "y": -0.88,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"sight": {
+	  "hidePart": [
+	    "defaultScopeModel"
+	  ],
+	  "translate": {
+	    "x": -2.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"grip": {
+	  "hidePart": [
+	    "defaultGripModel"
+	  ],
+	  "translate": {
+	    "x": 4.0,
+	    "y": -1.6,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"flashlight": {
+	  "translate": {
+	    "x": 3.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"charm": {
+	  "translate": {
+	    "x": -2.2,
+	    "y": -1.2,
+	    "z": -0.42
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"ammo": {
+	  "translate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"bullet": {
+	  "translate": {
+	    "x": -0.7,
+	    "y": 0.0,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"stock": {
+	  "hidePart": [
+	    "defaultStockModel"
+	  ],
+	  "translate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	}
+  },
+  "attachment": {
+    "tcp.sight_reddot": {
+	  "binding": "gunModel",
+	  "hidePart": [],
+	  "sightAimPosOffset": {
+	    "x": 0.0,
+	    "y": 0.3,
+	    "z": 0.0
+	  },
+      "sightAimRotOffset": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": -1.8
+	  },
+	  "translate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"tcp.scope_acog": {
+	  "binding": "gunModel",
+	  "hidePart": [],
+	  "renderInsideSightModel": true,
+	  "renderInsideGunOffset": 6.0,
+	  "sightAimPosOffset": {
+	    "x": -1.5,
+	    "y": 0.13,
+	    "z": 0.0
+	  },
+      "sightAimRotOffset": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": -1.2
+	  },
+	  "translate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"tcp.scope_pm": {
+	  "binding": "gunModel",
+	  "hidePart": [],
+	  "renderInsideSightModel": true,
+	  "renderInsideGunOffset": 20.0,
+	  "sightAimPosOffset": {
+	    "x": -0.8,
+	    "y": 0.14,
+	    "z": 0.0
+	  },
+      "sightAimRotOffset": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": -1.2
+	  },
+	  "translate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  },
+	  "scale": {
+	    "x": 1.0,
+	    "y": 1.0,
+	    "z": 1.0
+	  },
+	  "rotate": {
+	    "x": 0.0,
+	    "y": 0.0,
+	    "z": 0.0
+	  }
+	},
+	"siz_bg.m416dualexammo": {
+	  "multiMagazineTransform": [
+	    {
+		  "translate": {
+		    "x": 0.0,
+	        "y": 0.0,
+	        "z": 0.0
+		  },
+		  "rotate": {
+	        "x": 0.0,
+	        "y": 0.0,
+	        "z": 0.0
+	      }
+		},
+	    {
+		  "translate": {
+		    "x": 0.0,
+	        "y": 0.0,
+	        "z": 0.9
+		  },
+		  "rotate": {
+	        "x": 0.0,
+	        "y": 0.0,
+	        "z": 0.0
+	      }
+		}
+	  ]
+	}
+  },
+  "defaultHidePart": [],
+  "attachments": {},
+  "global": {
+    "globalTranslate": {
+      "x": 0.0,
+	  "y": 0.0,
+	  "z": 0.0
+    },
+    "globalScale": {
+      "x": 0.05,
+	  "y": 0.05,
+	  "z": 0.05
+    },
+    "globalRotate": {
+      "x": 0.0,
+	  "y": 0.0,
+  	  "z": 0.0
+    }
+  },
+  "extra": {
+    "translateAll": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "modelScale": 1.2,
+    "gunOffsetScoping": 0.0,
+    "crouchZoom": -0.035,
+    "adsSpeed": 0.02,
+    "modelRecoilBackwards": 0.2,
+    "modelRecoilUpwards": 0.7,
+    "modelRecoilShake": 0.25
+  }
+}

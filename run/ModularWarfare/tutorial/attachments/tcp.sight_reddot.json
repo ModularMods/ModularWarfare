@@ -1,0 +1,18 @@
+{
+  "displayName": "Tutorial Reddot Simple Sight",
+  "internalName": "tcp.sight_reddot",
+  "attachmentType": "sight",
+  "modelSkins": [
+    {
+      "skinAsset": "sight_reddot",
+	  "textures": ["basic"],
+	  "sampling": "linear",
+      "displayName": "Default"
+    }
+  ],
+  "sight": {
+    "scopeType": "reddot",
+	"customOverlayTexture": "prototype.red_dot_cs",
+	"modeType": "simple"
+  }
+}

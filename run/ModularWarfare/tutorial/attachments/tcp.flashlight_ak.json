@@ -1,0 +1,12 @@
+{
+  "displayName": "Tutorial AK Flashlight",
+  "internalName": "tcp.flashlight_ak",
+  "attachmentType": "flashlight",
+  "modelSkins": [
+    {
+      "skinAsset": "flashlight_ak",
+	  "textures": ["basic","specular","normal"],
+      "displayName": "Default"
+    }
+  ]
+}

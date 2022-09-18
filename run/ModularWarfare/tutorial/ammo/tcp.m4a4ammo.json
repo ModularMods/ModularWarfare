@@ -1,0 +1,11 @@
+{
+    "internalName": "tcp.m4a4ammo",
+    "displayName": "Tutorial M4A4 30rnd",
+    "ammoCapacity": 30,
+    "magazineCount": 1,
+	"isDynamicAmmo": false,
+    "subAmmo": [
+        "tcp.5_56"
+    ],
+    "allowEmptyMagazines": true
+}
