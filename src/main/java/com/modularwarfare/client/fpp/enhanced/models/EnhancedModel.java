@@ -2,7 +2,6 @@ package com.modularwarfare.client.fpp.enhanced.models;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.IMWModel;
-import com.modularwarfare.api.IProcessNodeModelHandler;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.transforms.DefaultTransform;
@@ -93,8 +92,8 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
         for(NodeModel node : gltfModel.getNodeModels()){
             this.defaultTransforms.put(node, new DefaultTransform(node.getTranslation(), node.getRotation(), node.getScale(), node.getWeights()));
         }
-        ((IProcessNodeModelHandler) model).getMaterialModelToMaterialHandler().keySet().forEach((material) -> {
-            ((IProcessNodeModelHandler) model).getMaterialModelToMaterialHandler().put(material,
+        model.materialModelToMaterialHandler.keySet().forEach((material) -> {
+            model.materialModelToMaterialHandler.put(material,
                     new IMaterialHandler() {
                         public Runnable getPreMeshDrawCommand() {
                             return () -> {
@@ -119,7 +118,7 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
                 List<Runnable> singleSkinningCommands = new ArrayList<Runnable>();
                 List<Runnable> transformCommands = new ArrayList<Runnable>();
                 List<Runnable> transformInverseCommands = new ArrayList<Runnable>();
-                ((IProcessNodeModelHandler) renderedModel).processSingleNodeModel(t, singleRenderCommands,
+                renderedModel.processSingleNodeModel(t, singleRenderCommands,
                         singleSkinningCommands, transformCommands,transformInverseCommands);
                 renderStreamMap.put(t.getName(), () -> {
                     singleRenderCommands.forEach((command) -> command.run());
@@ -334,7 +333,7 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
     }
     
     public void clearTransformLookup() {
-        ((IProcessNodeModelHandler) model).getNodeGlobalTransformLookup().clear();
+        model.nodeGlobalTransformLookup.clear();
     }
     
     public void updateAnimation(float time) {

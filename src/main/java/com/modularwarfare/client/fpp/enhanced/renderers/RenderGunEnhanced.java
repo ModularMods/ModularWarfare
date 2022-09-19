@@ -2,10 +2,8 @@ package com.modularwarfare.client.fpp.enhanced.renderers;
 
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.api.IProcessNodeModelHandler;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
 import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
 import com.modularwarfare.client.fpp.basic.models.ModelGun;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
@@ -43,6 +41,7 @@ import com.modularwarfare.utility.ReloadHelper;
 import com.modularwarfare.utility.maths.Interpolation;
 import com.timlee9024.mcgltf.DefaultMaterialHandler;
 
+import com.timlee9024.mcgltf.RenderedGltfModel;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -1172,7 +1171,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             runnable.run();
             return;
         }
-        IProcessNodeModelHandler handler=(IProcessNodeModelHandler) model.model;
+        RenderedGltfModel handler = model.model;
         
         model.updateAnimation(sprintTime);
         float[] end_transform=handler.getGlobalTransform(model.getPart(hand));

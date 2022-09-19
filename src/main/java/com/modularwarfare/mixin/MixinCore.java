@@ -33,7 +33,6 @@ public class MixinCore implements IFMLLoadingPlugin {
 
     @Override
     public void injectData(Map<String, Object> data) {
-        ModMixinPatchLoader.load();
         MixinBootstrap.init();
         Mixins.addConfiguration("mixins." + ModularWarfare.MOD_ID + ".json");
     }
