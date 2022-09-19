@@ -172,6 +172,8 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             this.timer = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "timer", "field_71428_T");
         }
 
+        if(!item.hasTagCompound())
+            return;
         
         float partialTicks = this.timer.renderPartialTicks;
 
