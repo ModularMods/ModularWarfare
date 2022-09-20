@@ -1,8 +1,8 @@
 package com.modularwarfare.client.fpp.enhanced.renderers;
 
 import com.modularwarfare.common.entity.EntityInfected;
-import com.timlee9024.mcgltf.IGltfModelReceiver;
-import com.timlee9024.mcgltf.RenderedGltfModel;
+import com.modularmods.mcgltf.IGltfModelReceiver;
+import com.modularmods.mcgltf.RenderedGltfModel;
 import de.javagl.jgltf.model.GltfAnimations;
 import de.javagl.jgltf.model.animation.Animation;
 import net.minecraft.client.renderer.GlStateManager;

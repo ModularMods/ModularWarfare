@@ -39,9 +39,9 @@ import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.ReloadHelper;
 import com.modularwarfare.utility.maths.Interpolation;
-import com.timlee9024.mcgltf.DefaultMaterialHandler;
+import com.modularmods.mcgltf.DefaultMaterialHandler;
 
-import com.timlee9024.mcgltf.RenderedGltfModel;
+import com.modularmods.mcgltf.RenderedGltfModel;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

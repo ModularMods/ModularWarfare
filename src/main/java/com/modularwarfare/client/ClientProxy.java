@@ -59,7 +59,7 @@ import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWResourcePack;
 import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.ModUtil;
-import com.timlee9024.mcgltf.MCglTF;
+import com.modularmods.mcgltf.MCglTF;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.lingala.zip4j.core.ZipFile;
 import net.minecraft.client.Minecraft;
