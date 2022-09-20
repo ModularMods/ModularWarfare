@@ -20,9 +20,15 @@
   },
   "hud": {
     "hitmarkers": true,
+    "enable_crosshair": true,
     "dynamic_crosshair": true,
     "ammo_count": true,
-    "snap_fade_hit": true
+    "snap_fade_hit": true,
+    "isDynamicFov": false,
+    "ads_blur": true,
+    "handDepthRange": 0.7,
+    "eraseScopeDepth": 1.0,
+    "shadersColorTexID": 0
   },
   "walks_sounds": {
     "walk_sounds": true,
@@ -45,5 +51,5 @@
   "model_optimization": true,
   "debug_hits_message": false,
   "dev_mode": true,
-  "version": "1.1.2f"
+  "version": "2.0.0f"
 }

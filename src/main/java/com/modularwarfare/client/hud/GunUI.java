@@ -15,6 +15,7 @@ import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RayUtil;
 import com.modularwarfare.utility.ReloadHelper;
 import com.modularwarfare.utility.RenderHelperMW;
+import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -26,9 +27,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.util.vector.Vector3f;
 
 import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.*;
 
@@ -145,22 +148,44 @@ public class GunUI {
                         }
 
                         boolean showCrosshair = ((adsSwitch < 0.6F) && (AnimationController.ADS < 0.5F));
-                        if (ModConfig.INSTANCE.hud.dynamic_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && showCrosshair && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
+                        if(ClientRenderHooks.getEnhancedAnimMachine(mc.player) != null){
+                            if(ClientRenderHooks.getEnhancedAnimMachine(mc.player).reloading) {
+                                showCrosshair = false;
+                            }
+                            if(AnimationController.INSPECT != 1F){
+                                showCrosshair = false;
+                            }
+                        }
+                        if (ModConfig.INSTANCE.hud.enable_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && showCrosshair && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
                             if(RenderParameters.collideFrontDistance <= 0.2f) {
                                 GlStateManager.pushMatrix();
+
+                                if(ModConfig.INSTANCE.hud.dynamic_crosshair) {
+                                    float gunRotX = RenderParameters.GUN_ROT_X_LAST + (RenderParameters.GUN_ROT_X - RenderParameters.GUN_ROT_X_LAST) * smoothing;
+                                    float gunRotY = RenderParameters.GUN_ROT_Y_LAST + (RenderParameters.GUN_ROT_Y - RenderParameters.GUN_ROT_Y_LAST) * smoothing;
+                                    GL11.glRotatef(gunRotX, 0, -1, 0);
+                                    GL11.glRotatef(gunRotY, 1, 0, 1);
+                                }
+
                                 final float accuracy = RayUtil.calculateAccuracyClient((ItemGun) mc.player.getHeldItemMainhand().getItem(), mc.player);
                                 int move = Math.max(0, (int) (accuracy * 3.0f));
                                 mc.renderEngine.bindTexture(crosshair);
                                 int xPos = width / 2;
                                 int yPos = height / 2;
+
+
+                                GlStateManager.translate(xPos, yPos, 0f);
+                                if(Loader.isModLoaded("modularmovements")) {
+                                    GL11.glRotatef(15F * ClientLitener.cameraProbeOffset, 0, 0, 1);
+                                }
                                 GlStateManager.enableBlend();
                                 GlStateManager.color(1f, 1f, 1f, 1f);
                                 GL11.glColor4f(1, 1, 1, 1);
-                                Gui.drawModalRectWithCustomSizedTexture(xPos, yPos, 1.0f, 1.0f, 1, 1, 16.0f, 16.0f);
-                                Gui.drawModalRectWithCustomSizedTexture(xPos, yPos + move, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
-                                Gui.drawModalRectWithCustomSizedTexture(xPos, yPos - move - 3, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
-                                Gui.drawModalRectWithCustomSizedTexture(xPos + move, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
-                                Gui.drawModalRectWithCustomSizedTexture(xPos - move - 3, yPos, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(0, 0, 1.0f, 1.0f, 1, 1, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(0, 0 + move, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(0, 0 - move - 3, 1.0f, 1.0f, 1, 4, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(0 + move, 0, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
+                                Gui.drawModalRectWithCustomSizedTexture(0 - move - 3, 0, 1.0f, 1.0f, 4, 1, 16.0f, 16.0f);
                                 GlStateManager.disableBlend();
 
                                 GlStateManager.popMatrix();
@@ -384,11 +409,13 @@ public class GunUI {
     }
 
     private void drawSlotInventory(FontRenderer fontRenderer, ItemStack itemstack, int i, int j) {
+        if (itemstack == null || itemstack.isEmpty())
+            return;
+
         GL11.glPushMatrix();
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
-        if (itemstack == null || itemstack.isEmpty())
-            return;
+
         itemRenderer.renderItemIntoGUI(itemstack, i, j);
         itemRenderer.renderItemOverlayIntoGUI(fontRenderer, itemstack, i, j, null); //May be something other than null
         GlStateManager.disableLighting();

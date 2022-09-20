@@ -47,6 +47,7 @@ public class ModConfig {
     public Hud hud = new Hud();
     public static class Hud {
         public boolean hitmarkers = true;
+        public boolean enable_crosshair = true;
         public boolean dynamic_crosshair = true;
         public boolean ammo_count = true;
         public boolean snap_fade_hit = true;
