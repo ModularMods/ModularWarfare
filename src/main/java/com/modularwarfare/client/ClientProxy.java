@@ -13,7 +13,6 @@ import com.modularwarfare.client.fpp.basic.renderers.*;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
-import com.modularwarfare.client.fpp.enhanced.renderers.RenderInfected;
 import com.modularwarfare.client.handler.*;
 import com.modularwarfare.client.hud.AttachmentUI;
 import com.modularwarfare.client.hud.FlashSystem;
@@ -42,7 +41,6 @@ import com.modularwarfare.common.armor.ItemSpecialArmor;
 import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.entity.EntityBulletClient;
 import com.modularwarfare.common.entity.EntityExplosiveProjectile;
-import com.modularwarfare.common.entity.EntityInfected;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
@@ -744,15 +742,6 @@ public class ClientProxy extends CommonProxy{
             
             //RENDER PROJECTILES
             RenderingRegistry.registerEntityRenderingHandler(EntityExplosiveProjectile.class, RenderProjectile.FACTORY);
-
-            RenderingRegistry.registerEntityRenderingHandler(EntityInfected.class, new IRenderFactory<EntityInfected>() {
-                @Override
-                public Render<? super EntityInfected> createRenderFor(RenderManager manager) {
-                    RenderInfected render = new RenderInfected(manager);
-                    MCglTF.getInstance().addGltfModelReceiver(render);
-                    return render;
-                }
-            });
         }
 
     }

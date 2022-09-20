@@ -15,7 +15,6 @@ import com.modularwarfare.common.commands.kits.CommandKit;
 import com.modularwarfare.common.commands.CommandNBT;
 import com.modularwarfare.common.entity.EntityBullet;
 import com.modularwarfare.common.entity.EntityExplosiveProjectile;
-import com.modularwarfare.common.entity.EntityInfected;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
@@ -75,13 +74,13 @@ import java.util.List;
 
 import static com.modularwarfare.common.CommonProxy.zipJar;
 
-@Mod(modid = ModularWarfare.MOD_ID, name = ModularWarfare.MOD_NAME, version = ModularWarfare.MOD_VERSION)
+@Mod(modid = ModularWarfare.MOD_ID, name = ModularWarfare.MOD_NAME, version = ModularWarfare.MOD_VERSION, dependencies = "required:mcgltf")
 public class ModularWarfare {
 
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
-    public static final String MOD_VERSION = "2.0.0f";
+    public static final String MOD_VERSION = "2.0.1f";
     public static final String MOD_PREFIX = TextFormatting.GRAY+"["+TextFormatting.RED+"ModularWarfare"+TextFormatting.GRAY+"]"+TextFormatting.GRAY;
 
     // Main instance
@@ -495,8 +494,6 @@ public class ModularWarfare {
 
         //EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "bullet"), EntityBullet.class, "bullet", 15, this, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "explosive_projectile"), EntityExplosiveProjectile.class, "explosive_projectile", 15, this, 80, 1, true);
-        
-        EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "infected"), EntityInfected.class, "infexted", 20, this, 64, 1, true);
     }
 }
 
