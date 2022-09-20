@@ -303,9 +303,11 @@
 	"tcp.scope_acog": {
 	  "binding": "gunModel",
 	  "hidePart": [],
+	  "renderInsideSightModel": true,
+	  "renderInsideGunOffset": 6.0,
 	  "sightAimPosOffset": {
-	    "x": -1.0,
-	    "y": 0.04,
+	    "x": -3.0,
+	    "y": -0.8,
 	    "z": 0.0
 	  },
       "sightAimRotOffset": {
