@@ -112,9 +112,9 @@ public class RenderGunEnhanced extends CustomItemRenderer {
     public float b=1;
     public float a=1;
     
-    private static final int BULLET_MAX_RENDER=9999+1;
+    public static final int BULLET_MAX_RENDER=256;
     private static float theata90=(float) Math.toRadians(90);
-    private static final HashSet<String> DEFAULT_EXCEPT =new HashSet<String>();
+    public static final HashSet<String> DEFAULT_EXCEPT =new HashSet<String>();
     private static final String[] LEFT_HAND_PART=new String[]{
             "leftArmModel", "leftArmLayerModel"
     };
