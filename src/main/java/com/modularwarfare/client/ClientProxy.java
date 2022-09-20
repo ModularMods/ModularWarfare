@@ -29,6 +29,9 @@ import com.modularwarfare.client.patch.customnpc.CustomNPCListener;
 import com.modularwarfare.client.patch.galacticraft.GCCompatInterop;
 import com.modularwarfare.client.patch.galacticraft.GCDummyInterop;
 import com.modularwarfare.client.patch.obfuscate.ObfuscateCompatInterop;
+import com.modularwarfare.client.renderers.RenderItemLoot;
+import com.modularwarfare.client.renderers.RenderProjectile;
+import com.modularwarfare.client.renderers.RenderShell;
 import com.modularwarfare.client.scope.ScopeUtils;
 import com.modularwarfare.client.shader.Programs;
 import com.modularwarfare.common.CommonProxy;
@@ -320,7 +323,6 @@ public class ClientProxy extends CommonProxy{
         ModularWarfare.LOGGER.info("Preloading textures");
         long time = System.currentTimeMillis();
         preloadSkinTypes.forEach((skin, type) -> {
-            ModularWarfare.LOGGER.info("Loading texture for "+type.internalName);
 
             for (int i = 0; i < skin.textures.length; i++) {
                 ResourceLocation resource = new ResourceLocation(ModularWarfare.MOD_ID,

@@ -1,6 +1,10 @@
 package com.modularwarfare.client.fpp.basic.renderers;
 
 import com.modularwarfare.client.ClientRenderHooks;
+import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class RenderParameters {
 
@@ -62,6 +66,18 @@ public class RenderParameters {
     public static float VALSPRINT2;
     
     public static float CROSS_ROTATE=0;
+
+    public static HashSet<String> partsWithAmmo = new HashSet<>(Arrays.asList("flashModel", "leftArmModel", "leftArmLayerModel", "leftArmSlimModel", "leftArmLayerSlimModel", "rightArmModel", "rightArmLayerModel", "rightArmSlimModel", "rightArmLayerSlimModel"));
+    public static HashSet<String> partsWithoutAmmo = new HashSet<>(Arrays.asList("flashModel", "leftArmModel", "leftArmLayerModel", "leftArmSlimModel", "leftArmLayerSlimModel", "rightArmModel", "rightArmLayerModel", "rightArmSlimModel", "rightArmLayerSlimModel", "ammoModel"));
+
+    public RenderParameters(){
+        for(int i = 0; i< RenderGunEnhanced.BULLET_MAX_RENDER; i++) {
+            partsWithAmmo.add("bulletModel_"+i);
+        }
+        for(int i=0;i<RenderGunEnhanced.BULLET_MAX_RENDER;i++) {
+            partsWithoutAmmo.add("bulletModel_"+i);
+        }
+    }
 
     // Resets render modifiers
     public static void resetRenderMods() {

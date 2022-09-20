@@ -1,4 +1,4 @@
-package com.modularwarfare.client.fpp.basic.renderers;
+package com.modularwarfare.client.renderers;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientRenderHooks;

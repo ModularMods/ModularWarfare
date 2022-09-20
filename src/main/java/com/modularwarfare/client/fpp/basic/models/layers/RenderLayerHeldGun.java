@@ -3,6 +3,7 @@ package com.modularwarfare.client.fpp.basic.models.layers;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
+import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
@@ -26,57 +27,19 @@ import java.util.HashSet;
 
 public class RenderLayerHeldGun extends LayerHeldItem {
 
-    HashSet<String> partsWithAmmo;
-    HashSet<String> partsWithoutAmmo;
-
     public RenderLayerHeldGun(RenderLivingBase<?> livingEntityRendererIn) {
         super(livingEntityRendererIn);
-        partsWithAmmo = new HashSet<>();
-        partsWithAmmo.add("flashModel");
-        partsWithAmmo.add("leftArmModel");
-        partsWithAmmo.add("leftArmLayerModel");
-        partsWithAmmo.add("leftArmSlimModel");
-        partsWithAmmo.add("leftArmLayerSlimModel");
-        partsWithAmmo.add("rightArmModel");
-        partsWithAmmo.add("rightArmLayerModel");
-        partsWithAmmo.add("rightArmSlimModel");
-        partsWithAmmo.add("rightArmLayerSlimModel");
-        for(int i=0;i<RenderGunEnhanced.BULLET_MAX_RENDER;i++) {
-            partsWithAmmo.add("bulletModel_"+i);
-        }
-
-        partsWithoutAmmo = new HashSet<>();
-        partsWithoutAmmo.add("flashModel");
-        partsWithoutAmmo.add("leftArmModel");
-        partsWithoutAmmo.add("leftArmLayerModel");
-        partsWithoutAmmo.add("leftArmSlimModel");
-        partsWithoutAmmo.add("leftArmLayerSlimModel");
-        partsWithoutAmmo.add("rightArmModel");
-        partsWithoutAmmo.add("rightArmLayerModel");
-        partsWithoutAmmo.add("rightArmSlimModel");
-        partsWithoutAmmo.add("rightArmLayerSlimModel");
-        for(int i=0;i<RenderGunEnhanced.BULLET_MAX_RENDER;i++) {
-            partsWithoutAmmo.add("bulletModel_"+i);
-        }
-        partsWithoutAmmo.add("ammoModel");
-        partsWithoutAmmo.add("ammoModel");
     }
 
     public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount,
                               float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         ItemStack itemstack = entitylivingbaseIn.getHeldItemMainhand();
         if (itemstack != ItemStack.EMPTY && !itemstack.isEmpty()) {
-            if (!(itemstack.getItem() instanceof BaseItem)) {
+            if (!(itemstack.getItem() instanceof ItemGun)) {
                 return;
             }
             BaseType type = ((BaseItem) itemstack.getItem()).baseType;
             if (!type.hasModel()) {
-                return;
-            }
-            if (itemstack.getItem() instanceof ItemAttachment) {
-                return;
-            }
-            if (itemstack.getItem() instanceof ItemBackpack) {
                 return;
             }
 
@@ -96,8 +59,6 @@ public class RenderLayerHeldGun extends LayerHeldItem {
 
                 GunType gunType = (GunType) type;
                 EnhancedModel model = type.enhancedModel;
-                if (model == null)
-                    return;
 
                 GunEnhancedRenderConfig config = gunType.enhancedModel.config;
 
@@ -122,9 +83,9 @@ public class RenderLayerHeldGun extends LayerHeldItem {
                     ClientProxy.gunEnhancedRenderer.bindTexture("guns", gunPath);
 
                     if(ItemGun.hasAmmoLoaded(itemstack)){
-                        model.renderPartExcept(partsWithAmmo);
+                        model.renderPartExcept(RenderParameters.partsWithAmmo);
                     } else {
-                        model.renderPartExcept(partsWithoutAmmo);
+                        model.renderPartExcept(RenderParameters.partsWithoutAmmo);
                     }
                 }
 

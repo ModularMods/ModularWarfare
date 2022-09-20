@@ -1,8 +1,14 @@
-package com.modularwarfare.client.fpp.basic.renderers;
+package com.modularwarfare.client.renderers;
 
+import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
 import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
+import com.modularwarfare.client.fpp.enhanced.AnimationType;
+import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
+import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
+import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
 import com.modularwarfare.common.entity.item.EntityItemLoot;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.loader.api.model.ObjModelRenderer;
@@ -30,9 +36,12 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 
 public class RenderItemLoot extends Render<EntityItemLoot> {
+
     public static final Factory FACTORY;
 
     static {
@@ -210,6 +219,37 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                 GlStateManager.popMatrix();
                 GlStateManager.disableRescaleNormal();
                 GlStateManager.disableBlend();
+            } else {
+                /**
+                 * IF ENHANCED MODEL
+                 */
+                ItemGun gun = (ItemGun) itemstack.getItem();
+                GunType gunType = gun.type;
+                ModelEnhancedGun model = (ModelEnhancedGun) gunType.enhancedModel;
+                GunEnhancedRenderConfig config = gunType.enhancedModel.config;
+
+                model.updateAnimation((float) config.animations.get(AnimationType.DEFAULT).getStartTime(config.FPS));
+
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((float) x, (float) y, (float) z);
+                GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.translate(0.15, 0.2, -0.08);
+                GlStateManager.scale(1/16F, 1/16F, 1/16F);
+
+                int skinId = 0;
+                if (itemstack.hasTagCompound()) {
+                    if (itemstack.getTagCompound().hasKey("skinId")) {
+                        skinId = itemstack.getTagCompound().getInteger("skinId");
+                    }
+                }
+                String gunPath = skinId > 0 ? gunType.modelSkins[skinId].getSkin() : gunType.modelSkins[0].getSkin();
+                ClientProxy.gunEnhancedRenderer.bindTexture("guns", gunPath);
+                if(ItemGun.hasAmmoLoaded(itemstack)){
+                   model.renderPartExcept(RenderParameters.partsWithAmmo);
+                } else {
+                   model.renderPartExcept(RenderParameters.partsWithoutAmmo);
+                }
+                GlStateManager.popMatrix();
             }
         } else {
             int i;
