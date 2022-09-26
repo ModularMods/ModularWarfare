@@ -1,6 +1,6 @@
 package com.modularwarfare.common.network;
 
-import com.modularwarfare.client.fpp.basic.models.InstantBulletRenderer;
+import com.modularwarfare.client.model.InstantBulletRenderer;
 import com.modularwarfare.common.vector.Vector3f;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

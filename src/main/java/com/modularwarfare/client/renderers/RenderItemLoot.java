@@ -2,13 +2,12 @@ package com.modularwarfare.client.renderers;
 
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
-import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.model.ModelAttachment;
+import com.modularwarfare.client.model.ModelGun;
 import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
-import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
 import com.modularwarfare.common.entity.item.EntityItemLoot;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.loader.api.model.ObjModelRenderer;
@@ -36,8 +35,6 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Random;
 
 public class RenderItemLoot extends Render<EntityItemLoot> {

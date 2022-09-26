@@ -1,7 +1,6 @@
 package com.modularwarfare.common.network;
 
 import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.client.fpp.basic.models.InstantBulletRenderer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;

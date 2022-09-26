@@ -2,7 +2,7 @@ package com.modularwarfare.client.renderers;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.fpp.basic.models.ModelBullet;
+import com.modularwarfare.client.model.ModelBullet;
 import com.modularwarfare.common.entity.EntityBullet;
 import com.modularwarfare.common.guns.ItemBullet;
 import net.minecraft.client.renderer.GlStateManager;

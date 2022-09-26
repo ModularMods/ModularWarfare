@@ -19,11 +19,11 @@ import com.modularwarfare.client.hud.FlashSystem;
 import com.modularwarfare.client.hud.GunUI;
 import com.modularwarfare.client.killchat.KillFeedManager;
 import com.modularwarfare.client.killchat.KillFeedRender;
-import com.modularwarfare.client.fpp.basic.models.ModelGun;
-import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBackpack;
-import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerBody;
-import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerHeldGun;
-import com.modularwarfare.client.fpp.basic.models.layers.ResetHiddenModelLayer;
+import com.modularwarfare.client.model.ModelGun;
+import com.modularwarfare.client.model.layers.RenderLayerBackpack;
+import com.modularwarfare.client.model.layers.RenderLayerBody;
+import com.modularwarfare.client.model.layers.RenderLayerHeldGun;
+import com.modularwarfare.client.model.layers.ResetHiddenModelLayer;
 import com.modularwarfare.client.patch.customnpc.CustomNPCListener;
 import com.modularwarfare.client.patch.galacticraft.GCCompatInterop;
 import com.modularwarfare.client.patch.galacticraft.GCDummyInterop;
@@ -60,7 +60,6 @@ import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWResourcePack;
 import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.ModUtil;
-import com.modularmods.mcgltf.MCglTF;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.lingala.zip4j.core.ZipFile;
 import net.minecraft.client.Minecraft;
@@ -68,8 +67,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.MWFRenderHelper;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
@@ -88,7 +85,6 @@ import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.discovery.ContainerType;
@@ -114,7 +110,7 @@ import static com.modularwarfare.ModularWarfare.contentPacks;
 
 public class ClientProxy extends CommonProxy{
 
-    public static String modelDir = "com.modularwarfare.client.fpp.basic.model.";
+    public static String modelDir = "com.modularwarfare.client.model.";
 
     //Renderes
     public static RenderGunStatic gunStaticRenderer;

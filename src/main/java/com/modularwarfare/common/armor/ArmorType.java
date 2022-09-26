@@ -4,7 +4,7 @@ import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.MWArmorModel;
 import com.modularwarfare.api.MWArmorType;
 import com.modularwarfare.client.fpp.basic.configs.ArmorRenderConfig;
-import com.modularwarfare.client.fpp.basic.models.ModelCustomArmor;
+import com.modularwarfare.client.model.ModelCustomArmor;
 import com.modularwarfare.common.type.BaseType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

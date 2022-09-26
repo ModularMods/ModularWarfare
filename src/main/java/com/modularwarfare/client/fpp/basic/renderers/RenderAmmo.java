@@ -1,6 +1,6 @@
 package com.modularwarfare.client.fpp.basic.renderers;
 
-import com.modularwarfare.client.fpp.basic.models.ModelAmmo;
+import com.modularwarfare.client.model.ModelAmmo;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderer;
 import com.modularwarfare.common.guns.AmmoType;

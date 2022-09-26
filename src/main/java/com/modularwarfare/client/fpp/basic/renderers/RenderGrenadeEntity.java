@@ -2,7 +2,7 @@ package com.modularwarfare.client.fpp.basic.renderers;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.fpp.basic.models.ModelGrenade;
+import com.modularwarfare.client.model.ModelGrenade;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
 import com.modularwarfare.common.grenades.ItemGrenade;
 import net.minecraft.client.renderer.GlStateManager;

@@ -1,7 +1,7 @@
 package com.modularwarfare.client.patch.customnpc;
 
 import com.modularwarfare.client.gui.GuiInventoryModified;
-import com.modularwarfare.client.fpp.basic.models.layers.RenderLayerHeldGun;
+import com.modularwarfare.client.model.layers.RenderLayerHeldGun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;

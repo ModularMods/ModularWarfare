@@ -1,8 +1,8 @@
 package com.modularwarfare.api;
 
-import com.modularwarfare.client.fpp.basic.models.ModelCustomArmor;
-import com.modularwarfare.client.fpp.basic.models.ModelCustomArmor.Bones;
-import com.modularwarfare.client.fpp.basic.models.ModelCustomArmor.Bones.BonePart.EnumBoneType;
+import com.modularwarfare.client.model.ModelCustomArmor;
+import com.modularwarfare.client.model.ModelCustomArmor.Bones;
+import com.modularwarfare.client.model.ModelCustomArmor.Bones.BonePart.EnumBoneType;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.Event;
 

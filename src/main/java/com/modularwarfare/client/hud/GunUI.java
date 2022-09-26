@@ -4,14 +4,12 @@ import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
-import com.modularwarfare.client.fpp.basic.animations.ReloadType;
-import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
+import com.modularwarfare.client.model.ModelAttachment;
 import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
 import com.modularwarfare.client.fpp.enhanced.animation.EnhancedStateMachine;
 import com.modularwarfare.common.guns.*;
-import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RayUtil;
 import com.modularwarfare.utility.ReloadHelper;
 import com.modularwarfare.utility.RenderHelperMW;
@@ -31,7 +29,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import org.lwjgl.util.vector.Vector3f;
 
 import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.*;
 

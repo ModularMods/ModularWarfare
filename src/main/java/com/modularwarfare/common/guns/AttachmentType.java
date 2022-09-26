@@ -2,12 +2,11 @@ package com.modularwarfare.common.guns;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.fpp.basic.configs.AttachmentRenderConfig;
-import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
+import com.modularwarfare.client.model.ModelAttachment;
 import com.modularwarfare.common.textures.TextureEnumType;
 import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
 
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 

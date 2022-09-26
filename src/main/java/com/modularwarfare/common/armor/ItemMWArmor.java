@@ -2,7 +2,7 @@ package com.modularwarfare.common.armor;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.MWArmorType;
-import com.modularwarfare.client.fpp.basic.models.ModelCustomArmor;
+import com.modularwarfare.client.model.ModelCustomArmor;
 import com.modularwarfare.common.init.ModSounds;
 import com.modularwarfare.common.type.BaseType;
 import net.minecraft.client.model.ModelBiped;

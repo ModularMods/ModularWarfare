@@ -2,7 +2,7 @@ package com.modularwarfare.common.guns;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.fpp.basic.configs.AmmoRenderConfig;
-import com.modularwarfare.client.fpp.basic.models.ModelAmmo;
+import com.modularwarfare.client.model.ModelAmmo;
 import com.modularwarfare.common.type.BaseType;
 
 public class AmmoType extends BaseType {

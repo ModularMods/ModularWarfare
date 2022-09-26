@@ -2,7 +2,7 @@ package com.modularwarfare.client.fpp.basic.animations.anims;
 
 import com.modularwarfare.api.WeaponAnimation;
 import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
-import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.model.ModelGun;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 

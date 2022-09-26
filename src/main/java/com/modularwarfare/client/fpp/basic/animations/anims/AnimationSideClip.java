@@ -6,7 +6,7 @@ import com.modularwarfare.client.fpp.basic.animations.ReloadType;
 import com.modularwarfare.client.fpp.basic.animations.StateEntry;
 import com.modularwarfare.client.fpp.basic.animations.StateEntry.MathType;
 import com.modularwarfare.client.fpp.basic.animations.StateType;
-import com.modularwarfare.client.fpp.basic.models.ModelGun;
+import com.modularwarfare.client.model.ModelGun;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;

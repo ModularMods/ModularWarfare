@@ -1,6 +1,5 @@
 package com.modularwarfare.client.hud;
 
-import com.modularwarfare.client.fpp.basic.models.ModelAttachment;
 import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.RenderHelperMW;
 import net.minecraft.client.Minecraft;

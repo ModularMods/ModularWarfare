@@ -2,21 +2,17 @@ package com.modularwarfare.client.fpp.enhanced.animation;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.Passer;
-import com.modularwarfare.api.WeaponAnimations;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.fpp.basic.animations.ReloadType;
 import com.modularwarfare.client.fpp.basic.animations.StateEntry;
-import com.modularwarfare.client.fpp.basic.models.ModelGun;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig.Animation;
 import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.client.handler.ClientTickHandler;
-import com.modularwarfare.common.guns.AmmoType;
 import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemAmmo;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.guns.WeaponSoundType;
-import com.modularwarfare.common.network.PacketGunReload;
 import com.modularwarfare.common.network.PacketGunReloadEnhancedStop;
 import com.modularwarfare.common.network.PacketGunReloadSound;
 
@@ -24,10 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import org.lwjgl.input.Mouse;
-
-import java.util.Random;
 
 public class EnhancedStateMachine {
 

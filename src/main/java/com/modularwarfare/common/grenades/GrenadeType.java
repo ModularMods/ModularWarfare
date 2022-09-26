@@ -2,7 +2,7 @@ package com.modularwarfare.common.grenades;
 
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.fpp.basic.configs.GrenadeRenderConfig;
-import com.modularwarfare.client.fpp.basic.models.ModelGrenade;
+import com.modularwarfare.client.model.ModelGrenade;
 import com.modularwarfare.common.type.BaseType;
 
 public class GrenadeType extends BaseType {
