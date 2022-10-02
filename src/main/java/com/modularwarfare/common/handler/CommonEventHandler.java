@@ -108,13 +108,6 @@ public class CommonEventHandler {
     }
 
     @SubscribeEvent
-    public void onInitWorld(WorldEvent.Load event) {
-        World world = event.getWorld();
-        System.out.println("Added World Listener");
-        world.addEventListener(new ModularWarfareWorldListener());
-    }
-
-    @SubscribeEvent
     public void onEntityInteractBlock(final PlayerInteractEvent.RightClickBlock event) {
         if (ModConfig.INSTANCE.guns.guns_interaction_hand) {
             if (event.getWorld().isRemote) {
