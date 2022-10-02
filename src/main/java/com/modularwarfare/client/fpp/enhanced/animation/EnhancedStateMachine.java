@@ -6,6 +6,7 @@ import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.fpp.basic.animations.ReloadType;
 import com.modularwarfare.client.fpp.basic.animations.StateEntry;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
+import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig.Animation;
 import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
 import com.modularwarfare.client.handler.ClientTickHandler;
@@ -157,8 +158,7 @@ public class EnhancedStateMachine {
                     } else if (reloadPhase == Phase.SECOND) {
                         aniType = AnimationType.RELOAD_SECOND;
                     } else if (reloadPhase == Phase.POST) {
-                        if (!ItemGun.hasNextShot(heldItemstStack)
-                                && currentModel.config.animations.containsKey(AnimationType.POST_RELOAD_EMPTY)) {
+                        if (!ItemGun.hasNextShot(heldItemstStack) && ((GunEnhancedRenderConfig)currentModel.config).animations.containsKey(AnimationType.POST_RELOAD_EMPTY)) {
                             aniType = AnimationType.POST_RELOAD_EMPTY;
                         } else {
                             aniType = AnimationType.POST_RELOAD;
@@ -179,21 +179,21 @@ public class EnhancedStateMachine {
         } else if (reloadType == ReloadType.Full) {
             if (reloadPhase == Phase.FIRST) {
                 if (ClientTickHandler.reloadEnhancedIsQuicklyRendering
-                        && currentModel.config.animations.containsKey(AnimationType.RELOAD_FIRST_QUICKLY)) {
+                        && ((GunEnhancedRenderConfig)currentModel.config).animations.containsKey(AnimationType.RELOAD_FIRST_QUICKLY)) {
                     aniType = AnimationType.RELOAD_FIRST_QUICKLY;
                 } else {
                     aniType = AnimationType.RELOAD_FIRST;
                 }
             } else if (reloadPhase == Phase.SECOND) {
                 if (ClientTickHandler.reloadEnhancedIsQuicklyRendering
-                        && currentModel.config.animations.containsKey(AnimationType.RELOAD_SECOND_QUICKLY)) {
+                        && ((GunEnhancedRenderConfig)currentModel.config).animations.containsKey(AnimationType.RELOAD_SECOND_QUICKLY)) {
                     aniType = AnimationType.RELOAD_SECOND_QUICKLY;
                 } else {
                     aniType = AnimationType.RELOAD_SECOND;
                 }
             } else if (reloadPhase == Phase.POST) {
                 if (!ItemGun.hasNextShot(heldItemstStack)
-                        && currentModel.config.animations.containsKey(AnimationType.POST_RELOAD_EMPTY)) {
+                        && ((GunEnhancedRenderConfig)currentModel.config).animations.containsKey(AnimationType.POST_RELOAD_EMPTY)) {
                     aniType = AnimationType.POST_RELOAD_EMPTY;
                 } else {
                     aniType = AnimationType.POST_RELOAD;
@@ -254,7 +254,6 @@ public class EnhancedStateMachine {
         if(ClientProxy.gunEnhancedRenderer.controller==null) {
             return;
         }
-        PacketGunReloadEnhancedStop packet = null;
         ItemStack stack = heldItemstStack;
         Item item = stack.getItem();
         if (item instanceof ItemGun) {
@@ -288,7 +287,7 @@ public class EnhancedStateMachine {
                         phase.set(Phase.FIRST);
                     }
                 });
-                if (reloadPhase != lastReloadPhase&&aniType!=null) {
+                if (reloadPhase != lastReloadPhase && aniType!=null) {
                     switch (aniType) {
                     case PRE_LOAD:
                         ModularWarfare.NETWORK.sendToServer(new PacketGunReloadSound(WeaponSoundType.PreLoad));
@@ -371,7 +370,7 @@ public class EnhancedStateMachine {
         boolean flag = true;
         Animation ani = null;
         if (aniType != null) {
-            ani = currentModel.config.animations.get(aniType);
+            ani = ((GunEnhancedRenderConfig)currentModel.config).animations.get(aniType);
         }
         if (ani != null) {
             double speed = ani.getSpeed(currentModel.config.FPS) * speedFactor * partialTick;

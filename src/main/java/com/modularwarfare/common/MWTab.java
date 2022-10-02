@@ -25,6 +25,17 @@ public class MWTab extends CreativeTabs {
         this.contentPack = contentPack;
     }
 
+    @SideOnly(Side.CLIENT)
+    public String getTranslatedTabLabel() {
+        String name = contentPack;
+        if (name.endsWith(".zip")) {
+            name = name.replace(".zip", "");
+        } else if (name.endsWith(".jar")) {
+            name = name.replace(".jar", "");
+        }
+        return TextFormatting.RED + "[MW] " + TextFormatting.WHITE + name;
+    }
+
     @Override
     public ItemStack getTabIconItem() {
         final ItemStack[] itemStack = {new ItemStack(Items.IRON_AXE)};
@@ -36,17 +47,6 @@ public class MWTab extends CreativeTabs {
         });
 
         return itemStack[0];
-    }
-
-    @SideOnly(Side.CLIENT)
-    public String getTranslatedTabLabel() {
-        String name = contentPack;
-        if (name.endsWith(".zip")) {
-            name = name.replace(".zip", "");
-        } else if (name.endsWith(".jar")) {
-            name = name.replace(".jar", "");
-        }
-        return TextFormatting.RED + "[MW] " + TextFormatting.WHITE + name;
     }
 
     @Override

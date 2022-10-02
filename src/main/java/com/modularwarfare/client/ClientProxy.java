@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.api.GenerateJsonModelsEvent;
 import com.modularwarfare.api.WeaponAnimations;
 import com.modularwarfare.client.fpp.basic.animations.ReloadType;
 import com.modularwarfare.client.export.ItemModelExport;
@@ -237,9 +238,6 @@ public class ClientProxy extends CommonProxy{
     @Override
     public void load() {
 
-        SoundSystemConfig.setNumberNormalChannels(1024);
-        SoundSystemConfig.setNumberStreamingChannels(32);
-
         new KeyInputHandler();
         new ClientTickHandler();
         new ClientGunHandler();
@@ -431,6 +429,10 @@ public class ClientProxy extends CommonProxy{
     @Override
     public void generateJsonModels(ArrayList<BaseType> types) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        GenerateJsonModelsEvent event = new GenerateJsonModelsEvent();
+        MinecraftForge.EVENT_BUS.post(event);
+
         for (BaseType type : types) {
             if (type.contentPack == null)
                 continue;

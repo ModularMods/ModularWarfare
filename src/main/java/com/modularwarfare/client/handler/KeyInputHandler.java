@@ -2,6 +2,7 @@ package com.modularwarfare.client.handler;
 
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.api.ReloadConfigKeyEvent;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
@@ -21,6 +22,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -78,7 +80,10 @@ public class KeyInputHandler extends ForgeEvent {
                 case ClientReload:
 
                     ModularWarfare.loadConfig();
-                    
+
+                    ReloadConfigKeyEvent event = new ReloadConfigKeyEvent();
+                    MinecraftForge.EVENT_BUS.post(event);
+
                     if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                         final ItemStack gunStack = entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
                         final GunType gunType = ((ItemGun)gunStack.getItem()).type;

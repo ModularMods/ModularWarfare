@@ -1,6 +1,5 @@
 package com.modularwarfare.client.fpp.enhanced.configs;
 
-import com.modularwarfare.client.fpp.basic.configs.GunRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -8,10 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class GunEnhancedRenderConfig {
-
-    public String modelFileName = "";
-    public int FPS=24;
+public class GunEnhancedRenderConfig  extends EnhancedRenderConfig {
 
     public HashMap<AnimationType, Animation> animations = new HashMap<>();
 

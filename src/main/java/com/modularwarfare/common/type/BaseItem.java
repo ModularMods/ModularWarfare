@@ -15,7 +15,11 @@ public class BaseItem extends Item {
         setCreativeTab(ModularWarfare.MODS_TABS.get(type.contentPack));
 
         this.baseType = type;
-        this.setMaxStackSize(type.maxStackSize);
+        if(type.maxStackSize != null) {
+            this.setMaxStackSize(type.maxStackSize);
+        } else {
+            this.setMaxStackSize(1);
+        }
         this.canRepair = false;
     }
 

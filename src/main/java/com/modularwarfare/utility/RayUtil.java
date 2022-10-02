@@ -1,5 +1,6 @@
 package com.modularwarfare.utility;
 
+
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.common.entity.grenades.EntityGrenade;
@@ -329,6 +330,7 @@ public class RayUtil {
                 }
             }
         }
+
         if (closestHitEntity != null && hit != null) {
             blockHit = new RayTraceResult(closestHitEntity, hit);
         }

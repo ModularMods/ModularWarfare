@@ -119,7 +119,6 @@ public class ScopeUtils {
             }
             lastWorld=mc.world;
             
-            GL11.glPushMatrix();
             if (mc.player != null && mc.currentScreen == null) {
                 //If player has gun, update scope
                 if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun && mc.gameSettings.thirdPersonView == 0) {
@@ -129,7 +128,7 @@ public class ScopeUtils {
                             if (itemAttachment.type != null) {
                                 if (itemAttachment.type.sight.modeType.isMirror) {
                                     if(OVERLAY_TEX==-1||(lastWidth!=mc.displayWidth||lastHeight!=mc.displayHeight)) {
-                                        
+                                        GL11.glPushMatrix();
                                         if(OVERLAY_TEX!=-1) {
                                             GL11.glDeleteTextures(OVERLAY_TEX);
                                         }
@@ -176,6 +175,7 @@ public class ScopeUtils {
                                         
                                         lastWidth=mc.displayWidth;
                                         lastHeight=mc.displayHeight;
+                                        GL11.glPopMatrix();
                                     }
                                     if(itemAttachment.type.sight.modeType.isPIP&&RenderParameters.adsSwitch != 0) {
                                         renderWorld(mc, itemAttachment, event.renderTickTime);  
@@ -186,7 +186,7 @@ public class ScopeUtils {
                     }
                 }
             }
-            GL11.glPopMatrix();
+
         }
     }
     

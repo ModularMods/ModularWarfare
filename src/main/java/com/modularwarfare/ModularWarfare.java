@@ -3,6 +3,10 @@ package com.modularwarfare;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import com.modularwarfare.addon.AddonLoaderManager;
+import com.modularwarfare.addon.LibClassLoader;
+import com.modularwarfare.api.ItemRegisterEvent;
+import com.modularwarfare.api.TypeRegisterEvent;
 import com.modularwarfare.client.fpp.enhanced.AnimationType.AnimationTypeJsonAdapter.AnimationTypeException;
 import com.modularwarfare.common.CommonProxy;
 import com.modularwarfare.common.MWTab;
@@ -13,7 +17,6 @@ import com.modularwarfare.common.commands.CommandClear;
 import com.modularwarfare.common.commands.CommandDebug;
 import com.modularwarfare.common.commands.kits.CommandKit;
 import com.modularwarfare.common.commands.CommandNBT;
-import com.modularwarfare.common.entity.EntityBullet;
 import com.modularwarfare.common.entity.EntityExplosiveProjectile;
 import com.modularwarfare.common.entity.decals.EntityBulletHole;
 import com.modularwarfare.common.entity.decals.EntityShell;
@@ -31,20 +34,17 @@ import com.modularwarfare.common.hitbox.playerdata.PlayerDataHandler;
 import com.modularwarfare.common.network.NetworkHandler;
 import com.modularwarfare.common.protector.ModularProtector;
 import com.modularwarfare.common.textures.TextureType;
-import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
 import com.modularwarfare.utility.GSONUtils;
+import com.modularwarfare.utility.ModUtil;
 import com.modularwarfare.utility.ZipContentPack;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.io.ZipInputStream;
 import net.lingala.zip4j.model.FileHeader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.command.EntitySelector;
 import net.minecraft.item.Item;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,6 +60,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -125,6 +126,13 @@ public class ModularWarfare {
 
     public static HashMap<String, MWTab> MODS_TABS = new HashMap<String, MWTab>();
 
+    public static final LibClassLoader LOADER = new LibClassLoader(ModularWarfare.class.getClassLoader());
+    /**
+     * ModularWarfare Addon System
+     */
+    public static File addonDir;
+    public static AddonLoaderManager loaderManager;
+
     public static void loadContent() {
         Method method = null;
         try {
@@ -134,7 +142,6 @@ public class ModularWarfare {
             LOGGER.error("Failed to get class loader. All content loading will now fail.");
             e.printStackTrace();
         }
-
         for (File file : contentPacks) {
             if (!MODS_TABS.containsKey(file.getName())) {
                 MODS_TABS.put(file.getName(), new MWTab(file.getName()));
@@ -257,6 +264,7 @@ public class ModularWarfare {
                                         parsedType.contentPack = file.getName();
                                         parsedType.isInDirectory = true;
                                         baseTypes.add(parsedType);
+                                        System.out.println("Registered "+parsedType.internalName);
 
                                         if(parsedType instanceof TextureType){
                                             textureTypes.put(parsedType.internalName, (TextureType) parsedType);
@@ -313,7 +321,6 @@ public class ModularWarfare {
      */
     @EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
-        LOGGER = event.getModLog();
         PROXY.preload();
 
         if (FMLCommonHandler.instance().getSide().isServer()) {
@@ -330,6 +337,8 @@ public class ModularWarfare {
             contentPacks = PROXY.getContentList();
         }
 
+        this.loaderManager.preInitAddons(event);
+
         // Loads Content Packs
         ContentTypes.registerTypes();
         loadContentPacks(false);
@@ -341,6 +350,7 @@ public class ModularWarfare {
 
         MinecraftForge.EVENT_BUS.register(new CommonEventHandler());
         MinecraftForge.EVENT_BUS.register(this);
+
     }
     
     public static void loadConfig() {
@@ -372,6 +382,8 @@ public class ModularWarfare {
     public void onPostInitialization(FMLPostInitializationEvent event) {
         NETWORK.postInitialise();
         PROXY.init();
+
+        this.loaderManager.initAddons(event);
     }
 
     /**
@@ -394,9 +406,33 @@ public class ModularWarfare {
      */
     @Mod.EventHandler
     public void constructionEvent(FMLConstructionEvent event) {
+        LOGGER = LogManager.getLogger(ModularWarfare.MOD_ID);
+        LOGGER.info("Loading RavageCore");
+
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             PROTECTOR = new ModularProtector();
         }
+        /**
+         * Create & Check Addon System
+         */
+
+        this.addonDir = new File(ModUtil.getGameFolder() + "/addons");
+
+        if (!this.addonDir.exists())
+            this.addonDir.mkdirs();
+        this.loaderManager = new AddonLoaderManager();
+        this.loaderManager.constructAddons(this.addonDir, event.getSide());
+
+        /**
+         * Load the addon from the gradle project compilation (.class folder) instead of final .jar
+         * in order to allow HotSwap changes
+         */
+        if(ModUtil.isIDE()) {
+            File file = new File(ModUtil.getGameFolder()).getParentFile().getParentFile();
+            String folder = file.toString().replace("\\", "/");
+            this.loaderManager.constructDevAddons(new File(folder + "/melee-addon/build/classes/java/main"), "com.modularwarfare.melee.ModularWarfareMelee", event.getSide());
+        }
+
         PROXY.construction(event);
     }
 
@@ -463,7 +499,10 @@ public class ModularWarfare {
                 }
             }
 
-            tabOrder.forEach((item)->{
+            ItemRegisterEvent itemRegisterEvent = new ItemRegisterEvent(event.getRegistry(), tabOrder);
+            MinecraftForge.EVENT_BUS.post(itemRegisterEvent);
+
+            itemRegisterEvent.tabOrder.forEach((item)->{
                 if(item instanceof ItemGun){
                     for(SkinType skin: ((ItemGun) item).type.modelSkins) {
                         PROXY.preloadSkinTypes.put(skin, ((ItemGun) item).type);
@@ -495,5 +534,7 @@ public class ModularWarfare {
         //EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "bullet"), EntityBullet.class, "bullet", 15, this, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "explosive_projectile"), EntityExplosiveProjectile.class, "explosive_projectile", 15, this, 80, 1, true);
     }
+
+
 }
 

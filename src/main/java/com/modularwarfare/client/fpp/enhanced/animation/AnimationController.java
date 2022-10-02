@@ -22,7 +22,6 @@ import org.lwjgl.input.Mouse;
 
 import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.GUN_CHANGE_Y;
 
-
 public class AnimationController {
 
     final EntityPlayerSP player;

@@ -31,7 +31,7 @@ public class ServerTickHandler extends ForgeEvent {
             long currentTime = System.currentTimeMillis();
             if (lastBackWeaponsSync == -1 || currentTime - this.lastBackWeaponsSync > 1000) {
                 this.lastBackWeaponsSync = currentTime;
-                BackWeaponsManager.INSTANCE.collect().sync();
+                //BackWeaponsManager.INSTANCE.collect().sync();
             }
         }
         switch (event.phase) {

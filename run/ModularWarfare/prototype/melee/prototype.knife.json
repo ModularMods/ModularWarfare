@@ -1,0 +1,13 @@
+{
+  "internalName": "prototype.knife",
+  "displayName": "Knife",
+  "damage": 7.5,
+  "modelSkins":[
+    {
+      "internalName":"prototype.knife",
+      "skinAsset":"prototype.knife",
+      "displayName": "Default",
+      "textures": ["basic"]
+    }
+  ]
+}

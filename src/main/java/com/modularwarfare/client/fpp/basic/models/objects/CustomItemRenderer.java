@@ -24,10 +24,20 @@ import java.util.HashMap;
 import org.apache.commons.io.IOUtils;
 
 public class CustomItemRenderer {
+
     public static ResourceLocation NULL_TEX = new ResourceLocation(ModularWarfare.MOD_ID, "textures/nulltex.png");
     protected static TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
     private HashMap<String, ResourceLocation> cachedSkins = new HashMap<String, ResourceLocation>();
     private ArrayList<String> cachedBadSkins = new ArrayList<String>();
+
+    /**
+     * Specific to Enhanced Models
+     */
+    public ResourceLocation bindingTexture;
+    public float r=1;
+    public float g=1;
+    public float b=1;
+    public float a=1;
 
     public void renderItem(CustomItemRenderType type, EnumHand hand, ItemStack item, Object... data) {
     }

@@ -1,6 +1,7 @@
 package com.modularwarfare.client.handler;
 
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.api.OnTickRenderEvent;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
@@ -23,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -254,7 +256,8 @@ public class ClientTickHandler extends ForgeEvent {
         } else {
             RenderParameters.resetRenderMods();
         }
-
+        OnTickRenderEvent event = new OnTickRenderEvent(renderTick);
+        MinecraftForge.EVENT_BUS.post(event);
     }
 
 

@@ -3,8 +3,11 @@ package com.modularwarfare.client.fpp.enhanced.models;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.api.IMWModel;
 import com.modularwarfare.client.ClientProxy;
+import com.modularwarfare.client.ClientRenderHooks;
+import com.modularwarfare.client.fpp.enhanced.configs.EnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.transforms.DefaultTransform;
+import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.utility.maths.MathUtils;
 import com.modularmods.mcgltf.IGltfModelReceiver;
@@ -44,6 +47,8 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
 
     private boolean isInit = false;
 
+    public ResourceLocation playerSkinTexture;
+
     /**
      * .gltf Model
      */
@@ -62,14 +67,14 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
     /**
      * Render config of the EnhancedModel
      */
-    public GunEnhancedRenderConfig config;
+    public EnhancedRenderConfig config;
 
     /**
      * Render config of the EnhancedModel
      */
     public BaseType baseType;
 
-    public EnhancedModel(GunEnhancedRenderConfig config, BaseType baseType){
+    public EnhancedModel(EnhancedRenderConfig config, BaseType baseType){
         this.config = config;
         this.baseType = baseType;
         if(!isInit){
@@ -100,10 +105,15 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
                                 GL13.glActiveTexture(GL13.GL_TEXTURE0);
                                 //this binding is necessary
                                 Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
-                                Minecraft.getMinecraft().renderEngine
-                                        .bindTexture(ClientProxy.gunEnhancedRenderer.bindingTexture);
-                                GL11.glColor4f(ClientProxy.gunEnhancedRenderer.r, ClientProxy.gunEnhancedRenderer.g,
-                                        ClientProxy.gunEnhancedRenderer.b, ClientProxy.gunEnhancedRenderer.a);
+                                if(baseType instanceof GunType){
+                                    Minecraft.getMinecraft().renderEngine.bindTexture(ClientProxy.gunEnhancedRenderer.bindingTexture);
+                                    GL11.glColor4f(ClientProxy.gunEnhancedRenderer.r, ClientProxy.gunEnhancedRenderer.g,
+                                            ClientProxy.gunEnhancedRenderer.b, ClientProxy.gunEnhancedRenderer.a);
+                                } else {
+                                    Minecraft.getMinecraft().renderEngine.bindTexture(ClientRenderHooks.customRenderers[baseType.id].bindingTexture);
+                                    GL11.glColor4f(ClientRenderHooks.customRenderers[baseType.id].r, ClientRenderHooks.customRenderers[baseType.id].g,
+                                            ClientRenderHooks.customRenderers[baseType.id].b, ClientRenderHooks.customRenderers[baseType.id].a);
+                                }
                             };
                         }
                     });
