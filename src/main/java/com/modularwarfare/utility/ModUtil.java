@@ -11,12 +11,16 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.LightUtil;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
 
+import javax.annotation.Nonnull;
+import java.io.File;
 import java.util.List;
 
 public class ModUtil {
@@ -82,6 +86,15 @@ public class ModUtil {
         for (int j = quads.size(); i < j; ++i) {
             LightUtil.renderQuadColor(renderer, quads.get(i), argb);
         }
+    }
+
+    public static boolean isIDE() {
+        return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+    }
+
+    @Nonnull
+    public static String getGameFolder() {
+        return ((File) (FMLInjectionData.data()[6])).getAbsolutePath();
     }
 
 }

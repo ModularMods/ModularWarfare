@@ -223,7 +223,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                 ItemGun gun = (ItemGun) itemstack.getItem();
                 GunType gunType = gun.type;
                 ModelEnhancedGun model = (ModelEnhancedGun) gunType.enhancedModel;
-                GunEnhancedRenderConfig config = gunType.enhancedModel.config;
+                GunEnhancedRenderConfig config = (GunEnhancedRenderConfig) gunType.enhancedModel.config;
 
                 model.updateAnimation((float) config.animations.get(AnimationType.DEFAULT).getStartTime(config.FPS));
 

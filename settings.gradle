@@ -1,0 +1,3 @@
+rootProject.name = 'ModularWarfare'
+
+include 'melee-addon'

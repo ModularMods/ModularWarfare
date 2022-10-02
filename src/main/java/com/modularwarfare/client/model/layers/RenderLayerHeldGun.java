@@ -60,7 +60,7 @@ public class RenderLayerHeldGun extends LayerHeldItem {
                 GunType gunType = (GunType) type;
                 EnhancedModel model = type.enhancedModel;
 
-                GunEnhancedRenderConfig config = gunType.enhancedModel.config;
+                GunEnhancedRenderConfig config = (GunEnhancedRenderConfig) gunType.enhancedModel.config;
 
                 if(config.animations.containsKey(AnimationType.DEFAULT)) {
                     this.translateToHand(EnumHandSide.RIGHT);

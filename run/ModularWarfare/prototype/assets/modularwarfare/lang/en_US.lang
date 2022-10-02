@@ -82,3 +82,4 @@ item.prototype.hikingpack.name=Hiking Pack
 item.prototype.frag_grenade.name=Frag Grenade
 item.prototype.smoke_grenade.name=Smoke Grenade
 item.prototype.stun_grenade.name=Stun Grenade
+item.prototype.knife.name=Knife

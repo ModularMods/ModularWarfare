@@ -91,15 +91,8 @@ public class RenderGunEnhanced extends CustomItemRenderer {
     public AnimationController controller;
 
     public FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
-    
-    public ResourceLocation bindingTexture;
-    
+
     private boolean renderingMagazine=true;
-    
-    public float r=1;
-    public float g=1;
-    public float b=1;
-    public float a=1;
     
     public static final int BULLET_MAX_RENDER=256;
     private static float theata90=(float) Math.toRadians(90);
@@ -141,9 +134,10 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         
         if (model == null)
             return;
-        
-        if(this.controller == null || this.controller.getConfig() != model.config){
-            this.controller = new AnimationController(model.config);
+
+        GunEnhancedRenderConfig config = (GunEnhancedRenderConfig) model.config;
+        if(this.controller == null || this.controller.getConfig() != config){
+            this.controller = new AnimationController(config);
         }
 
 
@@ -195,12 +189,12 @@ public class RenderGunEnhanced extends CustomItemRenderer {
          *  global
          * */
         mat.rotate(toRadians(90), new Vector3f(0, 1, 0));
-        mat.translate(new Vector3f(model.config.global.globalTranslate.x, model.config.global.globalTranslate.y, model.config.global.globalTranslate.z));
-        mat.scale(new Vector3f(model.config.global.globalScale.x,model.config.global.globalScale.y,model.config.global.globalScale.z));
+        mat.translate(new Vector3f(config.global.globalTranslate.x, config.global.globalTranslate.y, config.global.globalTranslate.z));
+        mat.scale(new Vector3f(config.global.globalScale.x,config.global.globalScale.y,config.global.globalScale.z));
         mat.rotate(toRadians(-90), new Vector3f(0, 1, 0));
-        mat.rotate(model.config.global.globalRotate.y/180*3.14f, new Vector3f(0, 1, 0));
-        mat.rotate(model.config.global.globalRotate.x/180*3.14f, new Vector3f(1, 0, 0));
-        mat.rotate(model.config.global.globalRotate.z/180*3.14f, new Vector3f(0, 0, 1));
+        mat.rotate(config.global.globalRotate.y/180*3.14f, new Vector3f(0, 1, 0));
+        mat.rotate(config.global.globalRotate.x/180*3.14f, new Vector3f(1, 0, 0));
+        mat.rotate(config.global.globalRotate.z/180*3.14f, new Vector3f(0, 0, 1));
         
         /**
          * ACTION GUN MOTION
@@ -287,8 +281,8 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         GL11.glRotatef(adsModifier * 0.5f * VALSPRINT5 * AnimationController.SPRINT, -1, -1, 0);
          */
 
-        Vector3f customSprintRotation = new Vector3f((model.config.sprint.sprintRotate.x *  (float)AnimationController.SPRINT), (model.config.sprint.sprintRotate.y *  (float)AnimationController.SPRINT), (model.config.sprint.sprintRotate.z *  (float)AnimationController.SPRINT));
-        Vector3f customSprintTranslate = new Vector3f((model.config.sprint.sprintTranslate.x *  (float)AnimationController.SPRINT), (model.config.sprint.sprintTranslate.y *  (float)AnimationController.SPRINT), (model.config.sprint.sprintTranslate.z *  (float)AnimationController.SPRINT));
+        Vector3f customSprintRotation = new Vector3f((config.sprint.sprintRotate.x *  (float)AnimationController.SPRINT), (config.sprint.sprintRotate.y *  (float)AnimationController.SPRINT), (config.sprint.sprintRotate.z *  (float)AnimationController.SPRINT));
+        Vector3f customSprintTranslate = new Vector3f((config.sprint.sprintTranslate.x *  (float)AnimationController.SPRINT), (config.sprint.sprintTranslate.y *  (float)AnimationController.SPRINT), (config.sprint.sprintTranslate.z *  (float)AnimationController.SPRINT));
 
         customSprintRotation.scale((1F -  (float)AnimationController.ADS));
         customSprintTranslate.scale((1F -  (float)AnimationController.ADS));
@@ -297,11 +291,11 @@ public class RenderGunEnhanced extends CustomItemRenderer {
          * CUSTOM HIP POSITION
          */
         
-        Vector3f customHipRotation = new Vector3f(model.config.aim.rotateHipPosition.x, model.config.aim.rotateHipPosition.y, model.config.aim.rotateHipPosition.z);
-        Vector3f customHipTranslate = new Vector3f(model.config.aim.translateHipPosition.x, (model.config.aim.translateHipPosition.y), (model.config.aim.translateHipPosition.z));
+        Vector3f customHipRotation = new Vector3f(config.aim.rotateHipPosition.x, config.aim.rotateHipPosition.y, config.aim.rotateHipPosition.z);
+        Vector3f customHipTranslate = new Vector3f(config.aim.translateHipPosition.x, (config.aim.translateHipPosition.y), (config.aim.translateHipPosition.z));
         
-        Vector3f customAimRotation = new Vector3f((model.config.aim.rotateAimPosition.x *  (float)AnimationController.ADS), (model.config.aim.rotateAimPosition.y *  (float)AnimationController.ADS), (model.config.aim.rotateAimPosition.z *  (float)AnimationController.ADS));
-        Vector3f customAimTranslate = new Vector3f((model.config.aim.translateAimPosition.x *  (float)AnimationController.ADS), (model.config.aim.translateAimPosition.y *  (float)AnimationController.ADS), (model.config.aim.translateAimPosition.z *  (float)AnimationController.ADS));
+        Vector3f customAimRotation = new Vector3f((config.aim.rotateAimPosition.x *  (float)AnimationController.ADS), (config.aim.rotateAimPosition.y *  (float)AnimationController.ADS), (config.aim.rotateAimPosition.z *  (float)AnimationController.ADS));
+        Vector3f customAimTranslate = new Vector3f((config.aim.translateAimPosition.x *  (float)AnimationController.ADS), (config.aim.translateAimPosition.y *  (float)AnimationController.ADS), (config.aim.translateAimPosition.z *  (float)AnimationController.ADS));
         
         mat.rotate(toRadians(customHipRotation.x + customSprintRotation.x+customAimRotation.x), new Vector3f(1f,0f,0f));
         mat.rotate(toRadians(customHipRotation.y + customSprintRotation.y+customAimRotation.y), new Vector3f(0f,1f,0f));
@@ -316,7 +310,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         ItemAttachment sight = null;
         if(GunType.getAttachment(item, AttachmentPresetEnum.Sight)!=null) {
             sight = (ItemAttachment) GunType.getAttachment(item, AttachmentPresetEnum.Sight).getItem();
-            Attachment sightConfig=model.config.attachment.get(sight.type.internalName);
+            Attachment sightConfig=config.attachment.get(sight.type.internalName);
             if(sightConfig!=null) {
                 //System.out.println("test");
                 float ads=(float) controller.ADS;
@@ -345,17 +339,17 @@ public class RenderGunEnhanced extends CustomItemRenderer {
 
         float sin10 = MathHelper.sin((float) (2 * Math.PI * alpha)) * 0.05f;
 
-        mat.translate(new Vector3f(-(bounce) * model.config.extra.modelRecoilBackwards, 0F, 0F));
-        mat.translate(new Vector3f(0F, (-(elastic) * model.config.extra.modelRecoilBackwards) * 0.05F, 0F));
+        mat.translate(new Vector3f(-(bounce) * config.extra.modelRecoilBackwards, 0F, 0F));
+        mat.translate(new Vector3f(0F, (-(elastic) * config.extra.modelRecoilBackwards) * 0.05F, 0F));
 
-        mat.translate(new Vector3f(0F, 0F, sin10 * anim.recoilSide * model.config.extra.modelRecoilUpwards));
-        mat.rotate(toRadians(sin * anim.recoilSide * model.config.extra.modelRecoilUpwards), new Vector3f(0F, 0F, 1F));
-        mat.rotate(toRadians(5F * sin10 * anim.recoilSide * model.config.extra.modelRecoilUpwards), new Vector3f(0F, 0F, 1F));
+        mat.translate(new Vector3f(0F, 0F, sin10 * anim.recoilSide * config.extra.modelRecoilUpwards));
+        mat.rotate(toRadians(sin * anim.recoilSide * config.extra.modelRecoilUpwards), new Vector3f(0F, 0F, 1F));
+        mat.rotate(toRadians(5F * sin10 * anim.recoilSide * config.extra.modelRecoilUpwards), new Vector3f(0F, 0F, 1F));
 
-        mat.rotate(toRadians((bounce) * model.config.extra.modelRecoilUpwards), new Vector3f(0F, 0F, 1F));
+        mat.rotate(toRadians((bounce) * config.extra.modelRecoilUpwards), new Vector3f(0F, 0F, 1F));
 
-        mat.rotate(toRadians(((-alpha) * randomShake * model.config.extra.modelRecoilShake)), new Vector3f(0.0f, 1.0f, 0.0f));
-        mat.rotate(toRadians(((-alpha) * randomShake * model.config.extra.modelRecoilShake)), new Vector3f(1.0f, 0.0f, 0.0f));
+        mat.rotate(toRadians(((-alpha) * randomShake * config.extra.modelRecoilShake)), new Vector3f(0.0f, 1.0f, 0.0f));
+        mat.rotate(toRadians(((-alpha) * randomShake * config.extra.modelRecoilShake)), new Vector3f(1.0f, 0.0f, 0.0f));
         
         if(ScopeUtils.isIndsideGunRendering) {
             mat.translate(new Vector3f(-renderInsideGunOffset, 0, 0));
@@ -380,7 +374,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         boolean isRenderHand0=ScopeUtils.isRenderHand0||!OptifineHelper.isShadersEnabled();
         HashSet<String> exceptParts=new HashSet<String>();
         if(isRenderHand0) {
-            exceptParts.addAll(model.config.defaultHidePart);
+            exceptParts.addAll(config.defaultHidePart);
             //exceptParts.addAll(DEFAULT_EXCEPT);
             
             for (AttachmentPresetEnum attachment : AttachmentPresetEnum.values()) {
@@ -388,14 +382,14 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 if (itemStack != null && itemStack.getItem() != Items.AIR) {
                     AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
                     String binding = "gunModel";
-                    if(model.config.attachmentGroup.containsKey(attachment.typeName)) {
-                        if (model.config.attachmentGroup.get(attachment.typeName).hidePart != null) {
-                            exceptParts.addAll(model.config.attachmentGroup.get(attachment.typeName).hidePart);
+                    if(config.attachmentGroup.containsKey(attachment.typeName)) {
+                        if (config.attachmentGroup.get(attachment.typeName).hidePart != null) {
+                            exceptParts.addAll(config.attachmentGroup.get(attachment.typeName).hidePart);
                         }
                     }
-                    if (model.config.attachment.containsKey(attachmentType.internalName)) {
-                        if (model.config.attachment.get(attachmentType.internalName).hidePart != null) {
-                            exceptParts.addAll(model.config.attachment.get(attachmentType.internalName).hidePart);
+                    if (config.attachment.containsKey(attachmentType.internalName)) {
+                        if (config.attachment.get(attachmentType.internalName).hidePart != null) {
+                            exceptParts.addAll(config.attachment.get(attachmentType.internalName).hidePart);
                         }
                     }
                 }
@@ -406,14 +400,14 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 if (itemStack != null && itemStack.getItem() != Items.AIR) {
                     AttachmentType attachmentType = ((ItemAttachment) itemStack.getItem()).type;
                     String binding = "gunModel";
-                    if(model.config.attachmentGroup.containsKey(attachment.typeName)) {
-                        if (model.config.attachmentGroup.get(attachment.typeName).showPart != null) {
-                            exceptParts.removeAll(model.config.attachmentGroup.get(attachment.typeName).showPart);
+                    if(config.attachmentGroup.containsKey(attachment.typeName)) {
+                        if (config.attachmentGroup.get(attachment.typeName).showPart != null) {
+                            exceptParts.removeAll(config.attachmentGroup.get(attachment.typeName).showPart);
                         }
                     }
-                    if (model.config.attachment.containsKey(attachmentType.internalName)) {
-                        if (model.config.attachment.get(attachmentType.internalName).showPart != null) {
-                            exceptParts.removeAll(model.config.attachment.get(attachmentType.internalName).showPart);
+                    if (config.attachment.containsKey(attachmentType.internalName)) {
+                        if (config.attachment.get(attachmentType.internalName).showPart != null) {
+                            exceptParts.removeAll(config.attachment.get(attachmentType.internalName).showPart);
                         }
                     }
                 }
@@ -436,11 +430,11 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             if(isRenderHand0) {
                 if(sightRendering!=null) {
                     String binding = "gunModel";
-                    if (model.config.attachment.containsKey(sightRendering.type.internalName)) {
-                        binding = model.config.attachment.get(sightRendering.type.internalName).binding;
+                    if (config.attachment.containsKey(sightRendering.type.internalName)) {
+                        binding = config.attachment.get(sightRendering.type.internalName).binding;
                     }
                     model.applyGlobalTransform(binding, () -> {
-                        renderAttachment(model.config, AttachmentPresetEnum.Sight.typeName, sightRendering.type.internalName, () -> {
+                        renderAttachment(config, AttachmentPresetEnum.Sight.typeName, sightRendering.type.internalName, () -> {
                             writeScopeGlassDepth(sightRendering.type, (ModelAttachment)sightRendering.type.model, controller.ADS > 0, worldScale, sightRendering.type.sight.modeType.isPIP);
                         });
                     });
@@ -547,13 +541,13 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                             for (int bullet = 0; bullet < currentAmmoCount && bullet < BULLET_MAX_RENDER; bullet++) {
                                 int renderBullet=bullet;
                                 model.applyGlobalTransform("bulletModel_" + bullet, () -> {
-                                    renderAttachment(model.config, "bullet", bulletType.internalName, () -> {
+                                    renderAttachment(config, "bullet", bulletType.internalName, () -> {
                                         bulletType.model.renderPart("bulletModel", worldScale);
                                     });
                                 });
                             }
                             model.applyGlobalTransform("bulletModel", () -> {
-                                renderAttachment(model.config, "bullet", bulletType.internalName, () -> {
+                                renderAttachment(config, "bullet", bulletType.internalName, () -> {
                                     bulletType.model.renderPart("bulletModel", worldScale);
                                 });
                             });
@@ -595,98 +589,96 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                                 String pathAmmo = skinIdAmmo > 0 ? ammoType.modelSkins[skinIdAmmo].getSkin() : ammoType.modelSkins[0].getSkin();
                                 bindTexture("ammo", pathAmmo);
                             }
-                            
-                            if (controller.shouldRenderAmmo()) {
-                                model.applyGlobalTransform(binddings[x], () -> {
-                                    GlStateManager.pushMatrix();
-                                    if(renderAmmo.getTagCompound().hasKey("magcount")) {
-                                        if(model.config.attachment.containsKey(itemAmmo.type.internalName)) {
-                                            if(model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform!=null) {
-                                                if(renderAmmo.getTagCompound().getInteger("magcount")<=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.size()) {
-                                                    //be careful, don't mod the config
-                                                    Transform ammoTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(renderAmmo.getTagCompound().getInteger("magcount")-1);      
-                                                    Transform renderTransform=ammoTransform;
-                                                    if (anim.reloading && (anim
-                                                            .getReloadAnimationType() == AnimationType.RELOAD_FIRST_QUICKLY)) {
-                                                        float magAlpha = (float) controller.RELOAD;
-                                                        renderTransform=new Transform();
-                                                        ammoTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(prognosisAmmo.getTagCompound().getInteger("magcount")-1);    
-                                                        Transform beginTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(orignalAmmo.getTagCompound().getInteger("magcount")-1);
-                                                        
-                                                        renderTransform.translate.x = beginTransform.translate.x
-                                                                + (ammoTransform.translate.x - beginTransform.translate.x)
-                                                                        * magAlpha;
-                                                        renderTransform.translate.y = beginTransform.translate.y
-                                                                + (ammoTransform.translate.y - beginTransform.translate.y)
-                                                                        * magAlpha;
-                                                        renderTransform.translate.z = beginTransform.translate.z
-                                                                + (ammoTransform.translate.z - beginTransform.translate.z)
-                                                                        * magAlpha;
-                                                        
-                                                        renderTransform.rotate.x = beginTransform.rotate.x
-                                                                + (ammoTransform.rotate.x - beginTransform.rotate.x)
-                                                                        * magAlpha;
-                                                        renderTransform.rotate.y = beginTransform.rotate.y
-                                                                + (ammoTransform.rotate.y - beginTransform.rotate.y)
-                                                                        * magAlpha;
-                                                        renderTransform.rotate.z = beginTransform.rotate.z
-                                                                + (ammoTransform.rotate.z - beginTransform.rotate.z)
-                                                                        * magAlpha;
-                                                        
-                                                        renderTransform.scale.x = beginTransform.scale.x
-                                                                + (ammoTransform.scale.x - beginTransform.scale.x)
-                                                                        * magAlpha;
-                                                        renderTransform.scale.y = beginTransform.scale.y
-                                                                + (ammoTransform.scale.y - beginTransform.scale.y)
-                                                                        * magAlpha;
-                                                        renderTransform.scale.z = beginTransform.scale.z
-                                                                + (ammoTransform.scale.z - beginTransform.scale.z)
-                                                                        * magAlpha;
-                                                    }
-                                                    GlStateManager.translate(renderTransform.translate.x,
-                                                            renderTransform.translate.y, renderTransform.translate.z);
-                                                    GlStateManager.scale(renderTransform.scale.x, renderTransform.scale.y,
-                                                            renderTransform.scale.z);
-                                                    GlStateManager.rotate(renderTransform.rotate.y, 0, 1, 0);
-                                                    GlStateManager.rotate(renderTransform.rotate.x, 1, 0, 0);
-                                                    GlStateManager.rotate(renderTransform.rotate.z, 0, 0, 1);
+if (controller.shouldRenderAmmo()) {
+                            model.applyGlobalTransform("ammoModel", () -> {
+                                GlStateManager.pushMatrix();
+                                if(renderAmmo.getTagCompound().hasKey("magcount")) {
+                                    if(config.attachment.containsKey(itemAmmo.type.internalName)) {
+                                        if(config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform!=null) {
+                                            if(renderAmmo.getTagCompound().getInteger("magcount")<=config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.size()) {
+                                                //be careful, don't mod the config
+                                                Transform ammoTransform=config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(renderAmmo.getTagCompound().getInteger("magcount")-1);      
+                                                Transform renderTransform=ammoTransform;
+                                                if (anim.reloading && (anim
+                                                        .getReloadAnimationType() == AnimationType.RELOAD_FIRST_QUICKLY)) {
+                                                    float magAlpha = (float) controller.RELOAD;
+                                                    renderTransform=new Transform();
+                                                    ammoTransform=config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(prognosisAmmo.getTagCompound().getInteger("magcount")-1);    
+                                                    Transform beginTransform=config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(orignalAmmo.getTagCompound().getInteger("magcount")-1);
+                                                    
+                                                    renderTransform.translate.x = beginTransform.translate.x
+                                                            + (ammoTransform.translate.x - beginTransform.translate.x)
+                                                                    * magAlpha;
+                                                    renderTransform.translate.y = beginTransform.translate.y
+                                                            + (ammoTransform.translate.y - beginTransform.translate.y)
+                                                                    * magAlpha;
+                                                    renderTransform.translate.z = beginTransform.translate.z
+                                                            + (ammoTransform.translate.z - beginTransform.translate.z)
+                                                                    * magAlpha;
+                                                    
+                                                    renderTransform.rotate.x = beginTransform.rotate.x
+                                                            + (ammoTransform.rotate.x - beginTransform.rotate.x)
+                                                                    * magAlpha;
+                                                    renderTransform.rotate.y = beginTransform.rotate.y
+                                                            + (ammoTransform.rotate.y - beginTransform.rotate.y)
+                                                                    * magAlpha;
+                                                    renderTransform.rotate.z = beginTransform.rotate.z
+                                                            + (ammoTransform.rotate.z - beginTransform.rotate.z)
+                                                                    * magAlpha;
+                                                    
+                                                    renderTransform.scale.x = beginTransform.scale.x
+                                                            + (ammoTransform.scale.x - beginTransform.scale.x)
+                                                                    * magAlpha;
+                                                    renderTransform.scale.y = beginTransform.scale.y
+                                                            + (ammoTransform.scale.y - beginTransform.scale.y)
+                                                                    * magAlpha;
+                                                    renderTransform.scale.z = beginTransform.scale.z
+                                                            + (ammoTransform.scale.z - beginTransform.scale.z)
+                                                                    * magAlpha;
                                                 }
+                                                GlStateManager.translate(renderTransform.translate.x,
+                                                        renderTransform.translate.y, renderTransform.translate.z);
+                                                GlStateManager.scale(renderTransform.scale.x, renderTransform.scale.y,
+                                                        renderTransform.scale.z);
+                                                GlStateManager.rotate(renderTransform.rotate.y, 0, 1, 0);
+                                                GlStateManager.rotate(renderTransform.rotate.x, 1, 0, 0);
+                                                GlStateManager.rotate(renderTransform.rotate.z, 0, 0, 1);
                                             }
                                         }
                                     }
-                                    renderAttachment(model.config, "ammo", ammoType.internalName, () -> {
-                                        ammoType.model.renderPart("ammoModel", worldScale);
-                                        if(defaultBulletFlag.b) {
-                                            if(renderAmmo.getTagCompound().hasKey("magcount")) {
-                                                for(int i=1;i<=ammoType.magazineCount;i++) {
-                                                    int count=ReloadHelper.getBulletOnMag(renderAmmo, i);
-                                                    for (int bullet = 0; bullet < count && bullet < BULLET_MAX_RENDER; bullet++) {
-                                                        //System.out.println((ammoType.ammoCapacity*(i-1))+bullet);
-                                                        ammoType.model.renderPart("bulletModel_" + ((ammoType.ammoCapacity*(i-1))+bullet), worldScale);
-                                                    }  
-                                                }
-                                            }else {
-                                                for (int bullet = 0; bullet < currentAmmoCountRendering && bullet < BULLET_MAX_RENDER; bullet++) {
-                                                    ammoType.model.renderPart("bulletModel_" + (baseAmmoCountRendering+bullet), worldScale);
+                                }
+                                renderAttachment(config, "ammo", ammoType.internalName, () -> {
+                                    ammoType.model.renderPart("ammoModel", worldScale);
+                                    if(defaultBulletFlag.b) {
+                                        if(renderAmmo.getTagCompound().hasKey("magcount")) {
+                                            for(int i=1;i<=ammoType.magazineCount;i++) {
+                                                int count=ReloadHelper.getBulletOnMag(renderAmmo, i);
+                                                for (int bullet = 0; bullet < count && bullet < BULLET_MAX_RENDER; bullet++) {
+                                                    //System.out.println((ammoType.ammoCapacity*(i-1))+bullet);
+                                                    ammoType.model.renderPart("bulletModel_" + ((ammoType.ammoCapacity*(i-1))+bullet), worldScale);
                                                 }  
                                             }
-
-                                            defaultBulletFlag.b = false;
+                                        }else {
+                                            for (int bullet = 0; bullet < currentAmmoCountRendering && bullet < BULLET_MAX_RENDER; bullet++) {
+                                                ammoType.model.renderPart("bulletModel_" + (baseAmmoCountRendering+bullet), worldScale);
+                                            }  
                                         }
-                                    });
-                                    GlStateManager.popMatrix();
+
+                                        defaultBulletFlag.b = false;
+                                    }
                                 });
-                                model.applyGlobalTransform("bulletModel", () -> {
-                                    renderAttachment(model.config, "bullet", ammoType.internalName, () -> {
-                                        ammoType.model.renderPart("bulletModel", worldScale);
-                                    });
+                                GlStateManager.popMatrix();
+                            });
+                            model.applyGlobalTransform("bulletModel", () -> {
+                                renderAttachment(config, "bullet", ammoType.internalName, () -> {
+                                    ammoType.model.renderPart("bulletModel", worldScale);
                                 });
-                                flagDynamicAmmoRendered=true;
-                                defaultAmmoFlag=false;
-                            }
+                            });
+                            flagDynamicAmmoRendered=true;
+                            defaultAmmoFlag=false;
                         }
-                   }
-                }
+                    }
+               }
                 
                 /**
                  * default bullet and ammo
@@ -718,8 +710,8 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                         
                         if(ScopeUtils.isIndsideGunRendering) {
                             if (attachment == AttachmentPresetEnum.Sight) {
-                                if (model.config.attachment.containsKey(attachmentType.internalName)) {
-                                    if(!model.config.attachment.get(attachmentType.internalName).renderInsideSightModel) {
+                                if (config.attachment.containsKey(attachmentType.internalName)) {
+                                    if(!config.attachment.get(attachmentType.internalName).renderInsideSightModel) {
                                         continue;
                                     }
                                 }else {
@@ -730,8 +722,8 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                         
                         if (attachmentModel != null) {
                             String binding = "gunModel";
-                            if (model.config.attachment.containsKey(attachmentType.internalName)) {
-                                binding = model.config.attachment.get(attachmentType.internalName).binding;
+                            if (config.attachment.containsKey(attachmentType.internalName)) {
+                                binding = config.attachment.get(attachmentType.internalName).binding;
                             }
                             model.applyGlobalTransform(binding, () -> {
                                 if (attachmentType.sameTextureAsGun) {
@@ -747,7 +739,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                                             : attachmentType.modelSkins[0].getSkin();
                                     bindTexture("attachments", attachmentsPath);
                                 }
-                                renderAttachment(model.config, attachment.typeName, attachmentType.internalName, () -> {
+                                renderAttachment(config, attachment.typeName, attachmentType.internalName, () -> {
                                     attachmentModel.renderAttachment(worldScale);
                                     if(attachment==AttachmentPresetEnum.Sight) {
                                         renderScopeGlass(attachmentType, attachmentModel, controller.ADS > 0, worldScale);

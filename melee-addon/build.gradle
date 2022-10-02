@@ -1,0 +1,57 @@
+def addon_name = 'melee'
+def addon_version = '0.0.1f'
+
+version = addon_version
+
+sourceSets {
+    main {
+        output.resourcesDir = output.classesDir
+    }
+}
+
+group = 'com.modularwarfare'
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+compileJava.options.encoding = 'UTF-8'
+
+minecraft {
+    mappings channel: 'snapshot', version: '20171003-1.12'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            property 'fml.coreMods.load', 'com.modularwarfare.mixin.MixinCore,net.ravage.core.mixin.MixinCore'
+            property 'mixin.debug', 'true'
+        }
+        server {
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
+    compileOnly(files("../build/libs/modularwarfare-${project.ext.properties['mod_version']}.jar"))
+    compileOnly fileTree(dir: '../libs', include: '*.jar')
+
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": addon_version,
+                "Specification-Vendor": addon_version,
+                "Specification-Version": addon_version,
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" : addon_version,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}

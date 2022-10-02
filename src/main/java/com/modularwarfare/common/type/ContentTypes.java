@@ -1,7 +1,9 @@
 package com.modularwarfare.common.type;
 
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.api.GunBobbingEvent;
 import com.modularwarfare.api.MWArmorType;
+import com.modularwarfare.api.TypeRegisterEvent;
 import com.modularwarfare.client.fpp.basic.configs.*;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.model.*;
@@ -14,6 +16,7 @@ import com.modularwarfare.common.grenades.GrenadeType;
 import com.modularwarfare.common.grenades.ItemGrenade;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.textures.TextureType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -114,10 +117,16 @@ public class ContentTypes {
             if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
                 ((ModelGrenade) (type.model)).config = ModularWarfare.getRenderConfig(type, GrenadeRenderConfig.class);
         });
+
+        /**
+         * Send TypeRegisterEvent
+         */
+        TypeRegisterEvent event = new TypeRegisterEvent();
+        MinecraftForge.EVENT_BUS.post(event);
     }
 
 
-    private static <T extends BaseType, U extends BaseItem> void assignType(HashMap<String, U> map, Function<T, U> factory, T type, Boolean reload) {
+    public static <T extends BaseType, U extends BaseItem> void assignType(HashMap<String, U> map, Function<T, U> factory, T type, Boolean reload) {
         if (reload) {
             map.get(type.internalName).setType(type);
         } else {

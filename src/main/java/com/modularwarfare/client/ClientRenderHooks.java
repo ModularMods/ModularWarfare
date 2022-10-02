@@ -61,7 +61,7 @@ public class ClientRenderHooks extends ForgeEvent {
     public static HashMap<EntityLivingBase, AnimStateMachine> weaponBasicAnimations = new HashMap<EntityLivingBase, AnimStateMachine>();
     public static HashMap<EntityLivingBase, EnhancedStateMachine> weaponEnhancedAnimations = new HashMap<EntityLivingBase, EnhancedStateMachine>();
 
-    public static CustomItemRenderer[] customRenderers = new CustomItemRenderer[9];
+    public static CustomItemRenderer[] customRenderers = new CustomItemRenderer[20];
     public static boolean isAimingScope;
     public static boolean isAiming;
     public float partialTicks;
