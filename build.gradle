@@ -21,7 +21,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'idea'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-version = '2.0.3f'
+version = '2.0.4f'
 group = 'com.modularwarfare' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'modularwarfare'
 
