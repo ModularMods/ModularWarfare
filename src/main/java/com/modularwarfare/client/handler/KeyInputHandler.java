@@ -2,7 +2,7 @@ package com.modularwarfare.client.handler;
 
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.api.ReloadConfigKeyEvent;
+import com.modularwarfare.api.HandleKeyEvent;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.basic.animations.AnimStateMachine;
@@ -74,15 +74,14 @@ public class KeyInputHandler extends ForgeEvent {
     public void handleKeyInput(KeyType keyType) {
         if (Minecraft.getMinecraft().player != null) {
             EntityPlayerSP entityPlayer = Minecraft.getMinecraft().player;
+            HandleKeyEvent event = new HandleKeyEvent(keyType);
+            MinecraftForge.EVENT_BUS.post(event);
 
             switch (keyType) {
                 // F9 Reloads Models /// SHIFT + F9 Reloads Textures & Icons
                 case ClientReload:
 
                     ModularWarfare.loadConfig();
-
-                    ReloadConfigKeyEvent event = new ReloadConfigKeyEvent();
-                    MinecraftForge.EVENT_BUS.post(event);
 
                     if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                         final ItemStack gunStack = entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);

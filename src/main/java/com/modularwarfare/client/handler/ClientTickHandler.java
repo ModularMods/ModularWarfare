@@ -110,7 +110,10 @@ public class ClientTickHandler extends ForgeEvent {
         
         reloadEnhancedPrognosisAmmoRendering=reloadEnhancedPrognosisAmmo;
         reloadEnhancedIsQuicklyRendering=reloadEnhancedIsQuickly;
-        
+
+        OnTickRenderEvent event = new OnTickRenderEvent(renderTick);
+        MinecraftForge.EVENT_BUS.post(event);
+
         /**
          *EnhancedGunRendered update currentItem 
          */
@@ -258,8 +261,6 @@ public class ClientTickHandler extends ForgeEvent {
         } else {
             RenderParameters.resetRenderMods();
         }
-        OnTickRenderEvent event = new OnTickRenderEvent(renderTick);
-        MinecraftForge.EVENT_BUS.post(event);
     }
 
 

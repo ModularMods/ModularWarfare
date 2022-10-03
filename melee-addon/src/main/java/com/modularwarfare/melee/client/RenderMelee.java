@@ -5,7 +5,6 @@ import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderer;
 import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
-import com.modularwarfare.client.fpp.enhanced.animation.AnimationController;
 import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
 import com.modularwarfare.melee.client.animation.AnimationMeleeController;
 import com.modularwarfare.melee.client.configs.MeleeRenderConfig;
@@ -14,10 +13,12 @@ import com.modularwarfare.melee.common.melee.MeleeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -30,26 +31,26 @@ import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.*;
 
 public class RenderMelee extends CustomItemRenderer {
 
-    private static final String[] LEFT_HAND_PART=new String[]{
+    public static final float PI = 3.14159265f;
+    private static final String[] LEFT_HAND_PART = new String[]{
             "leftArmModel", "leftArmLayerModel"
     };
-    private static final String[] LEFT_SLIM_HAND_PART=new String[]{
+    private static final String[] LEFT_SLIM_HAND_PART = new String[]{
             "leftArmSlimModel", "leftArmLayerSlimModel"
     };
-    private static final String[] RIGHT_HAND_PART=new String[]{
+    private static final String[] RIGHT_HAND_PART = new String[]{
             "rightArmModel", "rightArmLayerModel"
     };
-    private static final String[] RIGHT_SLIM_HAND_PART=new String[]{
+    private static final String[] RIGHT_SLIM_HAND_PART = new String[]{
             "rightArmSlimModel", "rightArmLayerSlimModel"
     };
-
-    public static final float PI = 3.14159265f;
-
+    public static AnimationMeleeController controller;
+    public FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
     private Timer timer;
 
-    public FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
-
-    public static AnimationMeleeController controller;
+    public static float toRadians(float angdeg) {
+        return angdeg / 180.0f * PI;
+    }
 
     public void renderItem(CustomItemRenderType type, EnumHand hand, ItemStack item, Object... data) {
         if (!(item.getItem() instanceof ItemMelee))
@@ -67,7 +68,7 @@ public class RenderMelee extends CustomItemRenderer {
         EnhancedModel model = meleeType.enhancedModel;
 
         MeleeRenderConfig config = (MeleeRenderConfig) model.config;
-        if(this.controller == null || this.controller.getConfig() != config){
+        if (this.controller == null || this.controller.getConfig() != config) {
             this.controller = new AnimationMeleeController(config);
         }
 
@@ -83,9 +84,9 @@ public class RenderMelee extends CustomItemRenderer {
          * DEFAULT TRANSFORM
          * */
         //mat.translate(new Vector3f(0,1.3f,-1.8f));
-        float zFar = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16F*2;
-        mat.rotate(toRadians(90.0F), new Vector3f(0,1,0));
-        mat.scale(new Vector3f(1/zFar, 1/zFar, 1/zFar));
+        float zFar = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16F * 2;
+        mat.rotate(toRadians(90.0F), new Vector3f(0, 1, 0));
+        mat.scale(new Vector3f(1 / zFar, 1 / zFar, 1 / zFar));
         //Do hand rotations
         float f5 = player.prevRenderArmPitch + (player.renderArmPitch - player.prevRenderArmPitch) * partialTicks;
         float f6 = player.prevRenderArmYaw + (player.renderArmYaw - player.prevRenderArmYaw) * partialTicks;
@@ -95,9 +96,9 @@ public class RenderMelee extends CustomItemRenderer {
         mat.rotate(toRadians(90), new Vector3f(0, 1, 0));
         mat.translate(new Vector3f(config.global.globalTranslate.x, config.global.globalTranslate.y, config.global.globalTranslate.z));
         mat.rotate(toRadians(-90), new Vector3f(0, 1, 0));
-        mat.rotate(config.global.globalRotate.y/180*3.14f, new Vector3f(0, 1, 0));
-        mat.rotate(config.global.globalRotate.x/180*3.14f, new Vector3f(1, 0, 0));
-        mat.rotate(config.global.globalRotate.z/180*3.14f, new Vector3f(0, 0, 1));
+        mat.rotate(config.global.globalRotate.y / 180 * 3.14f, new Vector3f(0, 1, 0));
+        mat.rotate(config.global.globalRotate.x / 180 * 3.14f, new Vector3f(1, 0, 0));
+        mat.rotate(config.global.globalRotate.z / 180 * 3.14f, new Vector3f(0, 0, 1));
 
         /**
          * ACTION GUN MOTION
@@ -112,12 +113,15 @@ public class RenderMelee extends CustomItemRenderer {
         /**
          * ACTION GUN BALANCING X / Y
          */
-        float rotateX=0;
-        mat.translate(new Vector3f((float) (0.1f*GUN_BALANCING_X*Math.cos(Math.PI * RenderParameters.SMOOTH_SWING / 50)),0,0));
-        rotateX-=(GUN_BALANCING_X * 4F) + (float) (GUN_BALANCING_X * Math.sin(Math.PI * RenderParameters.SMOOTH_SWING / 35));
-        rotateX-=(float) Math.sin(Math.PI * GUN_BALANCING_X);
-        rotateX-=(GUN_BALANCING_X) * 0.4F;
-        mat.rotate(toRadians(rotateX),  new Vector3f(1f, 0f, 0f));
+        float rotateX = 0;
+        mat.translate(new Vector3f((float) (0.1f * GUN_BALANCING_X * Math.cos(Math.PI * RenderParameters.SMOOTH_SWING / 50)), 0, 0));
+        rotateX -= (GUN_BALANCING_X * 4F) + (float) (GUN_BALANCING_X * Math.sin(Math.PI * RenderParameters.SMOOTH_SWING / 35));
+        rotateX -= (float) Math.sin(Math.PI * GUN_BALANCING_X);
+        rotateX -= (GUN_BALANCING_X) * 0.4F;
+        mat.rotate(toRadians(rotateX), new Vector3f(1f, 0f, 0f));
+        
+
+
 
         floatBuffer.clear();
         mat.store(floatBuffer);
@@ -133,9 +137,9 @@ public class RenderMelee extends CustomItemRenderer {
          * player right hand
          * */
         bindPlayerSkin();
-        if(Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
+        if (Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
             model.renderPart(RIGHT_SLIM_HAND_PART);
-        }else {
+        } else {
             model.renderPart(RIGHT_HAND_PART);
         }
 
@@ -156,9 +160,9 @@ public class RenderMelee extends CustomItemRenderer {
          * player left hand
          * */
         bindPlayerSkin();
-        if(Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
+        if (Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
             model.renderPart(LEFT_SLIM_HAND_PART);
-        }else {
+        } else {
             model.renderPart(LEFT_HAND_PART);
         }
 
@@ -178,9 +182,5 @@ public class RenderMelee extends CustomItemRenderer {
 
     public void bindPlayerSkin() {
         bindingTexture = Minecraft.getMinecraft().player.getLocationSkin();
-    }
-
-    public static float toRadians(float angdeg) {
-        return angdeg / 180.0f * PI;
     }
 }

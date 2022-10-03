@@ -9,7 +9,7 @@ public class MeleeType extends BaseType {
 
     float damage;
 
-    public MeleeType(){
+    public MeleeType() {
         maxStackSize = 1;
     }
 
