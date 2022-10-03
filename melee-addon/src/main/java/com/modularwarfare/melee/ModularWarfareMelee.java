@@ -6,7 +6,10 @@ import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.addon.AddonLoaderManager;
 import com.modularwarfare.addon.IContentAddon;
 import com.modularwarfare.api.*;
+import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
+import com.modularwarfare.client.input.KeyType;
+import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
 import com.modularwarfare.melee.client.RenderMelee;
@@ -21,11 +24,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.Sys;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -48,21 +52,22 @@ public class ModularWarfareMelee implements IContentAddon {
 
     @Override
     public void init(FMLPostInitializationEvent event, AddonLoaderManager contentManager) {
-        if(event.getSide() == Side.CLIENT){
+        if (event.getSide() == Side.CLIENT) {
             /**
              * Init Melee Renderer
              */
-            for(TypeEntry entry : ContentTypes.values){
-                if(entry.name.equalsIgnoreCase("melee")) {
+            for (TypeEntry entry : ContentTypes.values) {
+                if (entry.name.equalsIgnoreCase("melee")) {
                     ClientRenderHooks.customRenderers[entry.id] = new RenderMelee();
-                    System.out.println("Registered Custom Render Melee at "+entry.id);
+                    System.out.println("Registered Custom Render Melee at " + entry.id);
                 }
             }
         }
     }
 
     @Override
-    public void unload() {}
+    public void unload() {
+    }
 
     @Override
     public String getName() {
@@ -81,7 +86,7 @@ public class ModularWarfareMelee implements IContentAddon {
 
 
     @SubscribeEvent
-    public void onRegisterType(TypeRegisterEvent event){
+    public void onRegisterType(TypeRegisterEvent event) {
         ModularWarfare.LOGGER.info("Loading MeleeType ...");
         ContentTypes.registerType("melee", MeleeType.class, (type, reload) -> {
             ContentTypes.assignType(ModularWarfareMelee.meleeTypes, ItemMelee.factory, (MeleeType) type, reload);
@@ -89,11 +94,11 @@ public class ModularWarfareMelee implements IContentAddon {
     }
 
     @SubscribeEvent
-    public void onRegisterItem(ItemRegisterEvent event){
+    public void onRegisterItem(ItemRegisterEvent event) {
         for (ItemMelee itemMelee : meleeTypes.values()) {
             event.registry.register(itemMelee);
             event.tabOrder.add(itemMelee);
-        };
+        }
     }
 
     @SubscribeEvent
@@ -104,12 +109,16 @@ public class ModularWarfareMelee implements IContentAddon {
     }
 
     @SubscribeEvent
-    public void onModelConfigReload(ReloadConfigKeyEvent event){
+    public void onHandleKey(HandleKeyEvent event) {
         EntityPlayerSP entityPlayer = Minecraft.getMinecraft().player;
         if (entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemMelee) {
             final ItemStack itemStack = entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
             final MeleeType meleeType = ((ItemMelee) itemStack.getItem()).type;
-            meleeType.enhancedModel.config = ModularWarfare.getRenderConfig(meleeType, MeleeRenderConfig.class);
+            if(event.keyType == KeyType.ClientReload) {
+                meleeType.enhancedModel.config = ModularWarfare.getRenderConfig(meleeType, MeleeRenderConfig.class);
+            } else if (event.keyType == KeyType.Inspect) {
+                RenderMelee.controller.INSPECT = 0;
+            }
         }
     }
 
@@ -117,11 +126,11 @@ public class ModularWarfareMelee implements IContentAddon {
      * Generate the .render.json file of the melee weapons
      */
     @SubscribeEvent
-    public void onGenerateJsonModels(GenerateJsonModelsEvent event){
+    public void onGenerateJsonModels(GenerateJsonModelsEvent event) {
         System.out.println("Generate JSON Melee");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        for(ItemMelee itemMelee : meleeTypes.values()) {
+        for (ItemMelee itemMelee : meleeTypes.values()) {
             MeleeType type = itemMelee.type;
             if (type.contentPack == null)
                 continue;
@@ -155,10 +164,20 @@ public class ModularWarfareMelee implements IContentAddon {
     }
 
     @SubscribeEvent
-    public void onRenderTickEvent(OnTickRenderEvent event){
-        if(RenderMelee.controller != null){
+    public void onRenderTickEvent(OnTickRenderEvent event) {
+        if (RenderMelee.controller != null) {
             RenderMelee.controller.updateCurrentItem();
             RenderMelee.controller.onTickRender(event.smooth);
         }
     }
+
+    @SubscribeEvent
+    public void onAttack(PlayerInteractEvent event){
+        if((event instanceof PlayerInteractEvent.LeftClickEmpty || event instanceof PlayerInteractEvent.LeftClickBlock)) {
+            if (event.getItemStack().getItem() instanceof ItemMelee) {
+                RenderMelee.controller.applyAttackAnim();
+            }
+        }
+    }
+
 }

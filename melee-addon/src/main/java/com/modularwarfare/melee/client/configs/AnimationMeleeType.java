@@ -17,11 +17,21 @@ public enum AnimationMeleeType {
     SPRINT("sprint");
 
     public String serializedName;
+
     private AnimationMeleeType(String name) {
-        serializedName=name;
+        serializedName = name;
     }
-    
-    public static class AnimationTypeJsonAdapter extends TypeAdapter<AnimationMeleeType>{
+
+    public static class AnimationTypeJsonAdapter extends TypeAdapter<AnimationMeleeType> {
+
+        public static AnimationMeleeType fromString(String modeName) {
+            for (AnimationMeleeType animationType : values()) {
+                if (animationType.serializedName.equalsIgnoreCase(modeName)) {
+                    return animationType;
+                }
+            }
+            throw new AnimationTypeException("wrong animation type:" + modeName);
+        }
 
         @Override
         public AnimationMeleeType read(JsonReader in) throws IOException {
@@ -36,21 +46,12 @@ public enum AnimationMeleeType {
         public void write(JsonWriter out, AnimationMeleeType t) throws IOException {
             out.value(t.serializedName);
         }
-        
-        public static class AnimationTypeException extends RuntimeException{
+
+        public static class AnimationTypeException extends RuntimeException {
             public AnimationTypeException(String str) {
                 super(str);
             }
         }
 
-        public static AnimationMeleeType fromString(String modeName) {
-            for (AnimationMeleeType animationType : values()) {
-                if (animationType.serializedName.equalsIgnoreCase(modeName)) {
-                    return animationType;
-                }
-            }
-            throw new AnimationTypeException("wrong animation type:"+modeName);
-        }
-        
     }
 }

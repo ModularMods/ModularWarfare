@@ -14,23 +14,26 @@ public class ActionPlaybackMelee {
 
     private MeleeRenderConfig config;
 
-    public ActionPlaybackMelee(MeleeRenderConfig config){
+    public ActionPlaybackMelee(MeleeRenderConfig config) {
         this.config = config;
     }
 
-    public void updateTime(double alpha){
-        if(config.animations.get(action)==null) {
+    public void updateTime(int currentAnim, double alpha) {
+        if (config.animations.get(action) == null) {
             return;
         }
-        double startTime = config.animations.get(action).getStartTime(config.FPS);
-        double endTime = config.animations.get(action).getEndTime(config.FPS);
+        if (config.animations.get(action).get(currentAnim) == null) {
+            return;
+        }
+        double startTime = config.animations.get(action).get(currentAnim).getStartTime(config.FPS);
+        double endTime = config.animations.get(action).get(currentAnim).getEndTime(config.FPS);
         this.time = Interpolation.LINEAR.interpolate(startTime, endTime, alpha);
-        checkPlayed();
+        checkPlayed(currentAnim);
     }
-    
-    public boolean checkPlayed() {
-        double endTime = config.animations.get(action).getEndTime(config.FPS);
-        if(this.time >= endTime){
+
+    public boolean checkPlayed(int currentAnim) {
+        double endTime = config.animations.get(action).get(currentAnim).getEndTime(config.FPS);
+        if (this.time >= endTime) {
             this.hasPlayed = true;
         } else {
             this.hasPlayed = false;

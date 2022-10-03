@@ -3,11 +3,12 @@ package com.modularwarfare.melee.client.configs;
 import com.modularwarfare.client.fpp.enhanced.configs.EnhancedRenderConfig;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MeleeRenderConfig extends EnhancedRenderConfig {
 
-    public HashMap<AnimationMeleeType, MeleeRenderConfig.Animation> animations = new HashMap<>();
+    public HashMap<AnimationMeleeType, ArrayList<Animation>> animations = new HashMap<>();
 
     public MeleeRenderConfig.Global global = new MeleeRenderConfig.Global();
 
@@ -24,19 +25,19 @@ public class MeleeRenderConfig extends EnhancedRenderConfig {
         public double speed = 1;
 
         public double getStartTime(double FPS) {
-            return startTime * 1/FPS;
+            return startTime * 1 / FPS;
         }
 
         public double getEndTime(double FPS) {
-            return endTime * 1/FPS;
+            return endTime * 1 / FPS;
         }
 
         public double getSpeed(double FPS) {
-            double a=(getEndTime(FPS)-getStartTime(FPS));
-            if(a<=0) {
-                a=1;
+            double a = (getEndTime(FPS) - getStartTime(FPS));
+            if (a <= 0) {
+                a = 1;
             }
-            return speed/a;
+            return speed / a;
         }
     }
 
