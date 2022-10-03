@@ -124,7 +124,7 @@ public class AnimationController {
         boolean aimChargeMisc = ClientRenderHooks.getEnhancedAnimMachine(player).reloading;
         double adsSpeed = config.animations.get(AnimationType.AIM).getSpeed(config.FPS) * partialTick;
         double val = 0;
-        if(Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && !aimChargeMisc) {
+        if(Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && !aimChargeMisc && INSPECT == 1F) {
             val = ADS + adsSpeed * (2 - ADS);
         } else {
             val = ADS - adsSpeed * (1 + ADS);
