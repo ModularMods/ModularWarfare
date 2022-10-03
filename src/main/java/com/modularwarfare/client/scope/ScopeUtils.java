@@ -109,9 +109,6 @@ public class ScopeUtils {
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
-            if(mc.world!=lastWorld&&mc.world!=null) {
-                updateRenderGobal=true;
-            }
             if(updateRenderGobal) {
                 updateRenderGobal=false;
                 scopeRenderGlobal = new ScopeRenderGlobal(mc);
