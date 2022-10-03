@@ -1,26 +1,39 @@
 {
   "modelFileName": "knife.gltf",
   "animations": {
-    "default": {
-      "startTime": 30,
-      "endTime": 30,
-      "speed": 0.015
-    },
-    "draw": {
-      "startTime": 0,
-      "endTime": 30,
-      "speed": 0.048
-    },
-    "inspect": {
-      "startTime": 1,
-      "endTime": 30,
-      "speed": 0.048
-    },
-    "attack": {
-      "startTime": 1,
-      "endTime": 30,
-      "speed": 0.048
-    }
+    "default": [
+      {
+        "startTime": 30,
+        "endTime": 30,
+        "speed": 0.015
+      }
+    ],
+    "draw": [
+      {
+        "startTime": 0,
+        "endTime": 27,
+        "speed": 0.048
+      }
+    ],
+    "inspect": [
+      {
+        "startTime": 30,
+        "endTime": 169,
+        "speed": 0.048
+      }
+    ],
+    "attack": [
+      {
+        "startTime": 176,
+        "endTime": 197,
+        "speed": 0.1
+      },
+      {
+        "startTime": 176,
+        "endTime": 197,
+        "speed": 0.05
+      }
+    ]
   },
   "global": {
     "globalTranslate": {
