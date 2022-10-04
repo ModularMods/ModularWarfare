@@ -35,6 +35,8 @@ import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
+import com.modularwarfare.raycast.DefaultRayCasting;
+import com.modularwarfare.raycast.RayCasting;
 import com.modularwarfare.utility.GSONUtils;
 import com.modularwarfare.utility.ZipContentPack;
 import net.lingala.zip4j.core.ZipFile;
@@ -124,6 +126,12 @@ public class ModularWarfare {
     public static ArrayList<BaseType> baseTypes = new ArrayList<BaseType>();
 
     public static HashMap<String, MWTab> MODS_TABS = new HashMap<String, MWTab>();
+
+    /**
+     * Custom RayCasting
+     */
+    public RayCasting RAY_CASTING;
+
 
     public static void loadContent() {
         Method method = null;
@@ -330,6 +338,8 @@ public class ModularWarfare {
             contentPacks = PROXY.getContentList();
         }
 
+        registerRayCasting(new DefaultRayCasting());
+
         // Loads Content Packs
         ContentTypes.registerTypes();
         loadContentPacks(false);
@@ -494,6 +504,10 @@ public class ModularWarfare {
 
         //EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "bullet"), EntityBullet.class, "bullet", 15, this, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(ModularWarfare.MOD_ID, "explosive_projectile"), EntityExplosiveProjectile.class, "explosive_projectile", 15, this, 80, 1, true);
+    }
+
+    public static void registerRayCasting(RayCasting rayCasting){
+        INSTANCE.RAY_CASTING = rayCasting;
     }
 }
 

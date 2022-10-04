@@ -68,7 +68,7 @@ public class InstantBulletRenderer {
 
             Vector3f dPos = Vector3f.sub(hitPos, origin, null);
 
-            RayTraceResult result = RayUtil.rayTraceBlocks(Minecraft.getMinecraft().world, origin.toVec3(), hitPos.toVec3(), true, true, false);
+            RayTraceResult result = ModularWarfare.INSTANCE.RAY_CASTING.rayTraceBlocks(Minecraft.getMinecraft().world, origin.toVec3(), hitPos.toVec3(), true, true, false);
             if (result != null) {
                 if (result.hitVec != null) {
                     dPos = Vector3f.sub(new Vector3f(result.hitVec), origin, null);
