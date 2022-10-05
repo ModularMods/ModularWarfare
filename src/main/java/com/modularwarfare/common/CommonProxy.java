@@ -135,7 +135,7 @@ public class CommonProxy extends ForgeEvent {
     public void generateJsonModels(ArrayList<BaseType> types) {
     }
 
-    public void generateJsonSounds(Collection<ItemGun> types, boolean replace) {
+    public void generateJsonSounds(Collection<BaseType> types, boolean replace) {
     }
 
     public void generateLangFiles(ArrayList<BaseType> types, boolean replace) {

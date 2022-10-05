@@ -438,5 +438,22 @@
       "modularwarfare:human/equip/extra/extra3",
       "modularwarfare:human/equip/extra/extra4"
     ]
+  },
+  "melee.attack": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:knife/attack1",
+      "modularwarfare:knife/attack2",
+      "modularwarfare:knife/attack3",
+      "modularwarfare:knife/attack4",
+      "modularwarfare:knife/attack5",
+      "modularwarfare:knife/attack6"
+    ]
+  },
+  "melee.draw": {
+    "category": "player",
+    "sounds": [
+      "modularwarfare:knife/draw"
+    ]
   }
 }

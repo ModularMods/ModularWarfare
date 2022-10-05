@@ -2,12 +2,35 @@
   "internalName": "prototype.knife",
   "displayName": "Knife",
   "damage": 7.5,
-  "modelSkins":[
+
+  "modelSkins": [
     {
-      "internalName":"prototype.knife",
-      "skinAsset":"prototype.knife",
+      "internalName": "prototype.knife",
+      "skinAsset": "prototype.knife",
       "displayName": "Default",
-      "textures": ["basic"]
+      "textures": [
+        "basic"
+      ]
     }
-  ]
+  ],
+  "weaponSoundMap": {
+    "meleeDraw": [
+      {
+        "soundEvent": "meleeDraw",
+        "soundName": "melee.draw"
+      }
+    ],
+    "meleeInspect": [
+      {
+        "soundEvent": "meleeInspect",
+        "soundName": "melee.inspect"
+      }
+    ],
+    "meleeAttack": [
+      {
+        "soundEvent": "meleeAttack",
+        "soundName": "melee.attack"
+      }
+    ]
+  }
 }

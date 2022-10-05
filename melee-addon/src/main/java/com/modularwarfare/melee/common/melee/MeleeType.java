@@ -7,7 +7,10 @@ import com.modularwarfare.melee.client.configs.MeleeRenderConfig;
 
 public class MeleeType extends BaseType {
 
-    float damage;
+    public float damage;
+    public boolean resetAttackOnClick = false;
+    public boolean destroyBlocks = false;
+    public boolean swing = true;
 
     public MeleeType() {
         maxStackSize = 1;

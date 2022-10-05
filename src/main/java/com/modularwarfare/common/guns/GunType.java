@@ -1,37 +1,26 @@
 package com.modularwarfare.common.guns;
 
 import com.modularwarfare.ModularWarfare;
-import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.fpp.basic.configs.GunRenderConfig;
 import com.modularwarfare.client.model.ModelGun;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
-import com.modularwarfare.common.network.PacketPlaySound;
 import com.modularwarfare.common.textures.TextureEnumType;
 import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWSound;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 public class GunType extends BaseType {
 
@@ -185,10 +174,6 @@ public class GunType extends BaseType {
     //Only Enhanced ASM
     public boolean allowFiringSprint=true;
     
-    //Only Enhanced ASM
-    public boolean allowAimingSprint = true;
-    
-    public boolean allowDefaultSounds = true;
 
     /**
      * Custom flash textures
@@ -206,11 +191,6 @@ public class GunType extends BaseType {
      */
     public Vec3d shellEjectOffsetNormal = new Vec3d(-1.0f, 0.0f, 1.0f);
     public Vec3d shellEjectOffsetAiming = new Vec3d(0.0f, 0.12f, 1.0f);
-    //Increases pitch incrementally over last 5 rounds, 0.05F recommended
-    public float emptyPitch = 0.05F;
-    public HashMap<WeaponSoundType, ArrayList<SoundEntry>> weaponSoundMap;
-    //Sound Variables
-    private SoundEntry[] weaponSounds;
 
 
     /**
@@ -299,7 +279,6 @@ public class GunType extends BaseType {
                 }
             }
         }
-
         loadBaseValues();
         fireTickDelay = 1200 / roundsPerMin;
         try {
@@ -327,6 +306,7 @@ public class GunType extends BaseType {
             enhancedModel = new ModelEnhancedGun(ModularWarfare.getRenderConfig(this, GunEnhancedRenderConfig.class), this);
         }
     }
+
 
     public void playClientSound(EntityPlayer player, WeaponSoundType weaponSoundType) {
         if (weaponSoundMap.containsKey(weaponSoundType)) {
@@ -451,6 +431,7 @@ public class GunType extends BaseType {
             }
         }
     }
+
 
     public boolean hasFireMode(WeaponFireMode fireMode) {
         if (fireModes != null) {

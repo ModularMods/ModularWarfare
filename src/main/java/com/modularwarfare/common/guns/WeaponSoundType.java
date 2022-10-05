@@ -165,7 +165,20 @@ public enum WeaponSoundType {
     /**
      * The sound to play when a bullet hit a block
      */
-    @SerializedName("impact.wood") ImpactWood("impact.wood", 10, "impact.wood");
+    @SerializedName("impact.wood") ImpactWood("impact.wood", 10, "impact.wood"),
+
+    /**
+     * The sound played when drawing a melee weapon
+     */
+    @SerializedName("meleeDraw") MeleeDraw("meleeDraw", 5, "melee.draw"),
+    /**
+     * The sound played when inspecting a melee weapon
+     */
+    @SerializedName("meleeInspect") MeleeInspect("meleeInspect", 5, "melee.inspect"),
+    /**
+     * The sound played when attacking a melee weapon
+     */
+    @SerializedName("meleeAttack") MeleeAttack("meleeAttack", 5, "melee.attack");
 
 
     public String eventName;

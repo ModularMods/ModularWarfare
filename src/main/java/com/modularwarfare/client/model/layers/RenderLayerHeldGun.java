@@ -1,5 +1,6 @@
 package com.modularwarfare.client.model.layers;
 
+import com.modularwarfare.api.RenderHeldItemLayerEvent;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.basic.models.objects.CustomItemRenderType;
@@ -7,10 +8,7 @@ import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.models.EnhancedModel;
-import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
-import com.modularwarfare.common.backpacks.ItemBackpack;
 import com.modularwarfare.common.guns.GunType;
-import com.modularwarfare.common.guns.ItemAttachment;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.guns.WeaponAnimationType;
 import com.modularwarfare.common.type.BaseItem;
@@ -21,9 +19,8 @@ import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.GL11;
-
-import java.util.HashSet;
 
 public class RenderLayerHeldGun extends LayerHeldItem {
 
@@ -35,6 +32,10 @@ public class RenderLayerHeldGun extends LayerHeldItem {
                               float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         ItemStack itemstack = entitylivingbaseIn.getHeldItemMainhand();
         if (itemstack != ItemStack.EMPTY && !itemstack.isEmpty()) {
+
+            RenderHeldItemLayerEvent event = new RenderHeldItemLayerEvent(itemstack, this, entitylivingbaseIn, partialTicks);
+            MinecraftForge.EVENT_BUS.post(event);
+
             if (!(itemstack.getItem() instanceof ItemGun)) {
                 return;
             }

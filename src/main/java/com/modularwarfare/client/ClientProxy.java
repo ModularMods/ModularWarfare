@@ -96,7 +96,6 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.lwjgl.opengl.GL11;
-import paulscode.sound.SoundSystemConfig;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -109,7 +108,7 @@ import java.util.function.Predicate;
 
 import static com.modularwarfare.ModularWarfare.contentPacks;
 
-public class ClientProxy extends CommonProxy{
+public class ClientProxy extends CommonProxy {
 
     public static String modelDir = "com.modularwarfare.client.model.";
 
@@ -281,7 +280,7 @@ public class ClientProxy extends CommonProxy{
     }
 
     public void setupLayers(RenderPlayer renderer) {
-        MWFRenderHelper helper=new MWFRenderHelper(renderer);
+        MWFRenderHelper helper = new MWFRenderHelper(renderer);
         helper.getLayerRenderers().add(0, new ResetHiddenModelLayer(renderer));
         renderer.addLayer(new RenderLayerBackpack(renderer, renderer.getMainModel().bipedBodyWear));
         renderer.addLayer(new RenderLayerBody(renderer, renderer.getMainModel().bipedBodyWear));
@@ -293,21 +292,21 @@ public class ClientProxy extends CommonProxy{
     @Override
     public void init() {
         //Disable VAO on Mac computer (not compatibility)
-        if(ModUtil.isMac()){
+        if (ModUtil.isMac()) {
             ModConfig.INSTANCE.model_optimization = false;
         }
-        
+
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new ISelectiveResourceReloadListener() {
 
             @Override
             public void onResourceManagerReload(IResourceManager resourceManager,
-                    Predicate<IResourceType> resourcePredicate) {
+                                                Predicate<IResourceType> resourcePredicate) {
                 loadTextures();
             }
 
         });
         loadTextures();
-        
+
         Programs.init();
     }
 
@@ -443,9 +442,9 @@ public class ClientProxy extends CommonProxy{
                 File itemModelsDir = new File(contentPackDir, "/assets/modularwarfare/models/item");
                 if (!itemModelsDir.exists())
                     itemModelsDir.mkdirs();
-                File typeModel = new File(itemModelsDir, type.internalName + ".json");
 
-                if (ModularWarfare.DEV_ENV) {
+                File typeModel = new File(itemModelsDir, type.internalName + ".json");
+                if (!typeModel.exists()) {
                     if (type instanceof ArmorType) {
                         ArmorType armorType = (ArmorType) type;
                         for (ArmorInfo armorInfo : armorType.armorTypes.values()) {
@@ -471,37 +470,37 @@ public class ClientProxy extends CommonProxy{
                         }
                     }
                 }
+            }
 
-                /**
-                 * Create directories & files for .render.json if they don't exist
-                 */
-                if (ModularWarfare.DEV_ENV) {
-                    final File dir = new File(contentPackDir, "/" + type.getAssetDir() + "/render");
-                    if (!dir.exists()) {
-                        dir.mkdirs();
-                    }
-                    final File renderFile = new File(dir, type.internalName + ".render.json");
-                    if (!renderFile.exists()) {
-                        try {
-                            FileWriter fileWriter = new FileWriter(renderFile, true);
-                            if (type instanceof GunType) {
-                                if (((GunType) type).animationType.equals(WeaponAnimationType.ENHANCED)) {
-                                    GunEnhancedRenderConfig renderConfig = new GunEnhancedRenderConfig();
-                                    renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
-                                    renderConfig.modelFileName = renderConfig.modelFileName + ".glb";
-                                    gson.toJson(renderConfig, fileWriter);
-                                } else {
-                                    GunRenderConfig renderConfig = new GunRenderConfig();
-                                    renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
-                                    renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
-                                    gson.toJson(renderConfig, fileWriter);
-                                }
-                                fileWriter.flush();
-                                fileWriter.close();
+            /**
+             * Create directories & files for .render.json if they don't exist
+             */
+            if (ModularWarfare.DEV_ENV) {
+                final File dir = new File(contentPackDir, "/" + type.getAssetDir() + "/render");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                final File renderFile = new File(dir, type.internalName + ".render.json");
+                if (!renderFile.exists()) {
+                    try {
+                        FileWriter fileWriter = new FileWriter(renderFile, true);
+                        if (type instanceof GunType) {
+                            if (((GunType) type).animationType.equals(WeaponAnimationType.ENHANCED)) {
+                                GunEnhancedRenderConfig renderConfig = new GunEnhancedRenderConfig();
+                                renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
+                                renderConfig.modelFileName = renderConfig.modelFileName + ".glb";
+                                gson.toJson(renderConfig, fileWriter);
+                            } else {
+                                GunRenderConfig renderConfig = new GunRenderConfig();
+                                renderConfig.modelFileName = type.internalName.replaceAll(type.contentPack + ".", "");
+                                renderConfig.modelFileName = renderConfig.modelFileName + ".obj";
+                                gson.toJson(renderConfig, fileWriter);
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            fileWriter.flush();
+                            fileWriter.close();
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -509,22 +508,21 @@ public class ClientProxy extends CommonProxy{
     }
 
     @Override
-    public void generateJsonSounds(Collection<ItemGun> types, boolean replace) {
+    public void generateJsonSounds(Collection<BaseType> types, boolean replace) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         HashMap<String, ArrayList<String>> cpSounds = new HashMap<String, ArrayList<String>>();
 
-        for (ItemGun itemGun : types) {
-            GunType type = itemGun.type;
-            if (type.contentPack == null)
+        for (BaseType baseType : types) {
+            if (baseType.contentPack == null)
                 continue;
 
-            String contentPack = type.contentPack;
+            String contentPack = baseType.contentPack;
 
             if (!cpSounds.containsKey(contentPack))
                 cpSounds.put(contentPack, new ArrayList<String>());
 
-            for (WeaponSoundType weaponSoundType : type.weaponSoundMap.keySet()) {
-                ArrayList<SoundEntry> soundEntries = type.weaponSoundMap.get(weaponSoundType);
+            for (WeaponSoundType weaponSoundType : baseType.weaponSoundMap.keySet()) {
+                ArrayList<SoundEntry> soundEntries = baseType.weaponSoundMap.get(weaponSoundType);
                 for (SoundEntry soundEntry : soundEntries) {
                     if (soundEntry.soundName != null && !cpSounds.get(contentPack).contains(soundEntry.soundName))
                         cpSounds.get(contentPack).add(soundEntry.soundName);

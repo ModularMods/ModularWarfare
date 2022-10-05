@@ -31,7 +31,7 @@
       {
         "startTime": 176,
         "endTime": 197,
-        "speed": 0.05
+        "speed": 0.1
       }
     ]
   },
@@ -50,6 +50,19 @@
       "x": 0.0,
       "y": 0.0,
       "z": 0.0
+    }
+  },
+  "extra": {
+    "thirdPersonRender3D": true,
+    "thirdPersonRotation": {
+      "x": 25,
+      "y": 0,
+      "z": 0
+    },
+    "thirdPersonOffset": {
+      "x": -7.0,
+      "y": -2.0,
+      "z": -0.5
     }
   }
 }

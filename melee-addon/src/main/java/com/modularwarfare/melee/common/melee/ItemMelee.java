@@ -6,6 +6,9 @@ import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.type.BaseItem;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.melee.client.RenderMelee;
+import com.modularwarfare.melee.client.configs.AnimationMeleeType;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -13,6 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -52,13 +56,28 @@ public class ItemMelee extends BaseItem {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 
-        tooltip.add(generateLoreListEntry("Damage", String.valueOf(type.damage)));
+        tooltip.add(generateLoreLine("Damage", String.valueOf(type.damage)));
+    }
+
+    public float getDestroySpeed(ItemStack stack, IBlockState state)
+    {
+        Block block = state.getBlock();
+
+        if (block == Blocks.WEB)
+        {
+            return 15.0F;
+        }
+        else
+        {
+            Material material = state.getMaterial();
+            return material != Material.PLANTS && material != Material.VINE && material != Material.CORAL && material != Material.LEAVES && material != Material.GOURD ? 1.0F : 1.5F;
+        }
     }
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         if(player.world.isRemote) {
-            RenderMelee.controller.applyAttackAnim();
+            RenderMelee.controller.applyAnim(AnimationMeleeType.ATTACK);
         }
         return false;
     }
@@ -77,7 +96,7 @@ public class ItemMelee extends BaseItem {
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
-        return true;
+        return false;
     }
 
     @Override
@@ -89,9 +108,11 @@ public class ItemMelee extends BaseItem {
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
         World world = player.world;
         if (!world.isRemote) {
-            // Client will still render block break if player is in creative so update block state
-            IBlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, 3);
+            if(!type.destroyBlocks) {
+                // Client will still render block break if player is in creative so update block state
+                IBlockState state = world.getBlockState(pos);
+                world.notifyBlockUpdate(pos, state, state, 3);
+            }
         }
         return true;
     }
@@ -102,6 +123,6 @@ public class ItemMelee extends BaseItem {
 
     @Override
     public boolean canHarvestBlock(IBlockState state, ItemStack stack) {
-        return false;
+        return type.destroyBlocks;
     }
 }

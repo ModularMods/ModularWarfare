@@ -1,11 +1,15 @@
 package com.modularwarfare.melee.client.animation;
 
+import com.modularwarfare.common.guns.ItemGun;
+import com.modularwarfare.common.guns.WeaponSoundType;
 import com.modularwarfare.melee.client.configs.AnimationMeleeType;
 import com.modularwarfare.melee.client.configs.MeleeRenderConfig;
 import com.modularwarfare.melee.common.melee.ItemMelee;
+import com.modularwarfare.melee.common.melee.MeleeType;
 import it.unimi.dsi.fastutil.Hash;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -107,6 +111,9 @@ public class AnimationMeleeController {
         if (oldCurrentItem != player.inventory.currentItem) {
             reset();
             oldCurrentItem = player.inventory.currentItem;
+            if (stack.getItem() instanceof ItemMelee) {
+                ((ItemMelee)stack.getItem()).type.playClientSound(player, WeaponSoundType.MeleeDraw);
+            }
         }
         if (oldItemstack != player.getHeldItemMainhand()) {
             if (oldItemstack == null || oldItemstack.isEmpty()) {
@@ -192,10 +199,30 @@ public class AnimationMeleeController {
         return true;
     }
 
-    public void applyAttackAnim(){
-        if (ATTACK == 1F) {
-            applyRandomAnim(AnimationMeleeType.ATTACK);
-            ATTACK = 0;
+    public void applyAnim(AnimationMeleeType type){
+        Item item = Minecraft.getMinecraft().player.getHeldItemMainhand().getItem();
+        if (item instanceof ItemMelee) {
+            MeleeType meleeType = ((ItemMelee) item).type;
+            switch (type){
+                case ATTACK:
+                    if(meleeType.resetAttackOnClick) {
+                        applyRandomAnim(AnimationMeleeType.ATTACK);
+                        ATTACK = 0;
+                        ((ItemMelee) item).type.playClientSound(player, WeaponSoundType.MeleeAttack);
+                    } else if(ATTACK == 1F){
+                        applyRandomAnim(AnimationMeleeType.ATTACK);
+                        ATTACK = 0;
+                        ((ItemMelee) item).type.playClientSound(player, WeaponSoundType.MeleeAttack);
+                    }
+                    break;
+                case INSPECT:
+                    if (INSPECT == 1F) {
+                        applyRandomAnim(AnimationMeleeType.INSPECT);
+                        INSPECT = 0;
+                        ((ItemMelee) item).type.playClientSound(player, WeaponSoundType.MeleeInspect);
+                    }
+                    break;
+            }
         }
     }
 
