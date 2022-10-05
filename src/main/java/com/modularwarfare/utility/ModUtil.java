@@ -18,6 +18,8 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -51,6 +53,7 @@ public class ModUtil {
         return (OS.indexOf("sunos") >= 0);
     }
 
+    @SideOnly(Side.CLIENT)
     public static void renderLightModel(final IBakedModel model, final int alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.4f, -0.4f, -0.4f);
@@ -71,6 +74,7 @@ public class ModUtil {
         GlStateManager.popMatrix();
     }
 
+    @SideOnly(Side.CLIENT)
     public static int getBrightness(final Entity ent) {
         final BlockPos blockpos = new BlockPos(Math.floor(ent.posX), ent.posY, Math.floor(ent.posZ));
         final World world = Minecraft.getMinecraft().world;
@@ -80,6 +84,7 @@ public class ModUtil {
         return Math.max(blockLight, skyLight);
     }
 
+    @SideOnly(Side.CLIENT)
     private static void renderLightQuads(final BufferBuilder renderer, final List<BakedQuad> quads, final int alpha) {
         int i = 0;
         final int argb = ColorUtils.getARGB(255, 255, 255, alpha);

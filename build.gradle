@@ -108,8 +108,6 @@ dependencies {
 
     compile fileTree(dir: 'libs', include: '*.jar')
     compileOnly fileTree(dir: 'optifine', include: '*.jar')
-
-    implementation project(":melee-addon")
 }
 
 
