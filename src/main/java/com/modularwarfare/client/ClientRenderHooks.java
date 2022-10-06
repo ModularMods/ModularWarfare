@@ -507,13 +507,15 @@ public class ClientRenderHooks extends ForgeEvent {
                 type = ((ItemSpecialArmor) stack.getItem()).type;
             }
             if (type != null) {
-                ArmorRenderConfig config = ModularWarfare.getRenderConfig(type, ArmorRenderConfig.class);
-                if (config.extra.hidePlayerModel) {
-                    if (config.extra.isSuit) {
-                        event.setCanceled(true);
-                    } else if (((ItemArmor) stack.getItem()).armorType == EntityEquipmentSlot.CHEST) {
-                        event.setCanceled(true);
-                    }
+                ArmorRenderConfig config = type.renderConfig;
+                if(config!=null) {
+                    if (config.extra.hidePlayerModel) {
+                        if (config.extra.isSuit) {
+                            event.setCanceled(true);
+                        } else if (((ItemArmor) stack.getItem()).armorType == EntityEquipmentSlot.CHEST) {
+                            event.setCanceled(true);
+                        }
+                    }  
                 }
             }
         });

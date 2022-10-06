@@ -20,6 +20,8 @@ public class ArmorType extends BaseType {
     public boolean simpleArmor = false;
 
     public HashMap<MWArmorType, ArmorInfo> armorTypes;
+    
+    public transient ArmorRenderConfig renderConfig;
 
     public ArmorType() {
         this.armorTypes = new HashMap<MWArmorType, ArmorInfo>();
@@ -53,8 +55,9 @@ public class ArmorType extends BaseType {
     @Override
     @SideOnly(Side.CLIENT)
     public void reloadModel() {
+        renderConfig=ModularWarfare.getRenderConfig(this, ArmorRenderConfig.class);
         if(!simpleArmor)
-            this.bipedModel = new ModelCustomArmor(ModularWarfare.getRenderConfig(this, ArmorRenderConfig.class), this);
+            this.bipedModel = new ModelCustomArmor(renderConfig, this);
     }
 
     @Override
