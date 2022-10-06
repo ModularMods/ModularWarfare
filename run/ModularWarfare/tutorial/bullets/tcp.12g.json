@@ -1,9 +1,0 @@
-{
-  "internalName": "tcp.12g",
-  "maxStackSize": 64,
-  "displayName": "Tutorial Gauge Shell",
-  "renderBulletModel": true,
-  "isDynamicBullet": false,
-  "sameTextureAsGun": false,
-  "shellModelFileName": "tcp_12g_shell.obj"
-}

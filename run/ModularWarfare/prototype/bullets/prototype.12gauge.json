@@ -1,8 +1,0 @@
-{
-  "internalName": "prototype.12gauge",
-  "maxStackSize": 64,
-  "displayName": "12 Gauge Shell",
-  "renderBulletModel": true,
-  "shellSound": "casing_gauge",
-  "shellModelFileName": "12gauge.obj"
-}

@@ -1,8 +1,0 @@
-{
-"cloud.siz_bg_nope_tcp": {"category": "player","sounds": [{"name": "modularwarfare:siz_bg_nope","stream": true}]},
-"cloud.siz_bg_deagle_shoot1_tcp": {"category": "player","sounds": [{"name": "modularwarfare:siz_bg_deagle_shoot1_1","stream": true}]},
-"cloud.siz_bg_akm_load_tcp": {"category": "player","sounds": [{"name": "modularwarfare:siz_bg_akm_load","stream": true}]},
-"cloud.siz_bg_akm_prereload_tcp": {"category": "player","sounds": [{"name": "modularwarfare:siz_bg_akm_prereload","stream": true}]},
-"cloud.siz_bg_akm_reload_tcp": {"category": "player","sounds": [{"name": "modularwarfare:siz_bg_akm_reload","stream": true}]},
-"cloud.siz_bg_akm_postreload_tcp": {"category": "player","sounds": [{"name": "modularwarfare:siz_bg_akm_postreload","stream": true}]}
-}

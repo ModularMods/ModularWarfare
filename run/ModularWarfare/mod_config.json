@@ -2,6 +2,7 @@
   "general": {
     "customInventory": true,
     "prototype_pack_extraction": true,
+    "tutorial_pack_extraction": true,
     "modified_pack_server_kick": true,
     "drop_extra_slots_on_death": true
   },

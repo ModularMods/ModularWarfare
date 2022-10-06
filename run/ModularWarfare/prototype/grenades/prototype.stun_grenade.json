@@ -1,7 +1,0 @@
-{
-  "displayName": "Stun Grenade",
-  "internalName": "prototype.stun_grenade",
-  "grenadeType": "stun",
-  "fuseTime": 3,
-  "throwStrength": 1.0
-}

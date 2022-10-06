@@ -1,9 +1,0 @@
-{
-  "internalName": "tcp.7_62",
-  "maxStackSize": 64,
-  "displayName": "Tutorial 7.62 Bullet",
-  "renderBulletModel": true,
-  "isDynamicBullet": false,
-  "sameTextureAsGun": false,
-  "shellModelFileName": "tcp.7_62_shell.obj"
-}

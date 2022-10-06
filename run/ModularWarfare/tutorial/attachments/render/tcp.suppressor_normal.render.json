@@ -1,9 +1,0 @@
-{
-  "modelFileName": "suppressor_normal.obj",
-  "extra": {
-    "modelScale": 1
-  },
-  "barrel": {
-    "hideMuzzleFlash": true
-  }
-}
