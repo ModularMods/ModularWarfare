@@ -10,6 +10,7 @@ import com.modularwarfare.client.handler.ClientTickHandler;
 import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.guns.WeaponAnimationType;
+import com.modularwarfare.common.guns.WeaponSoundType;
 import com.modularwarfare.utility.maths.Interpolation;
 
 import net.minecraft.client.Minecraft;
@@ -97,6 +98,12 @@ public class AnimationController {
         float moveDistance=player.distanceWalkedModified-player.prevDistanceWalkedModified;
         /** DEFAULT **/
         double defaultSpeed = config.animations.get(AnimationType.DEFAULT).getSpeed(config.FPS) * partialTick;
+        if(DEFAULT==0) {
+            if (player.getHeldItemMainhand().getItem() instanceof ItemGun) {
+                GunType type=((ItemGun)player.getHeldItemMainhand().getItem()).type;
+                type.playClientSound(player, WeaponSoundType.Idle);
+            }
+        }
         DEFAULT = Math.max(0F,DEFAULT + defaultSpeed);
         if(DEFAULT>1) {
             DEFAULT=0;
@@ -165,7 +172,7 @@ public class AnimationController {
             sprintValue = SPRINT - sprintSpeed;
         }
         if (anim.gunRecoil > 0.1F || ADS > 0.8 || RELOAD > 0) {
-            sprintValue = SPRINT - sprintSpeed * 3f;
+            sprintValue = SPRINT - sprintSpeed * 2.5f;
         }
 
         SPRINT = Math.max(0, Math.min(1, sprintValue));

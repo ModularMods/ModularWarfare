@@ -11,6 +11,8 @@ import com.modularwarfare.common.textures.TextureEnumType;
 import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.objects.SoundEntry;
+import com.modularwarfare.utility.MWSound;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.EntityLivingBase;
@@ -317,7 +319,25 @@ public class GunType extends BaseType {
     public void playClientSound(EntityPlayer player, WeaponSoundType weaponSoundType) {
         if (weaponSoundMap.containsKey(weaponSoundType)) {
             for (SoundEntry soundEntry : weaponSoundMap.get(weaponSoundType)) {
-                Minecraft.getMinecraft().world.playSound(player, player.getPosition(), ClientProxy.modSounds.get(soundEntry.soundName), SoundCategory.PLAYERS, 1f, 1f);
+                BlockPos originPos = player.getPosition();
+                World world = player.world;
+                Random random = new Random();
+
+                String soundName = soundEntry.soundName;
+                float soundRange = soundEntry.soundRange;
+
+                ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), soundName, soundRange/16f, 1f));
+            }
+        }else {
+            if (allowDefaultSounds && weaponSoundType.defaultSound != null) {
+                BlockPos originPos = player.getPosition();
+                World world = player.world;
+                Random random = new Random();
+
+                String soundName = weaponSoundType.defaultSound;
+                float soundRange = weaponSoundType.defaultRange;
+
+                ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), soundName, soundRange/16f, 1f));
             }
         }
     }

@@ -45,6 +45,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -173,6 +174,9 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         
         GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.loadIdentity();
+        
+        float bx = OpenGlHelper.lastBrightnessX;
+        float by = OpenGlHelper.lastBrightnessY;
         
         /**
          * INITIAL BLENDER POSITION
@@ -564,120 +568,131 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                     }
                 }
                 
-                if (stackAmmo.getItem() instanceof ItemAmmo) {
-                    ItemAmmo itemAmmo = (ItemAmmo) stackAmmo.getItem();
-                    AmmoType ammoType = itemAmmo.type;
-                    if (ammoType.isDynamicAmmo && ammoType.model != null) {
-                        int skinIdAmmo = 0;
-                        int baseAmmoCount=0;
+                ItemStack[] ammoList=new ItemStack[] {stackAmmo,orignalAmmo,prognosisAmmo};
+                String[] binddings=new String[] {"ammoModel","ammoModelPre","ammoModelPost"};
+                for(int x=0;x<3;x++) {
+                    ItemStack stackAmmoX=ammoList[x];
+                    if(stackAmmoX==null||stackAmmoX.isEmpty()) {
+                        continue;
+                    }
+                    if(model.getPart(binddings[x])==null) {
+                        continue;
+                    }
+                    if (stackAmmoX.getItem() instanceof ItemAmmo) {
+                        ItemAmmo itemAmmo = (ItemAmmo) stackAmmoX.getItem();
+                        AmmoType ammoType = itemAmmo.type;
+                        if (ammoType.isDynamicAmmo && ammoType.model != null) {
+                            int skinIdAmmo = 0;
+                            int baseAmmoCount=0;
 
-                        if (stackAmmo.hasTagCompound()) {
-                            if (stackAmmo.getTagCompound().hasKey("skinId")) {
-                                skinIdAmmo = stackAmmo.getTagCompound().getInteger("skinId");
+                            if (stackAmmoX.hasTagCompound()) {
+                                if (stackAmmoX.getTagCompound().hasKey("skinId")) {
+                                    skinIdAmmo = stackAmmoX.getTagCompound().getInteger("skinId");
+                                }
+                                if(stackAmmoX.getTagCompound().hasKey("magcount")) {
+                                    baseAmmoCount=(stackAmmoX.getTagCompound().getInteger("magcount")-1)*ammoType.ammoCapacity;
+                                }
                             }
-                            if(stackAmmo.getTagCompound().hasKey("magcount")) {
-                                baseAmmoCount=(stackAmmo.getTagCompound().getInteger("magcount")-1)*ammoType.ammoCapacity;
+                            int baseAmmoCountRendering=baseAmmoCount;
+                            
+                            if (ammoType.sameTextureAsGun) {
+                                bindTexture("guns", gunPath);
+                            } else {
+                                String pathAmmo = skinIdAmmo > 0 ? ammoType.modelSkins[skinIdAmmo].getSkin() : ammoType.modelSkins[0].getSkin();
+                                bindTexture("ammo", pathAmmo);
                             }
-                        }
-                        int baseAmmoCountRendering=baseAmmoCount;
-                        
-                        if (ammoType.sameTextureAsGun) {
-                            bindTexture("guns", gunPath);
-                        } else {
-                            String pathAmmo = skinIdAmmo > 0 ? ammoType.modelSkins[skinIdAmmo].getSkin() : ammoType.modelSkins[0].getSkin();
-                            bindTexture("ammo", pathAmmo);
-                        }
-                        
-                        if (controller.shouldRenderAmmo()) {
-                            model.applyGlobalTransform("ammoModel", () -> {
-                                GlStateManager.pushMatrix();
-                                if(renderAmmo.getTagCompound().hasKey("magcount")) {
-                                    if(model.config.attachment.containsKey(itemAmmo.type.internalName)) {
-                                        if(model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform!=null) {
-                                            if(renderAmmo.getTagCompound().getInteger("magcount")<=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.size()) {
-                                                //be careful, don't mod the config
-                                                Transform ammoTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(renderAmmo.getTagCompound().getInteger("magcount")-1);      
-                                                Transform renderTransform=ammoTransform;
-                                                if (anim.reloading && (anim
-                                                        .getReloadAnimationType() == AnimationType.RELOAD_FIRST_QUICKLY)) {
-                                                    float magAlpha = (float) controller.RELOAD;
-                                                    renderTransform=new Transform();
-                                                    ammoTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(prognosisAmmo.getTagCompound().getInteger("magcount")-1);    
-                                                    Transform beginTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(orignalAmmo.getTagCompound().getInteger("magcount")-1);
-                                                    
-                                                    renderTransform.translate.x = beginTransform.translate.x
-                                                            + (ammoTransform.translate.x - beginTransform.translate.x)
-                                                                    * magAlpha;
-                                                    renderTransform.translate.y = beginTransform.translate.y
-                                                            + (ammoTransform.translate.y - beginTransform.translate.y)
-                                                                    * magAlpha;
-                                                    renderTransform.translate.z = beginTransform.translate.z
-                                                            + (ammoTransform.translate.z - beginTransform.translate.z)
-                                                                    * magAlpha;
-                                                    
-                                                    renderTransform.rotate.x = beginTransform.rotate.x
-                                                            + (ammoTransform.rotate.x - beginTransform.rotate.x)
-                                                                    * magAlpha;
-                                                    renderTransform.rotate.y = beginTransform.rotate.y
-                                                            + (ammoTransform.rotate.y - beginTransform.rotate.y)
-                                                                    * magAlpha;
-                                                    renderTransform.rotate.z = beginTransform.rotate.z
-                                                            + (ammoTransform.rotate.z - beginTransform.rotate.z)
-                                                                    * magAlpha;
-                                                    
-                                                    renderTransform.scale.x = beginTransform.scale.x
-                                                            + (ammoTransform.scale.x - beginTransform.scale.x)
-                                                                    * magAlpha;
-                                                    renderTransform.scale.y = beginTransform.scale.y
-                                                            + (ammoTransform.scale.y - beginTransform.scale.y)
-                                                                    * magAlpha;
-                                                    renderTransform.scale.z = beginTransform.scale.z
-                                                            + (ammoTransform.scale.z - beginTransform.scale.z)
-                                                                    * magAlpha;
+                            
+                            if (controller.shouldRenderAmmo()) {
+                                model.applyGlobalTransform(binddings[x], () -> {
+                                    GlStateManager.pushMatrix();
+                                    if(renderAmmo.getTagCompound().hasKey("magcount")) {
+                                        if(model.config.attachment.containsKey(itemAmmo.type.internalName)) {
+                                            if(model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform!=null) {
+                                                if(renderAmmo.getTagCompound().getInteger("magcount")<=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.size()) {
+                                                    //be careful, don't mod the config
+                                                    Transform ammoTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(renderAmmo.getTagCompound().getInteger("magcount")-1);      
+                                                    Transform renderTransform=ammoTransform;
+                                                    if (anim.reloading && (anim
+                                                            .getReloadAnimationType() == AnimationType.RELOAD_FIRST_QUICKLY)) {
+                                                        float magAlpha = (float) controller.RELOAD;
+                                                        renderTransform=new Transform();
+                                                        ammoTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(prognosisAmmo.getTagCompound().getInteger("magcount")-1);    
+                                                        Transform beginTransform=model.config.attachment.get(itemAmmo.type.internalName).multiMagazineTransform.get(orignalAmmo.getTagCompound().getInteger("magcount")-1);
+                                                        
+                                                        renderTransform.translate.x = beginTransform.translate.x
+                                                                + (ammoTransform.translate.x - beginTransform.translate.x)
+                                                                        * magAlpha;
+                                                        renderTransform.translate.y = beginTransform.translate.y
+                                                                + (ammoTransform.translate.y - beginTransform.translate.y)
+                                                                        * magAlpha;
+                                                        renderTransform.translate.z = beginTransform.translate.z
+                                                                + (ammoTransform.translate.z - beginTransform.translate.z)
+                                                                        * magAlpha;
+                                                        
+                                                        renderTransform.rotate.x = beginTransform.rotate.x
+                                                                + (ammoTransform.rotate.x - beginTransform.rotate.x)
+                                                                        * magAlpha;
+                                                        renderTransform.rotate.y = beginTransform.rotate.y
+                                                                + (ammoTransform.rotate.y - beginTransform.rotate.y)
+                                                                        * magAlpha;
+                                                        renderTransform.rotate.z = beginTransform.rotate.z
+                                                                + (ammoTransform.rotate.z - beginTransform.rotate.z)
+                                                                        * magAlpha;
+                                                        
+                                                        renderTransform.scale.x = beginTransform.scale.x
+                                                                + (ammoTransform.scale.x - beginTransform.scale.x)
+                                                                        * magAlpha;
+                                                        renderTransform.scale.y = beginTransform.scale.y
+                                                                + (ammoTransform.scale.y - beginTransform.scale.y)
+                                                                        * magAlpha;
+                                                        renderTransform.scale.z = beginTransform.scale.z
+                                                                + (ammoTransform.scale.z - beginTransform.scale.z)
+                                                                        * magAlpha;
+                                                    }
+                                                    GlStateManager.translate(renderTransform.translate.x,
+                                                            renderTransform.translate.y, renderTransform.translate.z);
+                                                    GlStateManager.scale(renderTransform.scale.x, renderTransform.scale.y,
+                                                            renderTransform.scale.z);
+                                                    GlStateManager.rotate(renderTransform.rotate.y, 0, 1, 0);
+                                                    GlStateManager.rotate(renderTransform.rotate.x, 1, 0, 0);
+                                                    GlStateManager.rotate(renderTransform.rotate.z, 0, 0, 1);
                                                 }
-                                                GlStateManager.translate(renderTransform.translate.x,
-                                                        renderTransform.translate.y, renderTransform.translate.z);
-                                                GlStateManager.scale(renderTransform.scale.x, renderTransform.scale.y,
-                                                        renderTransform.scale.z);
-                                                GlStateManager.rotate(renderTransform.rotate.y, 0, 1, 0);
-                                                GlStateManager.rotate(renderTransform.rotate.x, 1, 0, 0);
-                                                GlStateManager.rotate(renderTransform.rotate.z, 0, 0, 1);
                                             }
                                         }
                                     }
-                                }
-                                renderAttachment(model.config, "ammo", ammoType.internalName, () -> {
-                                    ammoType.model.renderPart("ammoModel", worldScale);
-                                    if(defaultBulletFlag.b) {
-                                        if(renderAmmo.getTagCompound().hasKey("magcount")) {
-                                            for(int i=1;i<=ammoType.magazineCount;i++) {
-                                                int count=ReloadHelper.getBulletOnMag(renderAmmo, i);
-                                                for (int bullet = 0; bullet < count && bullet < BULLET_MAX_RENDER; bullet++) {
-                                                    //System.out.println((ammoType.ammoCapacity*(i-1))+bullet);
-                                                    ammoType.model.renderPart("bulletModel_" + ((ammoType.ammoCapacity*(i-1))+bullet), worldScale);
+                                    renderAttachment(model.config, "ammo", ammoType.internalName, () -> {
+                                        ammoType.model.renderPart("ammoModel", worldScale);
+                                        if(defaultBulletFlag.b) {
+                                            if(renderAmmo.getTagCompound().hasKey("magcount")) {
+                                                for(int i=1;i<=ammoType.magazineCount;i++) {
+                                                    int count=ReloadHelper.getBulletOnMag(renderAmmo, i);
+                                                    for (int bullet = 0; bullet < count && bullet < BULLET_MAX_RENDER; bullet++) {
+                                                        //System.out.println((ammoType.ammoCapacity*(i-1))+bullet);
+                                                        ammoType.model.renderPart("bulletModel_" + ((ammoType.ammoCapacity*(i-1))+bullet), worldScale);
+                                                    }  
+                                                }
+                                            }else {
+                                                for (int bullet = 0; bullet < currentAmmoCountRendering && bullet < BULLET_MAX_RENDER; bullet++) {
+                                                    ammoType.model.renderPart("bulletModel_" + (baseAmmoCountRendering+bullet), worldScale);
                                                 }  
                                             }
-                                        }else {
-                                            for (int bullet = 0; bullet < currentAmmoCountRendering && bullet < BULLET_MAX_RENDER; bullet++) {
-                                                ammoType.model.renderPart("bulletModel_" + (baseAmmoCountRendering+bullet), worldScale);
-                                            }  
-                                        }
 
-                                        defaultBulletFlag.b = false;
-                                    }
+                                            defaultBulletFlag.b = false;
+                                        }
+                                    });
+                                    GlStateManager.popMatrix();
                                 });
-                                GlStateManager.popMatrix();
-                            });
-                            model.applyGlobalTransform("bulletModel", () -> {
-                                renderAttachment(model.config, "bullet", ammoType.internalName, () -> {
-                                    ammoType.model.renderPart("bulletModel", worldScale);
+                                model.applyGlobalTransform("bulletModel", () -> {
+                                    renderAttachment(model.config, "bullet", ammoType.internalName, () -> {
+                                        ammoType.model.renderPart("bulletModel", worldScale);
+                                    });
                                 });
-                            });
-                            flagDynamicAmmoRendered=true;
-                            defaultAmmoFlag=false;
+                                flagDynamicAmmoRendered=true;
+                                defaultAmmoFlag=false;
+                            }
                         }
-                    }
-               }
+                   }
+                }
                 
                 /**
                  * default bullet and ammo
@@ -796,8 +811,6 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 
                 if (shouldRenderFlash && anim.shooting && anim.getShootingAnimationType() == AnimationType.FIRE && !player.isInWater()) {
                     GlStateManager.disableLighting();
-                    float bx = OpenGlHelper.lastBrightnessX;
-                    float by = OpenGlHelper.lastBrightnessY;
                     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
                     TextureType flashType = gunType.flashType;
                     bindTexture(flashType.resourceLocations.get(anim.flashCount % flashType.resourceLocations.size()));
@@ -855,7 +868,6 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             }
         }
 
-        
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
     }

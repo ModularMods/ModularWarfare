@@ -11,9 +11,11 @@ import com.modularwarfare.client.model.InstantBulletRenderer;
 import com.modularwarfare.client.model.ModelGun;
 import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.common.grenades.ItemGrenade;
+import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemGun;
 import com.modularwarfare.common.guns.ItemSpray;
 import com.modularwarfare.common.guns.WeaponAnimationType;
+import com.modularwarfare.common.guns.WeaponSoundType;
 import com.modularwarfare.utility.MWSound;
 import com.modularwarfare.utility.RayUtil;
 import com.modularwarfare.utility.event.ForgeEvent;
@@ -355,7 +357,8 @@ public class ClientTickHandler extends ForgeEvent {
         final EntityPlayer player = Minecraft.getMinecraft().player;
         if (player.inventory.currentItem != this.oldCurrentItem) {
             if (player.getHeldItemMainhand().getItem() instanceof ItemGun) {
-                ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), "human.equip.gun", 1f, 1f));
+                GunType type=((ItemGun)player.getHeldItemMainhand().getItem()).type;
+                type.playClientSound(player, WeaponSoundType.Equip);
             } else if (player.getHeldItemMainhand().getItem() instanceof ItemSpray) {
                 ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), "shake", 1f, 1f));
             } else if (player.getHeldItemMainhand().getItem() instanceof ItemGrenade) {

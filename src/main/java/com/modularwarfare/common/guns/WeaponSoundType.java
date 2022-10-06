@@ -6,6 +6,11 @@ import com.google.gson.annotations.SerializedName;
 public enum WeaponSoundType {
 
     /**
+     * idle loop sound
+     */
+    @SerializedName("weaponIdle") Idle("weaponIdle", 8, null),
+    
+    /**
      * The sound played upon dry firing
      */
     @SerializedName("weaponDryFire") DryFire("weaponDryFire", 8, "defemptyclick"),
