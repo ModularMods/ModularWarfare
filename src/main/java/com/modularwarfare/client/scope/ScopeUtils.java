@@ -109,13 +109,16 @@ public class ScopeUtils {
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
+            if(mc.world!=lastWorld&&mc.world!=null) {
+                updateRenderGobal=true;
+            }
             if(updateRenderGobal) {
                 updateRenderGobal=false;
                 scopeRenderGlobal = new ScopeRenderGlobal(mc);
                 scopeRenderGlobal.setWorldAndLoadRenderers(mc.world);
             }
             lastWorld=mc.world;
-            
+
             if (mc.player != null && mc.currentScreen == null) {
                 //If player has gun, update scope
                 if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun && mc.gameSettings.thirdPersonView == 0) {

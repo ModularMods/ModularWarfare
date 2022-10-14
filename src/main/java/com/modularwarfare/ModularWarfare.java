@@ -83,7 +83,7 @@ public class ModularWarfare {
     // Mod Info
     public static final String MOD_ID = "modularwarfare";
     public static final String MOD_NAME = "ModularWarfare";
-    public static final String MOD_VERSION = "2.0.4f";
+    public static final String MOD_VERSION = "2.1.0f";
     public static final String MOD_PREFIX = TextFormatting.GRAY+"["+TextFormatting.RED+"ModularWarfare"+TextFormatting.GRAY+"]"+TextFormatting.GRAY;
 
     // Main instance
@@ -416,7 +416,6 @@ public class ModularWarfare {
     @Mod.EventHandler
     public void constructionEvent(FMLConstructionEvent event) {
         LOGGER = LogManager.getLogger(ModularWarfare.MOD_ID);
-        LOGGER.info("Loading RavageCore");
 
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             PROTECTOR = new ModularProtector();

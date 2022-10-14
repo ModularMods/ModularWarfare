@@ -148,9 +148,11 @@ public class BaseType {
 
     public void playClientSound(EntityPlayer player, WeaponSoundType weaponSoundType) {
         if (weaponSoundType != null) {
-            if (weaponSoundMap.containsKey(weaponSoundType)) {
-                for (SoundEntry soundEntry : weaponSoundMap.get(weaponSoundType)) {
-                    Minecraft.getMinecraft().world.playSound(player, player.getPosition(), ClientProxy.modSounds.get(soundEntry.soundName), SoundCategory.PLAYERS, 1f, 1f);
+            if(weaponSoundMap != null) {
+                if (weaponSoundMap.containsKey(weaponSoundType)) {
+                    for (SoundEntry soundEntry : weaponSoundMap.get(weaponSoundType)) {
+                        Minecraft.getMinecraft().world.playSound(player, player.getPosition(), ClientProxy.modSounds.get(soundEntry.soundName), SoundCategory.PLAYERS, 1f, 1f);
+                    }
                 }
             }
         }

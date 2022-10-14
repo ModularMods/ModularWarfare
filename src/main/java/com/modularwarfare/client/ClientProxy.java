@@ -437,6 +437,10 @@ public class ClientProxy extends CommonProxy {
                 continue;
 
             File contentPackDir = new File(ModularWarfare.MOD_DIR, type.contentPack);
+
+            if (zipJar.matcher(contentPackDir.getName()).matches())
+                continue;
+
             if (contentPackDir.exists() && contentPackDir.isDirectory()) {
 
                 File itemModelsDir = new File(contentPackDir, "/assets/modularwarfare/models/item");

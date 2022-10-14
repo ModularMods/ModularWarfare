@@ -5,6 +5,7 @@ import com.modularwarfare.client.fpp.basic.configs.GunRenderConfig;
 import com.modularwarfare.client.model.ModelGun;
 import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.models.ModelEnhancedGun;
+import com.modularwarfare.common.network.PacketPlaySound;
 import com.modularwarfare.common.textures.TextureEnumType;
 import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
@@ -12,15 +13,22 @@ import com.modularwarfare.objects.SoundEntry;
 import com.modularwarfare.utility.MWSound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class GunType extends BaseType {
 
@@ -59,11 +67,11 @@ public class GunType extends BaseType {
      * The number of bullet entities created by each shot
      */
     public int numBullets = 1;
-    
+
     /**
      * 卸子弹时,要求客户端少播放unload动画的次数。
      * Reduce the actual playing times of unload animation on the client.
-     * */
+     */
     public int modifyUnloadBullets = 0;
 
     /**
@@ -143,7 +151,7 @@ public class GunType extends BaseType {
      * Ammo types which can be used in the gun
      */
     public String[] acceptedAmmo;
-    
+
     public int chamberCapacity = 1;
 
     public boolean dropBulletCasing = true;
@@ -163,17 +171,20 @@ public class GunType extends BaseType {
     public Integer internalAmmoStorage;
     public String[] acceptedBullets;
     // Misc Settings
+    // Misc Settings
     public boolean allowSprintFiring = true;
-    
+
     //Only Enhanced ASM
     public boolean allowReloadFiring = false;
-    
+
     //Only Enhanced ASM
     public boolean allowReloadingSprint=true;
-    
+
     //Only Enhanced ASM
     public boolean allowFiringSprint=true;
-    
+
+    //Only Enhanced ASM
+    public boolean allowAimingSprint = true;
 
     /**
      * Custom flash textures
@@ -262,8 +273,8 @@ public class GunType extends BaseType {
             armPose = ModelBiped.ArmPose.BLOCK;
             armPoseAiming = ModelBiped.ArmPose.BOW_AND_ARROW;
 
-            if(customFlashTexture != null){
-                if(ModularWarfare.textureTypes.containsKey(customFlashTexture)){
+            if (customFlashTexture != null) {
+                if (ModularWarfare.textureTypes.containsKey(customFlashTexture)) {
                     flashType = ModularWarfare.textureTypes.get(customFlashTexture);
                 } else {
                     flashType = new TextureType();
@@ -273,7 +284,7 @@ public class GunType extends BaseType {
                 flashType = new TextureType();
                 flashType.initDefaultTextures(TextureEnumType.Flash);
             }
-            if(customHandsTexture != null) {
+            if (customHandsTexture != null) {
                 if (ModularWarfare.textureTypes.containsKey(customHandsTexture)) {
                     handsTextureType = ModularWarfare.textureTypes.get(customHandsTexture);
                 }
@@ -306,132 +317,6 @@ public class GunType extends BaseType {
             enhancedModel = new ModelEnhancedGun(ModularWarfare.getRenderConfig(this, GunEnhancedRenderConfig.class), this);
         }
     }
-
-
-    public void playClientSound(EntityPlayer player, WeaponSoundType weaponSoundType) {
-        if (weaponSoundMap.containsKey(weaponSoundType)) {
-            for (SoundEntry soundEntry : weaponSoundMap.get(weaponSoundType)) {
-                BlockPos originPos = player.getPosition();
-                World world = player.world;
-                Random random = new Random();
-
-                String soundName = soundEntry.soundName;
-                float soundRange = soundEntry.soundRange;
-
-                ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), soundName, soundRange/16f, 1f));
-            }
-        }else {
-            if (allowDefaultSounds && weaponSoundType.defaultSound != null) {
-                BlockPos originPos = player.getPosition();
-                World world = player.world;
-                Random random = new Random();
-
-                String soundName = weaponSoundType.defaultSound;
-                float soundRange = weaponSoundType.defaultRange;
-
-                ModularWarfare.PROXY.playSound(new MWSound(player.getPosition(), soundName, soundRange/16f, 1f));
-            }
-        }
-    }
-
-    public void playSoundPos(BlockPos pos, World world, WeaponSoundType weaponSoundType) {
-        playSoundPos(pos, world, weaponSoundType, null, 1f);
-    }
-
-    public void playSoundPos(BlockPos pos, World world, WeaponSoundType weaponSoundType, EntityPlayer excluded, float volume) {
-        if (weaponSoundType != null) {
-            if (weaponSoundMap.containsKey(weaponSoundType)) {
-                Random random = new Random();
-                for (SoundEntry soundEntry : weaponSoundMap.get(weaponSoundType)) {
-                    int soundRange = soundEntry.soundRange != null ? soundEntry.soundRange : weaponSoundType.defaultRange;
-                    for (EntityPlayer hearingPlayer : world.getEntities(EntityPlayer.class, e -> e.getPosition().getDistance(pos.getX(), pos.getY(), pos.getZ()) <= soundRange)) {
-                        //Send sound packet for simple sounds (no distant sound effect)
-                        if (!(hearingPlayer.equals(excluded))) {
-                            ModularWarfare.NETWORK.sendTo(new PacketPlaySound(pos, soundEntry.soundName, (soundRange / 16) * soundEntry.soundVolumeMultiplier * volume, (random.nextFloat() / soundEntry.soundRandomPitch) + soundEntry.soundPitch), (EntityPlayerMP) hearingPlayer);
-                        }
-                    }
-                }
-            } else {
-                if (allowDefaultSounds && weaponSoundType.defaultSound != null) {
-                    Random random = new Random();
-                    String soundName = weaponSoundType.defaultSound;
-                    float soundRange = weaponSoundType.defaultRange;
-                    for (EntityPlayer hearingPlayer : world.getEntities(EntityPlayer.class, e -> e.getPosition().getDistance(pos.getX(), pos.getY(), pos.getZ()) <= soundRange)) {
-                        //Send sound packet for simple sounds (no distant sound effect)
-                        if (!(hearingPlayer.equals(excluded))) {
-                            ModularWarfare.NETWORK.sendTo(new PacketPlaySound(pos, soundName, (soundRange / 16) * 1f, (random.nextFloat() / 5) + 1), (EntityPlayerMP) hearingPlayer);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void playSound(EntityLivingBase entityPlayer, WeaponSoundType weaponSoundType, ItemStack gunStack) {
-        playSound(entityPlayer, weaponSoundType, gunStack, null);
-    }
-
-    public void playSound(EntityLivingBase entityPlayer, WeaponSoundType weaponSoundType, ItemStack gunStack, @Nullable EntityPlayer excluded) {
-        if (weaponSoundType != null) {
-            if (weaponSoundMap.containsKey(weaponSoundType)) {
-                BlockPos originPos = entityPlayer.getPosition();
-                World world = entityPlayer.world;
-                Random random = new Random();
-                for (SoundEntry soundEntry : weaponSoundMap.get(weaponSoundType)) {
-                    float soundRange = soundEntry.soundRange != null ? soundEntry.soundRange : weaponSoundType.defaultRange;
-                    if (soundEntry.soundNameDistant != null && soundEntry.soundMaxRange != null) {
-                        int maxSoundRange = soundEntry.soundMaxRange;
-                        for (EntityPlayer hearingPlayer : world.getEntities(EntityPlayer.class, e -> e.getPosition().getDistance(originPos.getX(), originPos.getY(), originPos.getZ()) <= maxSoundRange)) {
-                            if (!hearingPlayer.equals(excluded)) {
-                                double distance = hearingPlayer.getPosition().getDistance(originPos.getX(), originPos.getY(), originPos.getZ());
-                                float volume = 0f;
-                                String soundName = "";
-
-                                if (distance > soundRange & distance <= maxSoundRange) {
-                                    // For distant sound range
-                                    soundName = soundEntry.soundNameDistant;
-                                    volume = (float) (((distance + maxSoundRange / 6) / 16) * soundEntry.soundFarVolumeMultiplier);
-                                } else {
-                                    // For non distant
-                                    soundName = soundEntry.soundName;
-                                    volume = (float) (((distance + maxSoundRange / 6) / 16) * soundEntry.soundVolumeMultiplier);
-                                }
-                                //Send sound packet for guns using advanced audio settings
-                                //Increases pitch slighty towards end of mag if enabled
-
-                                float customPitch = ((random.nextFloat() / soundEntry.soundRandomPitch) + soundEntry.soundPitch);
-                                float modifyPitch = ItemGun.getMagazineBullets(gunStack) <= 5 && emptyPitch != 0F ? 0.30f - (emptyPitch * ItemGun.getMagazineBullets(gunStack)) : 0f;
-                                customPitch += modifyPitch;
-                                ModularWarfare.NETWORK.sendTo(new PacketPlaySound(originPos, soundName, volume, customPitch), (EntityPlayerMP) hearingPlayer);
-                            }
-                        }
-                    } else {
-                        for (EntityPlayer hearingPlayer : world.getEntities(EntityPlayer.class, e -> e.getPosition().getDistance(originPos.getX(), originPos.getY(), originPos.getZ()) <= soundRange)) {
-                            if (!hearingPlayer.equals(excluded)) {
-                                //Send sound packet for simple sounds (no distant sound effect)
-                                ModularWarfare.NETWORK.sendTo(new PacketPlaySound(originPos, soundEntry.soundName, (soundRange / 16) * soundEntry.soundVolumeMultiplier, (random.nextFloat() / soundEntry.soundRandomPitch) + soundEntry.soundPitch), (EntityPlayerMP) hearingPlayer);
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (allowDefaultSounds && weaponSoundType.defaultSound != null) {
-                    BlockPos originPos = entityPlayer.getPosition();
-                    World world = entityPlayer.world;
-                    Random random = new Random();
-
-                    String soundName = weaponSoundType.defaultSound;
-                    float soundRange = weaponSoundType.defaultRange;
-
-                    for (EntityPlayer hearingPlayer : world.getEntities(EntityPlayer.class, e -> e.getPosition().getDistance(originPos.getX(), originPos.getY(), originPos.getZ()) <= soundRange)) {
-                        //Send sound packet for simple sounds (no distant sound effect)
-                        ModularWarfare.NETWORK.sendTo(new PacketPlaySound(originPos, soundName, (soundRange / 16) * 1f, (random.nextFloat() / 5) + 1), (EntityPlayerMP) hearingPlayer);
-                    }
-                }
-            }
-        }
-    }
-
 
     public boolean hasFireMode(WeaponFireMode fireMode) {
         if (fireModes != null) {

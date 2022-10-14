@@ -61,7 +61,7 @@ public class ModConfig {
         public boolean ammo_count = true;
         public boolean snap_fade_hit = true;
         public boolean isDynamicFov = false;
-        public boolean ads_blur=true;
+        public boolean ads_blur=false;
         public float handDepthRange = 0.7f;
         public float eraseScopeDepth=1f;
         public int shadersColorTexID=0;

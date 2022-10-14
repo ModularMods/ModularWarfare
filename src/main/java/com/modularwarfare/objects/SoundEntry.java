@@ -11,7 +11,7 @@ public class SoundEntry {
     public float soundFarVolumeMultiplier = 1f;
     public float soundPitch = 1f;
     public float soundRandomPitch = 5f;
-    public Integer soundRange;
+    public Integer soundRange = 16;
 
     public String soundNameDistant;
     public Integer soundMaxRange;

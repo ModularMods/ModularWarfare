@@ -148,7 +148,7 @@ public class RenderMelee extends CustomItemRenderer {
 
                 float f2 = entityplayer.prevCameraYaw + (entityplayer.cameraYaw - entityplayer.prevCameraYaw) * partialTicks;
                 float f3 = entityplayer.prevCameraPitch + (entityplayer.cameraPitch - entityplayer.prevCameraPitch) * partialTicks;
-                GlStateManager.translate(0.05f*MathHelper.sin(f1_1 * (float)Math.PI) * f2 * 0.5F, 0.05f*-Math.abs(MathHelper.cos(f1_1 * (float)Math.PI) * f2), 0.0F);
+                GlStateManager.translate(config.extra.bobbingFactor * 0.05f*MathHelper.sin(f1_1 * (float)Math.PI) * f2 * 0.5F, config.extra.bobbingFactor * 0.05f*-Math.abs(MathHelper.cos(f1_1 * (float)Math.PI) * f2), 0.0F);
                 GlStateManager.rotate(MathHelper.sin(f1_1 * (float)Math.PI) * f2 * 3.0F, 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(Math.abs(MathHelper.cos(f1_1 * (float)Math.PI - 0.2F) * f2) * 5.0F, 1.0F, 0.0F, 0.0F);
                 GlStateManager.rotate(f3, 1.0F, 0.0F, 0.0F);

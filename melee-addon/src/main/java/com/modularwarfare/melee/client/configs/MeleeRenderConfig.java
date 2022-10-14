@@ -24,6 +24,8 @@ public class MeleeRenderConfig extends EnhancedRenderConfig {
         public boolean thirdPersonRender3D = true;
         public Vector3f thirdPersonOffset = new Vector3f(0F, 0F, 0F);
         public Vector3f thirdPersonRotation = new Vector3f(0F, 0F, 0F);
+        public float bobbingFactor = 1.0f;
+
     }
 
     public static class Animation {
