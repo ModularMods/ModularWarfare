@@ -31,8 +31,9 @@ public class ItemAmmo extends BaseItem {
     public ItemAmmo(AmmoType type) {
         super(type);
         this.type = type;
-        //this.maxStackSize = type.subAmmo != null ? 1 : type.maxStackSize;
-        this.setMaxStackSize(4);
+        if (type.maxStackSize == null)
+            type.maxStackSize = 4;
+        this.setMaxStackSize(type.maxStackSize);
         this.render3d = false;
         this.setMaxDamage(type.ammoCapacity);
     }

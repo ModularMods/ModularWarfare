@@ -106,7 +106,7 @@ public class ShotManager {
         ClientTickHandler.playerShootCooldown.put(entityPlayer.getUniqueID(), gunType.fireTickDelay);
 
 
-        if (ModConfig.INSTANCE.casings_drops.drop_bullets_casings && gunType.dropBulletCasing) {
+        if ((gunType.dropBulletCasing)) {
             /**
              * Drop casing
              */

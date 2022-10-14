@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
+import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.adsSwitch;
+
 public class AnimStateMachine {
 
     /**
@@ -99,6 +101,12 @@ public class AnimStateMachine {
     }
 
     public void onTickUpdate() {
+        ItemGun gun = null;
+        if (Minecraft.getMinecraft().player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null) {
+            if (Minecraft.getMinecraft().player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
+                gun = (ItemGun) Minecraft.getMinecraft().player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem();
+            }
+        }
         if (reloading) {
             disableSprinting(true);
             Minecraft.getMinecraft().player.setSprinting(false);
@@ -139,6 +147,14 @@ public class AnimStateMachine {
             }
         }
 
+
+        if(gun != null) {
+            if (!gun.type.allowAimingSprint && adsSwitch > 0.2f) {
+                Minecraft.getMinecraft().player.setSprinting(false);
+            }
+        }
+
+
         if (shooting) {
             if (currentShootState == null)
                 currentShootState = shootStateEntries.get(0);
@@ -160,6 +176,8 @@ public class AnimStateMachine {
                 currentShootState = null;
                 shootStateIndex = 0;
             }
+
+
         }
 
         // Slide staticModel

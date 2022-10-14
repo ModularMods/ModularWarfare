@@ -117,17 +117,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             "rightArmSlimModel", "rightArmLayerSlimModel"
     };
     static {
-        String[] strs=new String[] {
-                "ammoModel",
-                "leftArmModel", "leftArmLayerModel",
-                "leftArmSlimModel", "leftArmLayerSlimModel",
-                "rightArmModel", "rightArmLayerModel",
-                "rightArmSlimModel", "rightArmLayerSlimModel",
-                "flashModel","sprint_righthand","sprint_lefthand",
-                "selector_semi","selector_full","selector_brust",
-                "bulletModel"
-        };
-        for(String str:strs) {
+        for(String str : ModConfig.INSTANCE.guns.anim_guns_show_default_objects) {
             DEFAULT_EXCEPT.add(str);
         }
         for(int i=0;i<BULLET_MAX_RENDER;i++) {
@@ -459,7 +449,11 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 /**
                  * player right hand
                  * */
-                bindPlayerSkin();
+                if(gunType.handsTextureType != null){
+                    bindCustomHands(gunType.handsTextureType);
+                } else {
+                    bindPlayerSkin();
+                }
                 if(!Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
                     model.renderPart(RIGHT_HAND_PART);  
                 }else {
@@ -830,7 +824,11 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 /**
                  * player left hand
                  * */
-                bindPlayerSkin();
+                if(gunType.handsTextureType != null){
+                    bindCustomHands(gunType.handsTextureType);
+                } else {
+                    bindPlayerSkin();
+                }
                 if(!Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
                     model.renderPart(LEFT_HAND_PART);  
                 }else {
@@ -1287,5 +1285,11 @@ public class RenderGunEnhanced extends CustomItemRenderer {
 
     public void bindPlayerSkin() {
         bindingTexture = Minecraft.getMinecraft().player.getLocationSkin();
+    }
+
+    public void bindCustomHands(TextureType handTextureType){
+        if(handTextureType.resourceLocations != null) {
+            bindingTexture = handTextureType.resourceLocations.get(0);
+        }
     }
 }

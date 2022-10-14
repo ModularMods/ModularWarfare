@@ -186,7 +186,7 @@ public class GunType extends BaseType {
     public boolean allowFiringSprint=true;
     
     //Only Enhanced ASM
-    public boolean allowAimingSprint=true;
+    public boolean allowAimingSprint = true;
     
     public boolean allowDefaultSounds = true;
 
@@ -211,6 +211,13 @@ public class GunType extends BaseType {
     public HashMap<WeaponSoundType, ArrayList<SoundEntry>> weaponSoundMap;
     //Sound Variables
     private SoundEntry[] weaponSounds;
+
+
+    /**
+     * Custom hands textures (enhanced models
+     */
+    public String customHandsTexture;
+    public transient TextureType handsTextureType;
 
     public static boolean isPackAPunched(ItemStack heldStack) {
         if (heldStack.getTagCompound() != null) {
@@ -285,6 +292,11 @@ public class GunType extends BaseType {
             } else {
                 flashType = new TextureType();
                 flashType.initDefaultTextures(TextureEnumType.Flash);
+            }
+            if(customHandsTexture != null) {
+                if (ModularWarfare.textureTypes.containsKey(customHandsTexture)) {
+                    handsTextureType = ModularWarfare.textureTypes.get(customHandsTexture);
+                }
             }
         }
 

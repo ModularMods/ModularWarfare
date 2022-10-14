@@ -33,6 +33,15 @@ public class ModConfig {
     public Guns guns = new Guns();
     public static class Guns {
         public boolean guns_interaction_hand = true;
+
+        public List<String> anim_guns_show_default_objects = Arrays.asList("ammoModel",
+                "leftArmModel", "leftArmLayerModel",
+                "leftArmSlimModel", "leftArmLayerSlimModel",
+                "rightArmModel", "rightArmLayerModel",
+                "rightArmSlimModel", "rightArmLayerSlimModel",
+                "flashModel","sprint_righthand","sprint_lefthand",
+                "selector_semi","selector_full","selector_brust",
+                "bulletModel");
     }
 
     //drops
@@ -68,9 +77,7 @@ public class ModConfig {
     //casings
     public Casings casings_drops = new Casings();
     public static class Casings {
-        public boolean drop_bullets_casings = true;
         public int despawn_time = 10;
-
     }
 
     public KillFeed killFeed = new KillFeed();

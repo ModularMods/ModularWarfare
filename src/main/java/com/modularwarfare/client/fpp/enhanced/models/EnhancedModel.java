@@ -100,10 +100,8 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
                                 GL13.glActiveTexture(GL13.GL_TEXTURE0);
                                 //this binding is necessary
                                 Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
-                                Minecraft.getMinecraft().renderEngine
-                                        .bindTexture(ClientProxy.gunEnhancedRenderer.bindingTexture);
-                                GL11.glColor4f(ClientProxy.gunEnhancedRenderer.r, ClientProxy.gunEnhancedRenderer.g,
-                                        ClientProxy.gunEnhancedRenderer.b, ClientProxy.gunEnhancedRenderer.a);
+                                Minecraft.getMinecraft().renderEngine.bindTexture(ClientProxy.gunEnhancedRenderer.bindingTexture);
+                                GL11.glColor4f(ClientProxy.gunEnhancedRenderer.r, ClientProxy.gunEnhancedRenderer.g, ClientProxy.gunEnhancedRenderer.b, ClientProxy.gunEnhancedRenderer.a);
                             };
                         }
                     });

@@ -6,10 +6,11 @@ public enum TextureEnumType {
 
     /**
      * enum TextureEnumType
-     * FLASH, SCOPE
+     * FLASH, SCOPE, HANDS
      */
     @SerializedName("flash") Flash("flash"),
-    @SerializedName("overlay") Overlay("overlay");
+    @SerializedName("overlay") Overlay("overlay"),
+    @SerializedName("hands") Hands("hands");
 
 
     public String typeName;
