@@ -2,7 +2,6 @@
   "general": {
     "customInventory": true,
     "prototype_pack_extraction": true,
-    "tutorial_pack_extraction": true,
     "modified_pack_server_kick": true,
     "drop_extra_slots_on_death": true
   },
@@ -12,7 +11,25 @@
     "knockback_entity_damage": false
   },
   "guns": {
-    "guns_interaction_hand": true
+    "guns_interaction_hand": true,
+    "anim_guns_show_default_objects": [
+      "ammoModel",
+      "leftArmModel",
+      "leftArmLayerModel",
+      "leftArmSlimModel",
+      "leftArmLayerSlimModel",
+      "rightArmModel",
+      "rightArmLayerModel",
+      "rightArmSlimModel",
+      "rightArmLayerSlimModel",
+      "flashModel",
+      "sprint_righthand",
+      "sprint_lefthand",
+      "selector_semi",
+      "selector_full",
+      "selector_brust",
+      "bulletModel"
+    ]
   },
   "drops": {
     "advanced_drops_models": true,
@@ -26,7 +43,7 @@
     "ammo_count": true,
     "snap_fade_hit": true,
     "isDynamicFov": false,
-    "ads_blur": true,
+    "ads_blur": false,
     "handDepthRange": 0.7,
     "eraseScopeDepth": 1.0,
     "shadersColorTexID": 0
@@ -36,7 +53,6 @@
     "volume": 0.3
   },
   "casings_drops": {
-    "drop_bullets_casings": true,
     "despawn_time": 10
   },
   "killFeed": {
@@ -52,5 +68,5 @@
   "model_optimization": true,
   "debug_hits_message": false,
   "dev_mode": true,
-  "version": "2.0.4f"
+  "version": "2.1.0f"
 }

@@ -272,7 +272,6 @@ public class ModularWarfare {
                                         parsedType.contentPack = file.getName();
                                         parsedType.isInDirectory = true;
                                         baseTypes.add(parsedType);
-                                        System.out.println("Registered "+parsedType.internalName);
 
                                         if(parsedType instanceof TextureType){
                                             textureTypes.put(parsedType.internalName, (TextureType) parsedType);

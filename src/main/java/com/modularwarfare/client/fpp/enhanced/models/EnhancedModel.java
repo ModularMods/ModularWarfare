@@ -23,6 +23,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Quaternion;
 
@@ -32,7 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
+@Optional.Interface(iface="com.modularmods.mcgltf.IGltfModelReceiver",modid="mcgltf")
 public class EnhancedModel implements IGltfModelReceiver,IMWModel{
 
     /**
@@ -84,11 +87,15 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
     }
 
     @Override
+    @SideOnly(value = Side.CLIENT)
+    @Optional.Method(modid="mcgltf")
     public ResourceLocation getModelLocation() {
         return new ResourceLocation(ModularWarfare.MOD_ID, "gltf/" + baseType.getAssetDir() + "/" + this.config.modelFileName);
     }
 
     @Override
+    @SideOnly(value = Side.CLIENT)
+    @Optional.Method(modid="mcgltf")
     public void onModelLoaded(RenderedGltfModel renderedModel) {
         model=renderedModel;
         commands = renderedModel.sceneCommands.get(0);
