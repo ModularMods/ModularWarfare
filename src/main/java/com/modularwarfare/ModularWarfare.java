@@ -2,6 +2,7 @@ package com.modularwarfare;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.modularwarfare.addon.AddonLoaderManager;
 import com.modularwarfare.addon.LibClassLoader;
@@ -218,8 +219,10 @@ public class ModularWarfare {
                     File renderConfig = new File(contentPackDir, "/" + baseType.getAssetDir() + "/render");
                     File typeRender = new File(renderConfig, baseType.internalName + ".render.json");
                     JsonReader jsonReader = new JsonReader(new FileReader(typeRender));
-                    return GSONUtils.fromJson(gson, jsonReader, typeClass);
+                    return GSONUtils.fromJson(gson, jsonReader, typeClass, baseType.internalName + ".render.json");
                 }
+            } catch (JsonParseException e){
+                e.printStackTrace();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (AnimationTypeException err) {
@@ -235,7 +238,9 @@ public class ModularWarfare {
                     try {
                         ZipInputStream stream = zipContentsPack.get(baseType.contentPack).getZipFile().getInputStream(foundFile);
                         JsonReader jsonReader = new JsonReader(new InputStreamReader(stream));
-                        return GSONUtils.fromJson(gson, jsonReader, typeClass);
+                        return GSONUtils.fromJson(gson, jsonReader, typeClass, baseType.internalName + ".render.json");
+                    } catch (JsonParseException e){
+                        e.printStackTrace();
                     } catch (ZipException e) {
                         e.printStackTrace();
                     }catch (AnimationTypeException err) {
@@ -266,18 +271,21 @@ public class ModularWarfare {
                                 try {
                                     if (typeFile.isFile()) {
                                         JsonReader jsonReader = new JsonReader(new FileReader(typeFile));
-                                        BaseType parsedType = GSONUtils.fromJson(gson, jsonReader, type.typeClass);
+                                        BaseType parsedType = GSONUtils.fromJson(gson, jsonReader, type.typeClass, typeFile.getName());
 
                                         parsedType.id = type.id;
                                         parsedType.contentPack = file.getName();
                                         parsedType.isInDirectory = true;
                                         baseTypes.add(parsedType);
 
-                                        if(parsedType instanceof TextureType){
+                                        if (parsedType instanceof TextureType) {
                                             textureTypes.put(parsedType.internalName, (TextureType) parsedType);
                                         }
                                     }
-                                } catch (Exception exception) {
+                                } catch (com.google.gson.JsonParseException ex) {
+                                    ex.printStackTrace();
+                                    continue;
+                                } catch (FileNotFoundException exception) {
                                     exception.printStackTrace();
                                 }
                             }
@@ -296,7 +304,7 @@ public class ModularWarfare {
                                         JsonReader jsonReader = new JsonReader(new InputStreamReader(stream));
 
                                         try {
-                                            BaseType parsedType = (BaseType) GSONUtils.fromJson(gson, jsonReader, type.typeClass);
+                                            BaseType parsedType = (BaseType) GSONUtils.fromJson(gson, jsonReader, type.typeClass, fileHeader.getFileName());
                                             parsedType.id = type.id;
                                             parsedType.contentPack = file.getName();
                                             parsedType.isInDirectory = false;
@@ -305,9 +313,8 @@ public class ModularWarfare {
                                             if(parsedType instanceof TextureType){
                                                 textureTypes.put(parsedType.internalName, (TextureType) parsedType);
                                             }
-                                        } catch (com.google.gson.JsonSyntaxException ex) {
-                                            ModularWarfare.LOGGER.warn("Detected an error in the file " + zipName);
-                                            ModularWarfare.LOGGER.warn(ex.getMessage());
+                                        } catch (com.google.gson.JsonParseException ex) {
+                                            continue;
                                         }
                                     } catch (ZipException e) {
                                         e.printStackTrace();
