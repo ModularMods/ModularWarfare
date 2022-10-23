@@ -27,9 +27,13 @@ public class ScopeRenderGlobal extends RenderGlobal {
 
     @Override
     public void loadRenderers() {
+        //what for?
+        /*
         if (shouldLoadRenderers) {
             super.loadRenderers();
         }
+        */
+        super.loadRenderers();
         shouldLoadRenderers = true;
     }
 

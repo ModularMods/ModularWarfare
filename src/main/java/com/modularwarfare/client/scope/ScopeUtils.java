@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.client.shader.ShaderGroup;
@@ -67,7 +68,7 @@ public class ScopeUtils {
     public static ResourceLocation NOT_COMPATIBLE = new ResourceLocation(ModularWarfare.MOD_ID, "textures/gui/notcompatible.png");
     public static ResourceLocation SCOPE_BACK = new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/scope_back.png");
     private static Minecraft mc = Minecraft.getMinecraft();
-    private static ScopeRenderGlobal scopeRenderGlobal = new ScopeRenderGlobal(mc);
+    private ScopeRenderGlobal scopeRenderGlobal;
     
     public static boolean isRenderHand0=false;
     public static boolean needRenderHand1=false;
@@ -86,12 +87,11 @@ public class ScopeUtils {
     private static boolean lastShadersEnabled;
     private static int lastGbuffersFormat0;
     
-    private World lastWorld;
-    private boolean updateRenderGobal;
-    
     public static boolean isIndsideGunRendering=false;
 
     public ScopeUtils() {
+        scopeRenderGlobal = new ScopeRenderGlobal(mc);
+        ((IReloadableResourceManager)mc.getResourceManager()).registerReloadListener(this.scopeRenderGlobal);
         try {
             this.renderEndNanoTime = EntityRenderer.class.getDeclaredField("renderEndNanoTime");
         } catch (Exception ignored) {
@@ -109,15 +109,6 @@ public class ScopeUtils {
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
-            if(mc.world!=lastWorld&&mc.world!=null) {
-                updateRenderGobal=true;
-            }
-            if(updateRenderGobal) {
-                updateRenderGobal=false;
-                scopeRenderGlobal = new ScopeRenderGlobal(mc);
-                scopeRenderGlobal.setWorldAndLoadRenderers(mc.world);
-            }
-            lastWorld=mc.world;
 
             if (mc.player != null && mc.currentScreen == null) {
                 //If player has gun, update scope
@@ -654,7 +645,7 @@ public class ScopeUtils {
         GL11.glPopMatrix();
     }
 
-    //@SubscribeEvent
+    @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
         if (event.getWorld().isRemote) {
             scopeRenderGlobal.setWorldAndLoadRenderers((WorldClient) event.getWorld());
@@ -700,10 +691,6 @@ public class ScopeUtils {
                 || lastScale != scaleFactor || lastScaleWidth != widthFactor || lastScaleHeight != heightFactor
                 || blurFramebuffer == null || blurShader == null)) {
             return;
-        }
-        
-        if(OptifineHelper.isShadersEnabled() != lastShadersEnabled ) {
-            updateRenderGobal=true;
         }
 
         lastGbuffersFormat0=gbuffersFormat0;
