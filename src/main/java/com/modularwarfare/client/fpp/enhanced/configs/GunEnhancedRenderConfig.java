@@ -56,6 +56,8 @@ public class GunEnhancedRenderConfig  extends EnhancedRenderConfig {
     }
 
     public static class Sprint {
+
+        public boolean basicSprint = false;
         public Vector3f sprintRotate = new Vector3f(-20.0F, 30.0F, -0.0F);
         public Vector3f sprintTranslate = new Vector3f(0.5F, -0.10F, -0.65F);
     }

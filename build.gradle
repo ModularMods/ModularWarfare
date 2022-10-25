@@ -83,12 +83,6 @@ repositories {
     maven {
         url "https://repo.spongepowered.org/maven"
     }
-    maven {
-        url('http://maven.dynamx.fr/artifactory/DynamXRepo/')
-    }
-    maven {
-        url 'https://maven.dynamx.fr/artifactory/' + 'ACsGuisRepo'
-    }
 }
 
 dependencies {

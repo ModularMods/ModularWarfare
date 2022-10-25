@@ -261,32 +261,31 @@ public class RenderGunEnhanced extends CustomItemRenderer {
          */
         RenderParameters.VALSPRINT = (float) (Math.cos(controller.SPRINT_RANDOM*2*Math.PI)) * gunType.moveSpeedModifier;
         RenderParameters.VALSPRINT2 = (float)(Math.sin(controller.SPRINT_RANDOM*2*Math.PI)) * gunType.moveSpeedModifier;
-        
-        /*
-        OPTIONAL
-        float VALSPRINT3 = (float)(Math.sin(RenderParameters.SMOOTH_SWING / 8) * 6) * gunType.moveSpeedModifier;
-        float VALSPRINT4 = (float)(Math.sin(RenderParameters.SMOOTH_SWING / 9) * 7) * gunType.moveSpeedModifier;
-        float VALSPRINT5 = (float)(Math.sin(RenderParameters.SMOOTH_SWING / 10) * 8) * gunType.moveSpeedModifier;
-        */
-        
-        float springModifier=(float) (0.8f-controller.ADS);
-        mat.rotate(toRadians(0.2f * VALSPRINT * springModifier), new Vector3f(1, 0, 0));
-        mat.rotate(toRadians(VALSPRINT2 * springModifier), new Vector3f(0, 0, 1));
-        mat.translate(new Vector3f(VALSPRINT * 0.2f * springModifier, 0, VALSPRINT2 * 0.2f * springModifier));
 
-        /*
-        OPTIONAL
-        GL11.glRotatef(adsModifier * 0.3f * VALSPRINT3 * AnimationController.SPRINT, 0, 1, 0);
-        GL11.glRotatef(adsModifier * 0.4f * VALSPRINT4 * AnimationController.SPRINT, 0, 0, 1);
-        GL11.glRotatef(adsModifier * 0.5f * VALSPRINT5 * AnimationController.SPRINT, -1, -1, 0);
-         */
+        Vector3f customSprintRotation;
+        Vector3f customSprintTranslate;
+        if(!config.sprint.basicSprint) {
+            float springModifier = (float) (0.8f - controller.ADS);
+            mat.rotate(toRadians(0.2f * VALSPRINT * springModifier), new Vector3f(1, 0, 0));
+            mat.rotate(toRadians(VALSPRINT2 * springModifier), new Vector3f(0, 0, 1));
+            mat.translate(new Vector3f(VALSPRINT * 0.2f * springModifier, 0, VALSPRINT2 * 0.2f * springModifier));
 
-        Vector3f customSprintRotation = new Vector3f((config.sprint.sprintRotate.x *  (float)AnimationController.SPRINT), (config.sprint.sprintRotate.y *  (float)AnimationController.SPRINT), (config.sprint.sprintRotate.z *  (float)AnimationController.SPRINT));
-        Vector3f customSprintTranslate = new Vector3f((config.sprint.sprintTranslate.x *  (float)AnimationController.SPRINT), (config.sprint.sprintTranslate.y *  (float)AnimationController.SPRINT), (config.sprint.sprintTranslate.z *  (float)AnimationController.SPRINT));
+            customSprintRotation = new Vector3f((config.sprint.sprintRotate.x * (float) AnimationController.SPRINT), (config.sprint.sprintRotate.y * (float) AnimationController.SPRINT), (config.sprint.sprintRotate.z * (float) AnimationController.SPRINT));
+            customSprintTranslate = new Vector3f((config.sprint.sprintTranslate.x * (float) AnimationController.SPRINT), (config.sprint.sprintTranslate.y * (float) AnimationController.SPRINT), (config.sprint.sprintTranslate.z * (float) AnimationController.SPRINT));
 
-        customSprintRotation.scale((1F -  (float)AnimationController.ADS));
-        customSprintTranslate.scale((1F -  (float)AnimationController.ADS));
+            customSprintRotation.scale((1F - (float) AnimationController.ADS));
+            customSprintTranslate.scale((1F - (float) AnimationController.ADS));
+        } else {
 
+            mat.rotate(toRadians((float) (adsModifier * VALSPRINT * AnimationController.SPRINT_BASIC)), new Vector3f(1, 1, -1));
+            mat.rotate(toRadians((float) (adsModifier * 0.2f * VALSPRINT2 * AnimationController.SPRINT_BASIC)), new Vector3f(0, 0, 1));
+
+            customSprintRotation = new Vector3f((float) (((GunEnhancedRenderConfig) model.config).sprint.sprintRotate.x * AnimationController.SPRINT_BASIC), (float) (((GunEnhancedRenderConfig) model.config).sprint.sprintRotate.y * AnimationController.SPRINT_BASIC), (float) (((GunEnhancedRenderConfig) model.config).sprint.sprintRotate.z * AnimationController.SPRINT_BASIC));
+            customSprintTranslate = new Vector3f((float) (((GunEnhancedRenderConfig) model.config).sprint.sprintTranslate.x * AnimationController.SPRINT_BASIC), (float) (((GunEnhancedRenderConfig) model.config).sprint.sprintTranslate.y * AnimationController.SPRINT_BASIC), (float) (((GunEnhancedRenderConfig) model.config).sprint.sprintTranslate.z * AnimationController.SPRINT_BASIC));
+
+            customSprintRotation.scale((float) (1F - AnimationController.ADS));
+            customSprintTranslate.scale((float) (1F - AnimationController.ADS));
+        }
         /**
          * CUSTOM HIP POSITION
          */
