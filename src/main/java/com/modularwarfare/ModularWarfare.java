@@ -38,6 +38,7 @@ import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
+import com.modularwarfare.mcgltf.MCglTF;
 import com.modularwarfare.raycast.DefaultRayCasting;
 import com.modularwarfare.raycast.RayCasting;
 import com.modularwarfare.utility.GSONUtils;
@@ -58,6 +59,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityEntry;
@@ -78,7 +80,7 @@ import java.util.List;
 
 import static com.modularwarfare.common.CommonProxy.zipJar;
 
-@Mod(modid = ModularWarfare.MOD_ID, name = ModularWarfare.MOD_NAME, version = ModularWarfare.MOD_VERSION, dependencies = "required-client:mcgltf")
+@Mod(modid = ModularWarfare.MOD_ID, name = ModularWarfare.MOD_NAME, version = ModularWarfare.MOD_VERSION)
 public class ModularWarfare {
 
     // Mod Info
@@ -95,6 +97,8 @@ public class ModularWarfare {
     public static CommonProxy PROXY;
     // Development Environment
     public static boolean DEV_ENV = true;
+
+    public static MCglTF mcgltf;
 
     // Logger
     public static Logger LOGGER;
@@ -425,6 +429,10 @@ public class ModularWarfare {
 
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             PROTECTOR = new ModularProtector();
+
+            //Load MCglTF instance
+            mcgltf = new MCglTF();
+            MinecraftForge.EVENT_BUS.register(mcgltf);
         }
         /**
          * Create & Check Addon System
@@ -449,7 +457,11 @@ public class ModularWarfare {
 
         PROXY.construction(event);
     }
-
+    @EventHandler
+    public void onLoadCompleteEvent(FMLLoadCompleteEvent event) {
+        if(event.getSide().isClient())
+            mcgltf.onEvent(event);
+    }
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
         for (File file : contentPacks) {

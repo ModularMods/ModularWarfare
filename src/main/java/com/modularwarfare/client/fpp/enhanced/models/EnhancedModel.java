@@ -5,15 +5,14 @@ import com.modularwarfare.api.IMWModel;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.enhanced.configs.EnhancedRenderConfig;
-import com.modularwarfare.client.fpp.enhanced.configs.GunEnhancedRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.transforms.DefaultTransform;
 import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.utility.maths.MathUtils;
-import com.modularmods.mcgltf.IGltfModelReceiver;
-import com.modularmods.mcgltf.IMaterialHandler;
-import com.modularmods.mcgltf.MCglTF;
-import com.modularmods.mcgltf.RenderedGltfModel;
+import com.modularwarfare.mcgltf.IGltfModelReceiver;
+import com.modularwarfare.mcgltf.IMaterialHandler;
+import com.modularwarfare.mcgltf.MCglTF;
+import com.modularwarfare.mcgltf.RenderedGltfModel;
 import de.javagl.jgltf.model.GltfAnimations;
 import de.javagl.jgltf.model.GltfModel;
 import de.javagl.jgltf.model.NodeModel;
@@ -35,8 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-@Optional.Interface(iface="com.modularmods.mcgltf.IGltfModelReceiver",modid="mcgltf")
-public class EnhancedModel implements IGltfModelReceiver,IMWModel{
+public class EnhancedModel implements IGltfModelReceiver, IMWModel{
 
     /**
      * Animation Runnable
@@ -88,14 +86,12 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
 
     @Override
     @SideOnly(value = Side.CLIENT)
-    @Optional.Method(modid="mcgltf")
     public ResourceLocation getModelLocation() {
         return new ResourceLocation(ModularWarfare.MOD_ID, "gltf/" + baseType.getAssetDir() + "/" + this.config.modelFileName);
     }
 
     @Override
     @SideOnly(value = Side.CLIENT)
-    @Optional.Method(modid="mcgltf")
     public void onModelLoaded(RenderedGltfModel renderedModel) {
         model=renderedModel;
         commands = renderedModel.sceneCommands.get(0);
