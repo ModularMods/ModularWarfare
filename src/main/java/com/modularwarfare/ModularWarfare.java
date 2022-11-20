@@ -38,7 +38,6 @@ import com.modularwarfare.common.textures.TextureType;
 import com.modularwarfare.common.type.BaseType;
 import com.modularwarfare.common.type.ContentTypes;
 import com.modularwarfare.common.type.TypeEntry;
-import com.modularwarfare.mcgltf.MCglTF;
 import com.modularwarfare.raycast.DefaultRayCasting;
 import com.modularwarfare.raycast.RayCasting;
 import com.modularwarfare.utility.GSONUtils;
@@ -98,7 +97,6 @@ public class ModularWarfare {
     // Development Environment
     public static boolean DEV_ENV = true;
 
-    public static MCglTF mcgltf;
 
     // Logger
     public static Logger LOGGER;
@@ -429,10 +427,6 @@ public class ModularWarfare {
 
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             PROTECTOR = new ModularProtector();
-
-            //Load MCglTF instance
-            mcgltf = new MCglTF();
-            MinecraftForge.EVENT_BUS.register(mcgltf);
         }
         /**
          * Create & Check Addon System
@@ -457,11 +451,7 @@ public class ModularWarfare {
 
         PROXY.construction(event);
     }
-    @EventHandler
-    public void onLoadCompleteEvent(FMLLoadCompleteEvent event) {
-        if(event.getSide().isClient())
-            mcgltf.onEvent(event);
-    }
+
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
         for (File file : contentPacks) {

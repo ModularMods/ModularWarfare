@@ -36,7 +36,9 @@ import com.modularwarfare.utility.OptifineHelper;
 import com.modularwarfare.utility.ReloadHelper;
 import com.modularwarfare.utility.maths.Interpolation;
 
-import com.modularwarfare.mcgltf.RenderedGltfModel;
+import de.javagl.jgltf.model.NodeModel;
+
+import com.modularmods.mcgltf.RenderedGltfModel;
 import mchhui.modularmovements.tactical.client.ClientLitener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -45,6 +47,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -360,7 +363,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         GL11.glMultMatrix(floatBuffer);
         
         GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         
         float worldScale = 1;
         float rotateXRendering=rotateX;
@@ -424,6 +427,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
          * */
         
         final ItemAttachment sightRendering=sight;
+
         applySprintHandTransform(model, controller.getTime(), controller.getSprintTime(),(float)AnimationController.SPRINT, "sprint_righthand", applySprint, () -> {
             if(isRenderHand0) {
                 if(sightRendering!=null) {
@@ -431,29 +435,28 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                     if (config.attachment.containsKey(sightRendering.type.internalName)) {
                         binding = config.attachment.get(sightRendering.type.internalName).binding;
                     }
-                    model.applyGlobalTransform(binding, () -> {
+                    model.applyGlobalTransformToOther(binding, () -> {
                         renderAttachment(config, AttachmentPresetEnum.Sight.typeName, sightRendering.type.internalName, () -> {
                             writeScopeGlassDepth(sightRendering.type, (ModelAttachment)sightRendering.type.model, controller.ADS > 0, worldScale, sightRendering.type.sight.modeType.isPIP);
                         });
                     });
                 }
-                
+
                 /**
                  * player right hand
                  * */
+
                 if(gunType.handsTextureType != null){
                     bindCustomHands(gunType.handsTextureType);
                 } else {
                     bindPlayerSkin();
                 }
                 if(!Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
-                    model.renderPart(RIGHT_HAND_PART);  
+                    model.renderPart(RIGHT_HAND_PART);
                 }else {
-                    model.renderPart(RIGHT_SLIM_HAND_PART);  
+                    model.renderPart(RIGHT_SLIM_HAND_PART);
                 }
-                
-                
-                
+
                 /**
                  * gun
                  * */
@@ -538,13 +541,13 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                             }
                             for (int bullet = 0; bullet < currentAmmoCount && bullet < BULLET_MAX_RENDER; bullet++) {
                                 int renderBullet=bullet;
-                                model.applyGlobalTransform("bulletModel_" + bullet, () -> {
+                                model.applyGlobalTransformToOther("bulletModel_" + bullet, () -> {
                                     renderAttachment(config, "bullet", bulletType.internalName, () -> {
                                         bulletType.model.renderPart("bulletModel", worldScale);
                                     });
                                 });
                             }
-                            model.applyGlobalTransform("bulletModel", () -> {
+                            model.applyGlobalTransformToOther("bulletModel", () -> {
                                 renderAttachment(config, "bullet", bulletType.internalName, () -> {
                                     bulletType.model.renderPart("bulletModel", worldScale);
                                 });
@@ -589,7 +592,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                             }
 
                             if (controller.shouldRenderAmmo()) {
-                                model.applyGlobalTransform("ammoModel", () -> {
+                                model.applyGlobalTransformToOther("ammoModel", () -> {
                                     GlStateManager.pushMatrix();
                                     if (renderAmmo.getTagCompound().hasKey("magcount")) {
                                         if (config.attachment.containsKey(itemAmmo.type.internalName)) {
@@ -668,7 +671,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                                     });
                                     GlStateManager.popMatrix();
                                 });
-                                model.applyGlobalTransform("bulletModel", () -> {
+                                model.applyGlobalTransformToOther("bulletModel", () -> {
                                     renderAttachment(config, "bullet", ammoType.internalName, () -> {
                                         ammoType.model.renderPart("bulletModel", worldScale);
                                     });
@@ -725,7 +728,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                             if (config.attachment.containsKey(attachmentType.internalName)) {
                                 binding = config.attachment.get(attachmentType.internalName).binding;
                             }
-                            model.applyGlobalTransform(binding, () -> {
+                            model.applyGlobalTransformToOther(binding, () -> {
                                 if (attachmentType.sameTextureAsGun) {
                                     bindTexture("guns", gunPath);
                                 } else {
@@ -1031,12 +1034,12 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 if(OptifineHelper.isShadersEnabled()) {
                     Shaders.popProgram();  
                 }
-                
+
                 float alpha = 1 - adsSwitch;
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
                 GlStateManager.color(1.0f, 1.0f, 1.0f, alpha);
                 if(attachmentType.sight.usedDefaultOverlayModelTexture) {
-                    renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));  
+                    renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));
                 }
                 //必要的colormask
                 GlStateManager.colorMask(true, true, true, false);
@@ -1044,8 +1047,8 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 GlStateManager.colorMask(true, true, true, true);
                 GlStateManager.disableBlend();
                 //GlStateManager.enableLighting();
-                
-                
+
+
                 
                 ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
                 GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, tex, 0);
@@ -1103,10 +1106,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             }else {
                 renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/white.png"));
             }
-
-            //ModelGun.glowOn(1);
             modelAttachment.renderScope(worldScale);
-            //ModelGun.glowOff();
         }
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && mc.gameSettings.thirdPersonView == 0) {
@@ -1163,14 +1163,13 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             runnable.run();
             return;
         }
-        RenderedGltfModel handler = model.model;
         
         model.updateAnimation(sprintTime);
-        float[] end_transform=handler.getGlobalTransform(model.getPart(hand));
+        float[] end_transform=getGlobalTransform(model.getPart(hand));
         
         //updateAnimation current time
         model.updateAnimation(time);
-        float[] begin_transform=handler.getGlobalTransform(model.getPart(hand));
+        float[] begin_transform=getGlobalTransform(model.getPart(hand));
         
         Matrix3f begin_rot_matrix=new Matrix3f();
         Matrix3f end_rot_matrix=new Matrix3f();
@@ -1194,11 +1193,25 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         GlStateManager.translate(in_pos.x,in_pos.y,in_pos.z);
         GlStateManager.scale(scale_matrix.m00, scale_matrix.m11, scale_matrix.m22);
         GlStateManager.rotate(in_quat);
-        model.applyGlobalInverseTransform(hand, () -> {
+        model.applyGlobalInverseTransformToOther(hand, () -> {
             runnable.run();
         });
         GlStateManager.popMatrix();
     }
+    
+    public float[] getGlobalTransform(NodeModel nodeModel) {
+		if(nodeModel==null) {
+			return new float[] {
+					1,0,0,0,
+					0,1,0,0,
+					0,0,1,0,
+					0,0,0,1
+			};
+		}
+		float[] globalTransform = RenderedGltfModel.findGlobalTransform(nodeModel);
+		RenderedGltfModel.NODE_GLOBAL_TRANSFORMATION_LOOKUP_CACHE.clear(); //Be sure to clear cache if you want to use findGlobalTransform() outside of RenderedGltfModel.
+		return globalTransform;
+	}
     
     private Matrix3f genMatrixFromQuaternion(Quaternion quaternion) {
         Matrix3f matrix3f=new Matrix3f();
