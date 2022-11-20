@@ -8,6 +8,7 @@ import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.fpp.basic.configs.AttachmentRenderConfig.Sight;
+import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import com.modularwarfare.client.model.ModelAttachment;
 import com.modularwarfare.client.fpp.basic.renderers.RenderParameters;
 import com.modularwarfare.client.fpp.enhanced.renderers.RenderGunEnhanced;
@@ -327,7 +328,7 @@ public class ScopeUtils {
                 if(OptifineHelper.isRenderingDfb()) {
                     //TODO: Optifine and OpenGL 2.1 Compatibility ?
                     GL43.glCopyImageSubData(MWFOptifineShadesHelper.getFlipTextures().getA(ModConfig.INSTANCE.hud.shadersColorTexID), GL11.GL_TEXTURE_2D, 0, 0, 0, 0, MIRROR_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, lastWidth, lastHeight, 1);
-                }else {
+                } else {
                     switch(MCglTF.getInstance().getRenderedModelGLProfile()) {
                         case GL43:
                             GL43.glCopyImageSubData(mc.getFramebuffer().framebufferTexture, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, MIRROR_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, lastWidth, lastHeight, 1);
@@ -394,9 +395,15 @@ public class ScopeUtils {
             }else {
                 GlStateManager.alphaFunc(GL11.GL_GREATER, 0f);  
             }
-            GlStateManager.bindTexture(ClientProxy.scopeUtils.INSIDE_GUN_TEX);
-            ClientProxy.scopeUtils.drawScaledCustomSizeModalRectFlipY(0, 0, 0, 0, 1, 1, resolution.getScaledWidth(), resolution.getScaledHeight(), 1, 1);
-            
+
+            //TODO:
+            if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
+                if(((ItemGun) mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem()).type.animationType == WeaponAnimationType.ENHANCED){
+                    GlStateManager.bindTexture(ClientProxy.scopeUtils.INSIDE_GUN_TEX);
+                    ClientProxy.scopeUtils.drawScaledCustomSizeModalRectFlipY(0, 0, 0, 0, 1, 1, resolution.getScaledWidth(), resolution.getScaledHeight(), 1, 1);
+                }
+            }
+
             GL20.glUseProgram(Programs.normalProgram);
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             GlStateManager.pushMatrix();
