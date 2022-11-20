@@ -1,5 +1,6 @@
 package com.modularwarfare.client.fpp.enhanced.renderers;
 
+import com.modularmods.mcgltf.MCglTF;
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
@@ -78,6 +79,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.*;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 public class RenderGunEnhanced extends CustomItemRenderer {
     public static boolean debug=false;
@@ -888,7 +890,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
             return;
         }
         Minecraft mc=Minecraft.getMinecraft();
-        GL43.glCopyImageSubData(ClientProxy.scopeUtils.blurFramebuffer.framebufferTexture, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, ScopeUtils.SCOPE_MASK_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, mc.displayWidth, mc.displayHeight, 1);
+        GL43.glCopyImageSubData(ClientProxy.scopeUtils.blurFramebuffer.framebufferTexture, GL_TEXTURE_2D, 0, 0, 0, 0, ScopeUtils.SCOPE_MASK_TEX, GL_TEXTURE_2D, 0, 0, 0, 0, mc.displayWidth, mc.displayHeight, 1);
     }
     
     @SideOnly(Side.CLIENT)
@@ -1014,7 +1016,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 
                 ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
                 
-                GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, ScopeUtils.OVERLAY_TEX, 0);
+                GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ScopeUtils.OVERLAY_TEX, 0);
                 GlStateManager.clearColor(0, 0, 0, 0);
                 GL11.glClearColor(0, 0, 0, 0);
                 GlStateManager.colorMask(true, true, true, true);
@@ -1051,7 +1053,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
 
                 
                 ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
-                GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, tex, 0);
+                GL30.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
                 GlStateManager.clear (GL11.GL_DEPTH_BUFFER_BIT);
                 copyDepthBuffer();
                 ClientProxy.scopeUtils.blurFramebuffer.bindFramebuffer(false);
@@ -1062,10 +1064,19 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 GlStateManager.disableBlend();
                 renderWorldOntoScope(attachmentType, modelAttachment,worldScale,false);
                 GlStateManager.enableBlend();
-                GL43.glCopyImageSubData(tex, GL11.GL_TEXTURE_2D, 0, 0, 0, 0,ScopeUtils.SCOPE_LIGHTMAP_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, mc.displayWidth, mc.displayHeight, 1);
-                OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, OptifineHelper.getDrawFrameBuffer());  
+
+                switch(MCglTF.getInstance().getRenderedModelGLProfile()) {
+                    case GL43:
+                        GL43.glCopyImageSubData(tex, GL_TEXTURE_2D, 0, 0, 0, 0, ScopeUtils.SCOPE_LIGHTMAP_TEX, GL_TEXTURE_2D, 0, 0, 0, 0, mc.displayWidth, mc.displayHeight, 1);
+                        break;
+                    default:
+                        GL11.glBindTexture(GL_TEXTURE_2D, tex);
+                        GL11.glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0,  0, 0,0,  mc.displayWidth, mc.displayHeight);
+                }
+
+                OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, OptifineHelper.getDrawFrameBuffer());
                 GL11.glPopMatrix();
-                
+
             } else {
                 GL11.glPushMatrix();
                 renderEngine.bindTexture(new ResourceLocation(ModularWarfare.MOD_ID, "textures/skins/black.png"));

@@ -2,6 +2,7 @@ package com.modularwarfare.client.scope;
 
 
 import com.google.gson.JsonSyntaxException;
+import com.modularmods.mcgltf.MCglTF;
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientProxy;
@@ -321,12 +322,20 @@ public class ScopeUtils {
             if (!attachment.type.sight.modeType.isMirror) {
                 return;
             }
-            
+
             if(!attachment.type.sight.modeType.isPIP||RenderGunEnhanced.debug1) {
                 if(OptifineHelper.isRenderingDfb()) {
+                    //TODO: Optifine and OpenGL 2.1 Compatibility ?
                     GL43.glCopyImageSubData(MWFOptifineShadesHelper.getFlipTextures().getA(ModConfig.INSTANCE.hud.shadersColorTexID), GL11.GL_TEXTURE_2D, 0, 0, 0, 0, MIRROR_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, lastWidth, lastHeight, 1);
                 }else {
-                    GL43.glCopyImageSubData(mc.getFramebuffer().framebufferTexture, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, MIRROR_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, lastWidth, lastHeight, 1);
+                    switch(MCglTF.getInstance().getRenderedModelGLProfile()) {
+                        case GL43:
+                            GL43.glCopyImageSubData(mc.getFramebuffer().framebufferTexture, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, MIRROR_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, lastWidth, lastHeight, 1);
+                            break;
+                        default:
+                            GL11.glBindTexture(GL11.GL_TEXTURE_2D, MIRROR_TEX);
+                            GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0,  0, 0,0,  mc.displayWidth, mc.displayHeight);
+                    }
                 }
             }
 
