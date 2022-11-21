@@ -1209,20 +1209,19 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         });
         GlStateManager.popMatrix();
     }
-    
+
     public float[] getGlobalTransform(NodeModel nodeModel) {
-		if(nodeModel==null) {
-			return new float[] {
-					1,0,0,0,
-					0,1,0,0,
-					0,0,1,0,
-					0,0,0,1
-			};
-		}
-		float[] globalTransform = RenderedGltfModel.findGlobalTransform(nodeModel);
-		RenderedGltfModel.NODE_GLOBAL_TRANSFORMATION_LOOKUP_CACHE.clear(); //Be sure to clear cache if you want to use findGlobalTransform() outside of RenderedGltfModel.
-		return globalTransform;
-	}
+        float[] transform = new float[] {
+                1,0,0,0,
+                0,1,0,0,
+                0,0,1,0,
+                0,0,0,1
+        };
+        // If you want to calculate global transform of single NodeModel outside of RenderedGltfModel,
+        // please using NodeModel.computeGlobalTransform() instead of RenderedGltfModel.findGlobalTransform()
+        if(nodeModel != null) nodeModel.computeGlobalTransform(transform);
+        return transform;
+    }
     
     private Matrix3f genMatrixFromQuaternion(Quaternion quaternion) {
         Matrix3f matrix3f=new Matrix3f();

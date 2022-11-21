@@ -396,7 +396,6 @@ public class ScopeUtils {
                 GlStateManager.alphaFunc(GL11.GL_GREATER, 0f);  
             }
 
-            //TODO:
             if (mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) != null && mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem() instanceof ItemGun) {
                 if(((ItemGun) mc.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND).getItem()).type.animationType == WeaponAnimationType.ENHANCED){
                     GlStateManager.bindTexture(ClientProxy.scopeUtils.INSIDE_GUN_TEX);

@@ -45,8 +45,6 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
 
     private boolean isInit = false;
 
-    public ResourceLocation playerSkinTexture; //TODO: Might be used in RenderedGltfModelMWF.
-
     /**
      * .gltf Model
      */
@@ -254,41 +252,42 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
     public void renderPart(String part, float scale) {
         renderPart(part);
     }
-    
-    
-    public void applyGlobalTransformToOther(String part, Runnable otherModelCommand) {
-    	for(NodeModel nodeModel : gltfModel.getNodeModels()) {
-    		if(nodeModel.getName().equalsIgnoreCase(part)) {
-    			GL11.glPushMatrix();
-    			BUF_FLOAT_16.clear();
-    			BUF_FLOAT_16.put(RenderedGltfModel.findGlobalTransform(nodeModel));
-    			BUF_FLOAT_16.rewind();
-    			GL11.glMultMatrix(BUF_FLOAT_16);
-    			otherModelCommand.run();
-    			GL11.glPopMatrix();
-    			RenderedGltfModel.NODE_GLOBAL_TRANSFORMATION_LOOKUP_CACHE.clear();
-    			return;
-    		}
-    	}
-    }
-    
-    public void applyGlobalInverseTransformToOther(String part, Runnable otherModelCommand) {
-    	for(NodeModel nodeModel : gltfModel.getNodeModels()) {
-    		if(nodeModel.getName().equalsIgnoreCase(part)) {
-    			GL11.glPushMatrix();
-    			BUF_FLOAT_16.clear();
-    			float[] invertTransform = new float[16];
-    			de.javagl.jgltf.model.MathUtils.invert4x4(RenderedGltfModel.findGlobalTransform(nodeModel), invertTransform);
-    			BUF_FLOAT_16.put(invertTransform);
-    			BUF_FLOAT_16.rewind();
-    			GL11.glMultMatrix(BUF_FLOAT_16);
-    			otherModelCommand.run();
-    			GL11.glPopMatrix();
-    			RenderedGltfModel.NODE_GLOBAL_TRANSFORMATION_LOOKUP_CACHE.clear();
-    			return;
-    		}
-    	}
-    }
+
+
+	public void applyGlobalTransformToOther(String part, Runnable otherModelCommand) {
+		for(NodeModel nodeModel : gltfModel.getNodeModels()) {
+			if(nodeModel.getName().equalsIgnoreCase(part)) {
+				GL11.glPushMatrix();
+				BUF_FLOAT_16.clear();
+				float[] transform = new float[16];
+				nodeModel.computeGlobalTransform(transform);
+				BUF_FLOAT_16.put(transform);
+				BUF_FLOAT_16.rewind();
+				GL11.glMultMatrix(BUF_FLOAT_16);
+				otherModelCommand.run();
+				GL11.glPopMatrix();
+				return;
+			}
+		}
+	}
+
+	public void applyGlobalInverseTransformToOther(String part, Runnable otherModelCommand) {
+		for(NodeModel nodeModel : gltfModel.getNodeModels()) {
+			if(nodeModel.getName().equalsIgnoreCase(part)) {
+				GL11.glPushMatrix();
+				BUF_FLOAT_16.clear();
+				float[] transform = new float[16];
+				nodeModel.computeGlobalTransform(transform);
+				de.javagl.jgltf.model.MathUtils.invert4x4(transform, transform);
+				BUF_FLOAT_16.put(transform);
+				BUF_FLOAT_16.rewind();
+				GL11.glMultMatrix(BUF_FLOAT_16);
+				otherModelCommand.run();
+				GL11.glPopMatrix();
+				return;
+			}
+		}
+	}
     
     public void updateAnimation(float time) {
     	for(Pair<String, List<InterpolatedChannel>> animationWithName : animations) {

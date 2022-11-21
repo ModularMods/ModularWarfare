@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL43;
@@ -29,17 +28,22 @@ import de.javagl.jgltf.model.NodeModel;
 import de.javagl.jgltf.model.SceneModel;
 import de.javagl.jgltf.model.SkinModel;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 
 public class RenderedGltfModelMWF extends RenderedGltfModel implements IRenderedGltfModelMWF {
 
 	public static BaseType CURRENT_BASE_TYPE;
-	
+
 	/**
 	 * When "extras" of "materials" in glTF does not exist, using material provided by MWF.
 	 */
 	public static final Runnable mwfVanillaMaterialCommand = () -> {
-		GL13.glActiveTexture(COLOR_MAP_INDEX); //For some reason in the otherwhere of code, this must call to assign texture to correct index.
 		if(CURRENT_BASE_TYPE instanceof GunType){
+			// A workaround to prevent renderEngine.bindTexture() in the next mess up by glBindTexture() and glActiveTexture() elsewhere in RenderedGltfModel.(Also glPushAttrib() and glPopAttrib() in EnhancedModel)
+			// Because after glBindTexture() and glActiveTexture() change OpenGL texture binding,
+			// the GlStateManager call by renderEngine still think the current texture binding remain the same and not willing to bind the same texture to OpenGL again.
+			Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
+
 			Minecraft.getMinecraft().renderEngine.bindTexture(ClientProxy.gunEnhancedRenderer.bindingTexture);
 			GL11.glColor4f(ClientProxy.gunEnhancedRenderer.r,
 					ClientProxy.gunEnhancedRenderer.g,
@@ -48,6 +52,11 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 		else if(CURRENT_BASE_TYPE != null) {
+			// A workaround to prevent renderEngine.bindTexture() in the next mess up by glBindTexture() and glActiveTexture() elsewhere in RenderedGltfModel.(Also glPushAttrib() and glPopAttrib() in EnhancedModel)
+			// Because after glBindTexture() and glActiveTexture() change OpenGL texture binding,
+			// the GlStateManager call by renderEngine still think the current texture binding remain the same and not willing to bind the same texture to OpenGL again.
+			Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
+
 			Minecraft.getMinecraft().renderEngine.bindTexture(ClientRenderHooks.customRenderers[CURRENT_BASE_TYPE.id].bindingTexture);
 			GL11.glColor4f(ClientRenderHooks.customRenderers[CURRENT_BASE_TYPE.id].r,
 					ClientRenderHooks.customRenderers[CURRENT_BASE_TYPE.id].g,
@@ -59,13 +68,17 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			vanillaDefaultMaterialCommand.run();
 		}
 	};
-	
+
 	/**
 	 * When "extras" of "materials" in glTF does not exist, using material provided by MWF.
 	 */
 	public static final Runnable mwfShaderModMaterialCommand = () -> {
 		if(CURRENT_BASE_TYPE instanceof GunType){
-			GL13.glActiveTexture(COLOR_MAP_INDEX);
+			// A workaround to prevent renderEngine.bindTexture() in the next mess up by glBindTexture() and glActiveTexture() elsewhere in RenderedGltfModel.(Also glPushAttrib() and glPopAttrib() in EnhancedModel)
+			// Because after glBindTexture() and glActiveTexture() change OpenGL texture binding,
+			// the GlStateManager call by renderEngine still think the current texture binding remain the same and not willing to bind the same texture to OpenGL again.
+			Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
+
 			Minecraft.getMinecraft().renderEngine.bindTexture(ClientProxy.gunEnhancedRenderer.bindingTexture);
 			GL11.glColor4f(ClientProxy.gunEnhancedRenderer.r,
 					ClientProxy.gunEnhancedRenderer.g,
@@ -74,7 +87,11 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 		else if(CURRENT_BASE_TYPE != null) {
-			GL13.glActiveTexture(COLOR_MAP_INDEX);
+			// A workaround to prevent renderEngine.bindTexture() in the next mess up by glBindTexture() and glActiveTexture() elsewhere in RenderedGltfModel.(Also glPushAttrib() and glPopAttrib() in EnhancedModel)
+			// Because after glBindTexture() and glActiveTexture() change OpenGL texture binding,
+			// the GlStateManager call by renderEngine still think the current texture binding remain the same and not willing to bind the same texture to OpenGL again.
+			Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
+
 			Minecraft.getMinecraft().renderEngine.bindTexture(ClientRenderHooks.customRenderers[CURRENT_BASE_TYPE.id].bindingTexture);
 			GL11.glColor4f(ClientRenderHooks.customRenderers[CURRENT_BASE_TYPE.id].r,
 					ClientRenderHooks.customRenderers[CURRENT_BASE_TYPE.id].g,
@@ -86,12 +103,12 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			shaderModDefaultMaterialCommand.run();
 		}
 	};
-	
+
 	/**
 	 * Unlike set scale of node to zero to hide the node itself and its children, this will not affect children node.
 	 */
 	protected List<Pair<NodeModel, MutableBoolean>> singleNodeVisibleToggles;
-	
+
 	public RenderedGltfModelMWF(List<Runnable> gltfRenderData, GltfModel gltfModel) {
 		super(gltfRenderData, gltfModel);
 	}
@@ -124,7 +141,7 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 	protected void processNodeModel(List<Runnable> gltfRenderData, NodeModel nodeModel, List<Runnable> skinningCommands, List<Runnable> vanillaRenderCommands, List<Runnable> shaderModRenderCommands) {
 		MutableBoolean visibleToggle = new MutableBoolean(true);
 		singleNodeVisibleToggles.add(Pair.of(nodeModel, visibleToggle));
-		
+
 		ArrayList<Runnable> nodeSkinningCommands = new ArrayList<Runnable>();
 		ArrayList<Runnable> vanillaNodeRenderCommands = new ArrayList<Runnable>();
 		ArrayList<Runnable> shaderModNodeRenderCommands = new ArrayList<Runnable>();
@@ -132,17 +149,17 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 		if(skinModel != null) {
 			int jointCount = skinModel.getJoints().size();
 			int jointMatrixSize = jointCount * 16;
-			
+
 			int jointMatrixBuffer = GL15.glGenBuffers();
 			gltfRenderData.add(() -> GL15.glDeleteBuffers(jointMatrixBuffer));
 			GL15.glBindBuffer(GL43.GL_SHADER_STORAGE_BUFFER, jointMatrixBuffer);
 			GL15.glBufferData(GL43.GL_SHADER_STORAGE_BUFFER, jointMatrixSize * Float.BYTES, GL15.GL_STATIC_DRAW);
-			
+
 			float[][] transforms = new float[jointCount][];
 			float[] invertNodeTransform = new float[16];
 			float[] bindShapeMatrix = new float[16];
 			float[] jointMatrices = new float[jointMatrixSize];
-			
+
 			List<Runnable> jointMatricesTransformCommands = new ArrayList<Runnable>(jointCount);
 			for(int joint = 0; joint < jointCount; joint++) {
 				int i = joint;
@@ -156,7 +173,7 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 					System.arraycopy(transform, 0, jointMatrices, i * 16, 16);
 				});
 			}
-			
+
 			nodeSkinningCommands.add(() -> {
 				if(visibleToggle.booleanValue()) {
 					for(int i = 0; i < transforms.length; i++) {
@@ -165,17 +182,17 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 					MathUtils.invert4x4(findGlobalTransform(nodeModel), invertNodeTransform);
 					skinModel.getBindShapeMatrix(bindShapeMatrix);
 					jointMatricesTransformCommands.parallelStream().forEach(Runnable::run);
-					
+
 					GL15.glBindBuffer(GL43.GL_SHADER_STORAGE_BUFFER, jointMatrixBuffer);
 					GL15.glBufferSubData(GL43.GL_SHADER_STORAGE_BUFFER, 0, putFloatBuffer(jointMatrices));
-					
+
 					GL30.glBindBufferBase(GL43.GL_SHADER_STORAGE_BUFFER, 0, jointMatrixBuffer);
 				}
 			});
-			
+
 			List<Runnable> vanillaSingleNodeRenderCommands = new ArrayList<Runnable>();
 			List<Runnable> shaderModSingleNodeRenderCommands = new ArrayList<Runnable>();
-			
+
 			Runnable transformCommand = createTransformCommand(nodeModel);
 			vanillaSingleNodeRenderCommands.add(transformCommand);
 			shaderModSingleNodeRenderCommands.add(transformCommand);
@@ -186,7 +203,7 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			}
 			vanillaSingleNodeRenderCommands.add(GL11::glPopMatrix);
 			shaderModSingleNodeRenderCommands.add(GL11::glPopMatrix);
-			
+
 			vanillaNodeRenderCommands.add(() -> {
 				if(visibleToggle.booleanValue()) vanillaSingleNodeRenderCommands.forEach(Runnable::run);
 			});
@@ -198,7 +215,7 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			if(!nodeModel.getMeshModels().isEmpty()) {
 				List<Runnable> vanillaSingleNodeRenderCommands = new ArrayList<Runnable>();
 				List<Runnable> shaderModSingleNodeRenderCommands = new ArrayList<Runnable>();
-				
+
 				Runnable transformCommand = createTransformCommand(nodeModel);
 				vanillaSingleNodeRenderCommands.add(transformCommand);
 				shaderModSingleNodeRenderCommands.add(transformCommand);
@@ -209,7 +226,7 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 				}
 				vanillaSingleNodeRenderCommands.add(GL11::glPopMatrix);
 				shaderModSingleNodeRenderCommands.add(GL11::glPopMatrix);
-				
+
 				vanillaNodeRenderCommands.add(() -> {
 					if(visibleToggle.booleanValue()) vanillaSingleNodeRenderCommands.forEach(Runnable::run);
 				});
@@ -244,7 +261,7 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			});
 		}
 	}
-	
+
 	/**
 	 * Copy-paste from parent class, replace default material command with MWF material command and force generate Mikk tangent with it.
 	 */
@@ -336,7 +353,7 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			shaderModRenderCommands.addAll(renderCommand);
 		}
 	}
-	
+
 	/**
 	 * Copy-paste from parent class, replace default material command with MWF material command and force generate Mikk tangent with it.
 	 */
@@ -428,5 +445,5 @@ public class RenderedGltfModelMWF extends RenderedGltfModel implements IRendered
 			shaderModRenderCommands.addAll(renderCommand);
 		}
 	}
-	
+
 }
