@@ -44,12 +44,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.optifine.shaders.MWFOptifineShadesHelper;
 import net.optifine.shaders.Shaders;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.*;
 
 import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.CROSS_ROTATE;
 
@@ -329,13 +324,13 @@ public class ScopeUtils {
                     //TODO: Optifine and OpenGL 2.1 Compatibility ?
                     GL43.glCopyImageSubData(MWFOptifineShadesHelper.getFlipTextures().getA(ModConfig.INSTANCE.hud.shadersColorTexID), GL11.GL_TEXTURE_2D, 0, 0, 0, 0, MIRROR_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, lastWidth, lastHeight, 1);
                 } else {
-                    switch(MCglTF.getInstance().getRenderedModelGLProfile()) {
-                        case GL43:
-                            GL43.glCopyImageSubData(mc.getFramebuffer().framebufferTexture, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, MIRROR_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, lastWidth, lastHeight, 1);
-                            break;
-                        default:
-                            GL11.glBindTexture(GL11.GL_TEXTURE_2D, MIRROR_TEX);
-                            GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0,  0, 0,0,  mc.displayWidth, mc.displayHeight);
+                    ContextCapabilities contextCapabilities = GLContext.getCapabilities();
+                    if (contextCapabilities.OpenGL43) {
+                        GL43.glCopyImageSubData(mc.getFramebuffer().framebufferTexture, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, MIRROR_TEX, GL11.GL_TEXTURE_2D, 0, 0, 0, 0, lastWidth, lastHeight, 1);
+
+                    } else {
+                        GL11.glBindTexture(GL11.GL_TEXTURE_2D, MIRROR_TEX);
+                        GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0,  0, 0,0,  mc.displayWidth, mc.displayHeight);
                     }
                 }
             }

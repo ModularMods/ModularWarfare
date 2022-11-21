@@ -63,11 +63,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.optifine.shaders.Shaders;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Quaternion;
@@ -1065,15 +1061,14 @@ public class RenderGunEnhanced extends CustomItemRenderer {
                 renderWorldOntoScope(attachmentType, modelAttachment,worldScale,false);
                 GlStateManager.enableBlend();
 
-                switch(MCglTF.getInstance().getRenderedModelGLProfile()) {
-                    case GL43:
-                        GL43.glCopyImageSubData(tex, GL_TEXTURE_2D, 0, 0, 0, 0, ScopeUtils.SCOPE_LIGHTMAP_TEX, GL_TEXTURE_2D, 0, 0, 0, 0, mc.displayWidth, mc.displayHeight, 1);
-                        break;
-                    default:
-                        GL11.glBindTexture(GL_TEXTURE_2D, tex);
-                        GL11.glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0,  0, 0,0,  mc.displayWidth, mc.displayHeight);
-                }
+                ContextCapabilities contextCapabilities = GLContext.getCapabilities();
+                if (contextCapabilities.OpenGL43) {
+                    GL43.glCopyImageSubData(tex, GL_TEXTURE_2D, 0, 0, 0, 0, ScopeUtils.SCOPE_LIGHTMAP_TEX, GL_TEXTURE_2D, 0, 0, 0, 0, mc.displayWidth, mc.displayHeight, 1);
 
+                } else {
+                    GL11.glBindTexture(GL_TEXTURE_2D, tex);
+                    GL11.glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0,  0, 0,0,  mc.displayWidth, mc.displayHeight);
+                }
                 OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, OptifineHelper.getDrawFrameBuffer());
                 GL11.glPopMatrix();
 
