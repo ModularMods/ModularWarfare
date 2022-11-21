@@ -17,6 +17,8 @@ public class ModConfig {
     public static class General {
         public boolean customInventory = true;
         public boolean prototype_pack_extraction = true;
+        public boolean animated_pack_extraction = true;
+
         public boolean modified_pack_server_kick = true;
         public boolean drop_extra_slots_on_death = true;
     }

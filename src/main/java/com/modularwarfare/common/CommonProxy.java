@@ -73,6 +73,26 @@ public class CommonProxy extends ForgeEvent {
                 e.printStackTrace();
             }
         }
+
+        /**
+         * Animated pack extraction
+         */
+        boolean needAnimatedExtract = ModConfig.INSTANCE.general.animated_pack_extraction;
+        for (File file : modularWarfareDir.listFiles()) {
+            if (file.getName().matches("animated-" + MOD_VERSION + "-contentpack.zip")) {
+                needAnimatedExtract = false;
+            } else if (file.getName().contains("animated") && !file.getName().contains(MOD_VERSION) && file.getName().contains(".zip") && !file.getName().endsWith(".bak")) {
+                file.renameTo(new File(file.getAbsolutePath() + ".bak"));
+            }
+        }
+        if (needAnimatedExtract) {
+            try {
+                ZipFile zipFile = new ZipFile(modFile);
+                zipFile.extractFile("animated-" + MOD_VERSION + "-contentpack.zip", modularWarfareDir.getAbsolutePath());
+            } catch (ZipException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void preload() {
