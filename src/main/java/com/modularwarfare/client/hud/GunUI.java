@@ -2,6 +2,7 @@ package com.modularwarfare.client.hud;
 
 import com.modularwarfare.ModConfig;
 import com.modularwarfare.ModularWarfare;
+import com.modularwarfare.api.RenderAmmoCountEvent;
 import com.modularwarfare.client.ClientProxy;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.model.ModelAttachment;
@@ -25,6 +26,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
@@ -72,9 +75,13 @@ public class GunUI {
                     case ALL:
                         GlStateManager.pushMatrix();
                         if (ModConfig.INSTANCE.hud.ammo_count) {
-                            GlStateManager.pushMatrix();
-                            RenderPlayerAmmo(width, height);
-                            GlStateManager.popMatrix();
+                            RenderAmmoCountEvent ammoCountEvent = new RenderAmmoCountEvent(width, height);
+                            MinecraftForge.EVENT_BUS.post(ammoCountEvent);
+                            if(!ammoCountEvent.isCanceled()) {
+                                GlStateManager.pushMatrix();
+                                RenderPlayerAmmo(width, height);
+                                GlStateManager.popMatrix();
+                            }
                         }
                         RenderHitMarker(Tessellator.getInstance(), width, height);
                         RenderPlayerSnap(width, height);
@@ -152,6 +159,10 @@ public class GunUI {
                             if(AnimationController.INSPECT != 1F){
                                 showCrosshair = false;
                             }
+                        }
+
+                        if(mc.getRenderViewEntity() != mc.player){
+                            showCrosshair = false;
                         }
                         if (ModConfig.INSTANCE.hud.enable_crosshair && !ClientRenderHooks.getAnimMachine(mc.player).attachmentMode && showCrosshair && mc.gameSettings.thirdPersonView == 0 && !mc.player.isSprinting() && !ClientRenderHooks.getAnimMachine(mc.player).reloading && mc.player.getHeldItemMainhand().getItem() instanceof ItemGun) {
                             if(RenderParameters.collideFrontDistance <= 0.2f) {
