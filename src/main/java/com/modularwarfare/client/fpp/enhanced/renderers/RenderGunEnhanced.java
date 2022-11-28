@@ -370,7 +370,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         color(1, 1, 1, 1f);
         
         boolean applySprint = AnimationController.SPRINT > 0.1 && AnimationController.INSPECT >= 1;
-        boolean isRenderHand0=ScopeUtils.isRenderHand0||!OptifineHelper.isShadersEnabled();
+        boolean isRenderHand0 = ScopeUtils.isRenderHand0||!OptifineHelper.isShadersEnabled();
         HashSet<String> exceptParts=new HashSet<String>();
         if(isRenderHand0) {
             exceptParts.addAll(config.defaultHidePart);
@@ -426,7 +426,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         
         final ItemAttachment sightRendering=sight;
 
-        applySprintHandTransform(model, controller.getTime(), controller.getSprintTime(),(float)AnimationController.SPRINT, "sprint_righthand", applySprint, () -> {
+        applySprintHandTransform(model, config.sprint.basicSprint, controller.getTime(), controller.getSprintTime(),(float)AnimationController.SPRINT, "sprint_righthand", applySprint, () -> {
             if(isRenderHand0) {
                 if(sightRendering!=null) {
                     String binding = "gunModel";
@@ -811,22 +811,21 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         /**
          * LEFT HAND GROUP
          * */
-        
-        applySprintHandTransform(model, controller.getTime(), controller.getSprintTime(),(float)AnimationController.SPRINT, "sprint_lefthand", applySprint, () -> {
-            if(isRenderHand0) {
+        applySprintHandTransform(model, config.sprint.basicSprint, controller.getTime(), controller.getSprintTime(), (float) AnimationController.SPRINT, "sprint_lefthand", applySprint, () -> {
+            if (isRenderHand0) {
                 /**
                  * player left hand
                  * */
-                if(gunType.handsTextureType != null){
+                if (gunType.handsTextureType != null) {
                     bindCustomHands(gunType.handsTextureType);
                 } else {
                     bindPlayerSkin();
                 }
-                if(!Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
-                    model.renderPart(LEFT_HAND_PART);  
-                }else {
-                    model.renderPart(LEFT_SLIM_HAND_PART);  
-                }  
+                if (!Minecraft.getMinecraft().player.getSkinType().equals("slim")) {
+                    model.renderPart(LEFT_HAND_PART);
+                } else {
+                    model.renderPart(LEFT_SLIM_HAND_PART);
+                }
             }
         });
         
@@ -1164,7 +1163,12 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         GlStateManager.rotate(transform.rotate.z, 0,0,1);
     }
     
-    public void applySprintHandTransform(EnhancedModel model,float time,float sprintTime,float alpha,String hand,boolean applySprint,Runnable runnable) {
+    public void applySprintHandTransform(EnhancedModel model, boolean basicSprint, float time,float sprintTime,float alpha,String hand,boolean applySprint, Runnable runnable) {
+        if(basicSprint) {
+            runnable.run();
+            return;
+        }
+
         if(!applySprint) {
             runnable.run();
             return;
