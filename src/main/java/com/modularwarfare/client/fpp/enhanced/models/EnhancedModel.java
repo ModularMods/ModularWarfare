@@ -267,6 +267,8 @@ public class EnhancedModel implements IGltfModelReceiver,IMWModel{
 				otherModelCommand.run();
 				GL11.glPopMatrix();
 				return;
+			} else {
+				ModularWarfare.LOGGER.debug("Binding parameter: "+part+" does not exist in the model file. Be sure the object with the same name exist in your model.");
 			}
 		}
 	}

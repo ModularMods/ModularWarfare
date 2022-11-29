@@ -53,6 +53,7 @@ public class AnimationController {
 
     public static double SPRINT_BASIC;
 
+    public boolean hasPlayedDrawSound = false;
 
     private static AnimationType[] RELOAD_TYPE=new AnimationType[] {
             AnimationType.PRE_LOAD,AnimationType.LOAD,AnimationType.POST_LOAD,
@@ -77,6 +78,7 @@ public class AnimationController {
     public void reset(boolean resetSprint) {
         DEFAULT=0;
         DRAW=0;
+        hasPlayedDrawSound = false;
         ADS=0;
         RELOAD=0;
         if(resetSprint) {
@@ -277,6 +279,13 @@ public class AnimationController {
         boolean flag=nextResetDefault;
         nextResetDefault=false;
         if (DRAW < 1F) {
+            if(!hasPlayedDrawSound){
+                Item item = Minecraft.getMinecraft().player.getHeldItemMainhand().getItem();
+                if (item instanceof ItemGun) {
+                    ((ItemGun) item).type.playClientSound(player, WeaponSoundType.Draw);
+                    hasPlayedDrawSound = true;
+                }
+            }
             this.playback.action = AnimationType.DRAW;
         }else if (RELOAD > 0F) {
             resetView();

@@ -88,7 +88,13 @@ public enum WeaponSoundType {
      * The sound to play upon reloading
      */
     @SerializedName("weaponUnload") Unload("weaponUnload", 12, "unload"),
-    
+
+    /**
+     * The sound to play upon reloading
+     */
+    @SerializedName("weaponDraw") Draw("weaponDraw", 12, "draw"),
+
+
     @SerializedName("weaponPostUnload") PostUnload("weaponPostUnload", 12, null),
 
     /**
