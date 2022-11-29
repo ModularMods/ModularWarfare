@@ -18,7 +18,7 @@ public class Programs {
     public static void init() {
         int normalvshader = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
         GL20.glShaderSource(normalvshader,
-                  "#version 130\r\n"
+                  "#version 120\r\n"
                   + "varying vec4 color;\r\n"
                   + "varying vec2 texcoord;\r\n"
                   + "\r\n"
@@ -35,7 +35,7 @@ public class Programs {
         
         int normalfshader = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
         GL20.glShaderSource(normalfshader,
-                "#version 130\r\n"
+                "#version 120\r\n"
                 + "\r\n"
                 + "uniform sampler2D texture;\r\n"
                 + "varying vec4 color;\r\n"
@@ -65,7 +65,7 @@ public class Programs {
         
         int depthvshader = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
         GL20.glShaderSource(depthvshader,
-                  "#version 130\r\n"
+                  "#version 120\r\n"
                   + "varying vec4 color;\r\n"
                   + "varying vec2 texcoord;\r\n"
                   + "\r\n"
@@ -82,7 +82,7 @@ public class Programs {
         
         int depthfshader = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
         GL20.glShaderSource(depthfshader,
-                "#version 130\r\n"
+                "#version 120\r\n"
                 + "\r\n"
                 + "uniform sampler2D texture;\r\n"
                 + "varying vec4 color;\r\n"
@@ -113,7 +113,7 @@ public class Programs {
         
         int overlayvshader = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
         GL20.glShaderSource(overlayvshader,
-                  "#version 130\r\n"
+                  "#version 120\r\n"
                   + "varying vec4 color;\r\n"
                   + "varying vec2 texcoord;\r\n"
                   + "\r\n"
@@ -130,7 +130,7 @@ public class Programs {
         
         int overlayfshader = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
         GL20.glShaderSource(overlayfshader,
-                "#version 130\r\n"
+                "#version 120\r\n"
                 + "\r\n"
                 + "uniform sampler2D texture;\r\n"
                 + "uniform sampler2D texture1;\r\n"
@@ -193,7 +193,7 @@ public class Programs {
         
         int scopeBorderShader_V = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
         GL20.glShaderSource(scopeBorderShader_V,
-                  "#version 130\r\n"
+                  "#version 120\r\n"
                   + "varying vec4 color;\r\n"
                   + "varying vec2 texcoord;\r\n"
                   + "\r\n"
@@ -210,7 +210,7 @@ public class Programs {
         
         int scopeBorderShader_F=GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
         GL20.glShaderSource(scopeBorderShader_F,
-                "#version 130\r\n"
+                "#version 120\r\n"
                 + "uniform sampler2D texture;\r\n"
                 + "uniform vec2 size;\r\n"
                 + "varying vec2 texcoord;\r\n"
@@ -267,7 +267,7 @@ public class Programs {
       
       int sunglassesvshader = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
       GL20.glShaderSource(sunglassesvshader,
-                "#version 130\r\n"
+                "#version 120\r\n"
                 + "varying vec4 color;\r\n"
                 + "varying vec2 texcoord;\r\n"
                 + "\r\n"
@@ -284,7 +284,7 @@ public class Programs {
       
       int sunglassesfshader = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
       GL20.glShaderSource(sunglassesfshader,
-              "#version 130\r\n"
+              "#version 120\r\n"
               + "\r\n"
               + "uniform sampler2D texture;\r\n"
               + "varying vec4 color;\r\n"
@@ -316,7 +316,7 @@ public class Programs {
       
       int alphaDepthvshader = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
       GL20.glShaderSource(alphaDepthvshader,
-                "#version 130\r\n"
+                "#version 120\r\n"
                 + "varying vec4 color;\r\n"
                 + "varying vec2 texcoord;\r\n"
                 + "\r\n"
@@ -333,7 +333,7 @@ public class Programs {
       
       int alphaDepthfshader = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
       GL20.glShaderSource(alphaDepthfshader,
-              "#version 130\r\n"
+              "#version 120\r\n"
               + "\r\n"
               + "uniform sampler2D texture;//depth\r\n"
               + "uniform sampler2D textureMask;//mask\r\n"
