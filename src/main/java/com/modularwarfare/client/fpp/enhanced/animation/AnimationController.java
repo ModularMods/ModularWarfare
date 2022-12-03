@@ -21,6 +21,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
 
+import java.util.HashMap;
+import java.util.Random;
+
 import static com.modularwarfare.client.fpp.basic.renderers.RenderParameters.GUN_CHANGE_Y;
 
 public class AnimationController {
@@ -68,11 +71,17 @@ public class AnimationController {
             AnimationType.PRE_FIRE, AnimationType.POST_FIRE, 
     };
 
+    public static HashMap<AnimationType, Integer> currentRandomAnim = new HashMap<>();
+
     public AnimationController(GunEnhancedRenderConfig config){
         this.config = config;
         this.playback = new ActionPlayback(config);
         this.playback.action = AnimationType.DEFAULT;
         this.player = Minecraft.getMinecraft().player;
+
+        for(AnimationType animationType : AnimationType.values()) {
+            currentRandomAnim.put(animationType, 0);
+        }
     }
     
     public void reset(boolean resetSprint) {
@@ -88,6 +97,9 @@ public class AnimationController {
         INSPECT=1;
         FIRE=0;
         MODE_CHANGE=1;
+        for(AnimationType animationType : AnimationType.values()) {
+            currentRandomAnim.put(animationType, 0);
+        }
         updateActionAndTime();
     }
     
@@ -101,7 +113,7 @@ public class AnimationController {
         EnhancedStateMachine anim = ClientRenderHooks.getEnhancedAnimMachine(player);
         float moveDistance=player.distanceWalkedModified-player.prevDistanceWalkedModified;
         /** DEFAULT **/
-        double defaultSpeed = config.animations.get(AnimationType.DEFAULT).getSpeed(config.FPS) * partialTick;
+        double defaultSpeed = config.animations.get(AnimationType.DEFAULT).get(0).getSpeed(config.FPS) * partialTick;
         if(DEFAULT==0) {
             if (player.getHeldItemMainhand().getItem() instanceof ItemGun) {
                 GunType type=((ItemGun)player.getHeldItemMainhand().getItem()).type;
@@ -114,7 +126,7 @@ public class AnimationController {
         }
         
         /** DRAW **/
-        double drawSpeed = config.animations.get(AnimationType.DRAW).getSpeed(config.FPS) * partialTick;
+        double drawSpeed = config.animations.get(AnimationType.DRAW).get(currentRandomAnim.get(AnimationType.DRAW)).getSpeed(config.FPS) * partialTick;
         DRAW = Math.max(0, DRAW + drawSpeed);
         if(DRAW>1F) {
             DRAW=1F;
@@ -124,7 +136,7 @@ public class AnimationController {
         if(!config.animations.containsKey (AnimationType.INSPECT)) {
             INSPECT=1;
         }else {
-            double modeChangeVal = config.animations.get(AnimationType.INSPECT).getSpeed(config.FPS) * partialTick;
+            double modeChangeVal = config.animations.get(AnimationType.INSPECT).get(currentRandomAnim.get(AnimationType.INSPECT)).getSpeed(config.FPS) * partialTick;
             INSPECT+=modeChangeVal;
             if(INSPECT>=1) {
                 INSPECT=1;
@@ -133,7 +145,7 @@ public class AnimationController {
 
         /** ADS **/
         boolean aimChargeMisc = ClientRenderHooks.getEnhancedAnimMachine(player).reloading;
-        double adsSpeed = config.animations.get(AnimationType.AIM).getSpeed(config.FPS) * partialTick;
+        double adsSpeed = config.animations.get(AnimationType.AIM).get(0).getSpeed(config.FPS) * partialTick;
         double val = 0;
         if(Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(1) && !aimChargeMisc && INSPECT == 1F) {
             val = ADS + adsSpeed * (2 - ADS);
@@ -189,7 +201,7 @@ public class AnimationController {
                 SPRINT_LOOP = 0;
                 SPRINT_RANDOM = 0;
             } else {
-                double sprintLoopSpeed = config.animations.get(AnimationType.SPRINT).getSpeed(config.FPS) * partialTick
+                double sprintLoopSpeed = config.animations.get(AnimationType.SPRINT).get(currentRandomAnim.get(AnimationType.SPRINT)).getSpeed(config.FPS) * partialTick
                         * (moveDistance / 0.15f);
                 boolean flagSprintRand = false;
                 if (flag) {
@@ -204,7 +216,7 @@ public class AnimationController {
                     sprintLoopCoolTime = time + 100;
                 }
                 if (!flagSprintRand) {
-                    SPRINT_RANDOM -= config.animations.get(AnimationType.SPRINT).getSpeed(config.FPS) * 3 * partialTick;
+                    SPRINT_RANDOM -= config.animations.get(AnimationType.SPRINT).get(currentRandomAnim.get(AnimationType.SPRINT)).getSpeed(config.FPS) * 3 * partialTick;
                 }
                 if (SPRINT_LOOP > 1) {
                     SPRINT_LOOP = 0;
@@ -233,7 +245,7 @@ public class AnimationController {
         if(!config.animations.containsKey (AnimationType.MODE_CHANGE)) {
             MODE_CHANGE=1;
         }else {
-            double modeChangeVal = config.animations.get(AnimationType.MODE_CHANGE).getSpeed(config.FPS) * partialTick;
+            double modeChangeVal = config.animations.get(AnimationType.MODE_CHANGE).get(currentRandomAnim.get(AnimationType.MODE_CHANGE)).getSpeed(config.FPS) * partialTick;
             MODE_CHANGE+=modeChangeVal;
             if(MODE_CHANGE>=1) {
                 MODE_CHANGE=1;
@@ -286,17 +298,17 @@ public class AnimationController {
                     hasPlayedDrawSound = true;
                 }
             }
-            this.playback.action = AnimationType.DRAW;
+            this.playback.setAction(AnimationType.DRAW);
         }else if (RELOAD > 0F) {
             resetView();
-            this.playback.action = anim.getReloadAnimationType();
+            this.playback.setAction(anim.getReloadAnimationType());
         }else if(FIRE>0F) {
             resetView();
-            this.playback.action = anim.getShootingAnimationType();
+            this.playback.setAction(anim.getShootingAnimationType());
         } else if (INSPECT  < 1) {
-            this.playback.action = AnimationType.INSPECT;
+            this.playback.setAction(AnimationType.INSPECT);
         } else if (MODE_CHANGE  < 1) {
-            this.playback.action = AnimationType.MODE_CHANGE;
+            this.playback.setAction(AnimationType.MODE_CHANGE);
         } else if (this.playback.hasPlayed||this.playback.action != AnimationType.DEFAULT) {
             if(flag) {
                 this.playback.action = AnimationType.DEFAULT;
@@ -307,7 +319,6 @@ public class AnimationController {
 
 
     public void updateTime() {
-        EnhancedStateMachine anim = ClientRenderHooks.getEnhancedAnimMachine(player);
         if(this.playback.action==null) {
             return;
         }
@@ -356,8 +367,8 @@ public class AnimationController {
         if(config.animations.get(AnimationType.SPRINT)==null) {
             return 0;
         }
-        double startTime = config.animations.get(AnimationType.SPRINT).getStartTime(config.FPS);
-        double endTime = config.animations.get(AnimationType.SPRINT).getEndTime(config.FPS);
+        double startTime = config.animations.get(AnimationType.SPRINT).get(currentRandomAnim.get(AnimationType.DRAW)).getStartTime(config.FPS);
+        double endTime = config.animations.get(AnimationType.SPRINT).get(currentRandomAnim.get(AnimationType.DRAW)).getEndTime(config.FPS);
         double result=Interpolation.LINEAR.interpolate(startTime, endTime, SPRINT_LOOP);
         if(Double.isNaN(result)) {
             return 0;
@@ -446,5 +457,6 @@ public class AnimationController {
         }
         return ItemGun.hasAmmoLoaded(Minecraft.getMinecraft().player.getHeldItemMainhand());
     }
+
 
 }

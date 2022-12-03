@@ -370,7 +370,9 @@ public class EnhancedStateMachine {
         boolean flag = true;
         Animation ani = null;
         if (aniType != null) {
-            ani = ((GunEnhancedRenderConfig)currentModel.config).animations.get(aniType);
+            if(((GunEnhancedRenderConfig)currentModel.config).animations.get(aniType) != null){
+                ani = ((GunEnhancedRenderConfig)currentModel.config).animations.get(aniType).get(AnimationController.currentRandomAnim.get(aniType));
+            }
         }
         if (ani != null) {
             double speed = ani.getSpeed(currentModel.config.FPS) * speedFactor * partialTick;
