@@ -21,6 +21,7 @@ import com.modularwarfare.common.hitbox.hits.PlayerHit;
 import com.modularwarfare.common.hitbox.maths.EnumHitboxType;
 import com.modularwarfare.common.network.*;
 import com.modularwarfare.utility.MWSound;
+import com.modularwarfare.utility.ModularDamageSource;
 import com.modularwarfare.utility.RayUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -308,9 +309,9 @@ public class ShotManager {
                                 }
 
                                 if (!ModConfig.INSTANCE.shots.knockback_entity_damage) {
-                                    RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(preFireEvent.getWeaponUser()).setProjectile(), preHitEvent.getDamage());
+                                    RayUtil.attackEntityWithoutKnockback(target, new ModularDamageSource("modularwarfare", preFireEvent.getWeaponUser(), preFireEvent.getWeaponItem(), headshot), preHitEvent.getDamage());
                                 } else {
-                                    target.attackEntityFrom(DamageSource.causePlayerDamage(preFireEvent.getWeaponUser()).setProjectile(), preHitEvent.getDamage());
+                                    target.attackEntityFrom(new ModularDamageSource("modularwarfare", preFireEvent.getWeaponUser(), preFireEvent.getWeaponItem(), headshot), preHitEvent.getDamage());
                                 }
 
                                 target.hurtResistantTime = 0;

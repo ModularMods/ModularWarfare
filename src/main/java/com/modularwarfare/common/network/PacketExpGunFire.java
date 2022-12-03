@@ -8,6 +8,7 @@ import com.modularwarfare.common.capability.extraslots.CapabilityExtra;
 import com.modularwarfare.common.capability.extraslots.IExtraItemHandler;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.guns.manager.ShotValidation;
+import com.modularwarfare.utility.ModularDamageSource;
 import com.modularwarfare.utility.RayUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -152,10 +153,11 @@ public class PacketExpGunFire extends PacketBase {
                                                         }
                                                     }
                                                 }
+
                                                 if (!ModConfig.INSTANCE.shots.knockback_entity_damage) {
-                                                    RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(entityPlayer).setProjectile(), (hitboxType.contains("HEAD") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
+                                                    RayUtil.attackEntityWithoutKnockback(target, new ModularDamageSource("modularwarfare", entityPlayer, (ItemGun) entityPlayer.getHeldItemMainhand().getItem(), hitboxType.contains("HEAD")),  (hitboxType.contains("HEAD") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
                                                 } else {
-                                                    target.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setProjectile(), (hitboxType.contains("HEAD") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
+                                                    target.attackEntityFrom(new ModularDamageSource("modularwarfare", entityPlayer, (ItemGun) entityPlayer.getHeldItemMainhand().getItem(), hitboxType.contains("HEAD")),  (hitboxType.contains("HEAD") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
                                                 }
                                                 target.hurtResistantTime = 0;
 
