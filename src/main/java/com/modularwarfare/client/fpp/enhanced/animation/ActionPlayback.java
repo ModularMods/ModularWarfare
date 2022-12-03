@@ -49,7 +49,9 @@ public class ActionPlayback {
     }
 
     public void applyRandomAnim(AnimationType type) {
-        Random rand = new Random();
-        AnimationController.currentRandomAnim.put(type, rand.nextInt(config.animations.get(type).size()));
+        if(config.animations.containsKey(type)){
+            Random rand = new Random();
+            AnimationController.currentRandomAnim.put(type, rand.nextInt(config.animations.get(type).size()));
+        }
     }
 }
