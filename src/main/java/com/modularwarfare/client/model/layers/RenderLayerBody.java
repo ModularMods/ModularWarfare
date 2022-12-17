@@ -61,8 +61,7 @@ public class RenderLayerBody implements LayerRenderer<EntityPlayer> {
                             GlStateManager.rotate(30.0f, 1.0f, 0.0f, 0.0f);
                         }
                         GlStateManager.translate(0, -0.6, 0.35);
-                        ClientRenderHooks.customRenderers[type.id].renderItem(CustomItemRenderType.BACK, null, gun, player.world,
-                                player, partialTicks);
+                        ClientRenderHooks.customRenderers[type.id].renderItem(CustomItemRenderType.BACK, null, gun, player.world, player, partialTicks);
                     }
                     GlStateManager.popMatrix();
                 }

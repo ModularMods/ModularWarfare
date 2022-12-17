@@ -1,5 +1,6 @@
 package com.modularwarfare.client.fpp.enhanced.configs;
 
+import com.modularwarfare.client.fpp.basic.configs.GunRenderConfig;
 import com.modularwarfare.client.fpp.enhanced.AnimationType;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -18,7 +19,9 @@ public class GunEnhancedRenderConfig  extends EnhancedRenderConfig {
     public HashMap<String, Attachment> attachment=new HashMap<String, GunEnhancedRenderConfig.Attachment>();
     public HashMap<String, AttachmentGroup> attachmentGroup=new HashMap<String, GunEnhancedRenderConfig.AttachmentGroup>();
     public HashSet<String> defaultHidePart=new HashSet<String>();
-    
+
+    public GunEnhancedRenderConfig.ThirdPerson thirdPerson = new GunEnhancedRenderConfig.ThirdPerson();
+
     public static class Transform{
         public Vector3f translate = new Vector3f(0, 0, 0);
         public Vector3f scale = new Vector3f(1, 1, 1);
@@ -89,7 +92,15 @@ public class GunEnhancedRenderConfig  extends EnhancedRenderConfig {
         public HashSet<String> hidePart=new HashSet<String>();
         public HashSet<String> showPart=new HashSet<String>();
     }
-    
+
+    public static class ThirdPerson {
+
+        public Vector3f thirdPersonOffset = new Vector3f(0.0F, -0.1F, 0.0F);
+        public Vector3f backPersonOffset = new Vector3f(0.0F, 0.0F, 0.0F);
+        public float thirdPersonScale = 0.8F;
+
+    }
+
     public static class Extra {
 
         /**
