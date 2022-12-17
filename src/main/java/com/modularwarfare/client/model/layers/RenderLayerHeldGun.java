@@ -75,7 +75,8 @@ public class RenderLayerHeldGun extends LayerHeldItem {
                     GL11.glTranslatef(config.thirdPerson.thirdPersonOffset.x, config.thirdPerson.thirdPersonOffset.y, config.thirdPerson.thirdPersonOffset.z);
                     GL11.glScalef(config.thirdPerson.thirdPersonScale, config.thirdPerson.thirdPersonScale, config.thirdPerson.thirdPersonScale);
 
-                    model.updateAnimation((float) config.animations.get(AnimationType.DEFAULT).get(0).getStartTime(config.FPS));
+                    model.updateAnimation((float) config.animations.get(AnimationType.DEFAULT).getStartTime(config.FPS));
+
 
                     int skinId = 0;
                     if (itemstack.hasTagCompound()) {

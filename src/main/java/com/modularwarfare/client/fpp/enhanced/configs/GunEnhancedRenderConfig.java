@@ -10,7 +10,7 @@ import java.util.HashSet;
 
 public class GunEnhancedRenderConfig  extends EnhancedRenderConfig {
 
-    public HashMap<AnimationType, ArrayList<Animation>> animations = new HashMap<>();
+    public HashMap<AnimationType, Animation> animations = new HashMap<>();
 
     public GunEnhancedRenderConfig.Global global = new GunEnhancedRenderConfig.Global();
     public GunEnhancedRenderConfig.Sprint sprint = new GunEnhancedRenderConfig.Sprint();

@@ -225,7 +225,7 @@ public class RenderItemLoot extends Render<EntityItemLoot> {
                 ModelEnhancedGun model = (ModelEnhancedGun) gunType.enhancedModel;
                 GunEnhancedRenderConfig config = (GunEnhancedRenderConfig) gunType.enhancedModel.config;
 
-                model.updateAnimation((float) config.animations.get(AnimationType.DEFAULT).get(0).getStartTime(config.FPS));
+                model.updateAnimation((float) config.animations.get(AnimationType.DEFAULT).getStartTime(config.FPS));
 
                 GlStateManager.pushMatrix();
                 GlStateManager.translate((float) x, (float) y, (float) z);
