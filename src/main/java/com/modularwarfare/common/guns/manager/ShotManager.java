@@ -309,11 +309,10 @@ public class ShotManager {
                                 }
 
                                 if (!ModConfig.INSTANCE.shots.knockback_entity_damage) {
-                                    RayUtil.attackEntityWithoutKnockback(target, new ModularDamageSource("modularwarfare", preFireEvent.getWeaponUser(), preFireEvent.getWeaponItem(), headshot), preHitEvent.getDamage());
+                                    RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(preFireEvent.getWeaponUser()).setProjectile(), preHitEvent.getDamage());
                                 } else {
-                                    target.attackEntityFrom(new ModularDamageSource("modularwarfare", preFireEvent.getWeaponUser(), preFireEvent.getWeaponItem(), headshot), preHitEvent.getDamage());
+                                    target.attackEntityFrom(DamageSource.causePlayerDamage(preFireEvent.getWeaponUser()).setProjectile(), preHitEvent.getDamage());
                                 }
-
                                 target.hurtResistantTime = 0;
 
                                 // Weapon pre hit event

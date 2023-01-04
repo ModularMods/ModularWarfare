@@ -1,3 +1,4 @@
 rootProject.name = 'ModularWarfare'
 
-include 'melee-addon'
+// Uncomment this line if you want to build the melee-addon
+//include 'melee-addon'
