@@ -76,21 +76,23 @@ public class DefaultRayCasting extends RayCasting {
                     if (snapshot == null)
                         snapshot = data.snapshots[0];
 
-                    for (PlayerHitbox hitbox : snapshot.hitboxes) {
-                        RayTraceResult intercept = hitbox.getAxisAlignedBB(snapshot.pos).calculateIntercept(startVec, realVecEnd);
-                        if (intercept != null) {
-                            intercept.entityHit = hitbox.player;
+                    if (snapshot != null && snapshot.hitboxes != null){
+                        for (PlayerHitbox hitbox : snapshot.hitboxes) {
+                            RayTraceResult intercept = hitbox.getAxisAlignedBB(snapshot.pos).calculateIntercept(startVec, realVecEnd);
+                            if (intercept != null) {
+                                intercept.entityHit = hitbox.player;
 
-                            if(ModConfig.INSTANCE.debug_hits_message) {
-                                long currentTime = System.nanoTime();
-                                ModularWarfare.LOGGER.info("Shooter's ping: " + ping / 20 + "ms | " + ping + "ticks");
-                                ModularWarfare.LOGGER.info("Took the snapshot " + snapshotToTry + " Part: " + hitbox.type.toString());
-                                ModularWarfare.LOGGER.info("Delta (currentTime - snapshotTime) = " + (currentTime - snapshot.time) * 1e-6 + "ms");
+                                if (ModConfig.INSTANCE.debug_hits_message) {
+                                    long currentTime = System.nanoTime();
+                                    ModularWarfare.LOGGER.info("Shooter's ping: " + ping / 20 + "ms | " + ping + "ticks");
+                                    ModularWarfare.LOGGER.info("Took the snapshot " + snapshotToTry + " Part: " + hitbox.type.toString());
+                                    ModularWarfare.LOGGER.info("Delta (currentTime - snapshotTime) = " + (currentTime - snapshot.time) * 1e-6 + "ms");
+                                }
+
+                                return new PlayerHit(hitbox, intercept);
                             }
-
-                            return new PlayerHit(hitbox, intercept);
                         }
-                    }
+                }
                 }
             }
         }
