@@ -325,6 +325,9 @@ public class EnhancedStateMachine {
                     case POST_RELOAD:
                         ModularWarfare.NETWORK.sendToServer(new PacketGunReloadSound(WeaponSoundType.PostReload));
                         break;
+                    case POST_RELOAD_EMPTY:
+                        ModularWarfare.NETWORK.sendToServer(new PacketGunReloadSound(WeaponSoundType.PostReloadEmpty));
+                        break;
                     default:
                         break;
                     }
