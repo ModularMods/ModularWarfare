@@ -4,6 +4,7 @@ import com.modularwarfare.ModularWarfare;
 import com.modularwarfare.client.ClientRenderHooks;
 import com.modularwarfare.client.model.ModelShell;
 import com.modularwarfare.common.entity.decals.EntityShell;
+import com.modularwarfare.common.guns.GunType;
 import com.modularwarfare.common.guns.ItemBullet;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -56,10 +57,24 @@ public class RenderShell extends Render<EntityShell> {
         if (ModularWarfare.bulletTypes.containsKey(entityIn.getBulletName())) {
             ItemBullet itemBullet = ModularWarfare.bulletTypes.get(entityIn.getBulletName());
             ModelShell shell = (ModelShell) (ModularWarfare.bulletTypes.get(entityIn.getBulletName()).type.shell);
-            if (itemBullet.type.shellModelFileName.equals(itemBullet.type.defaultModel)) {
-                ClientRenderHooks.customRenderers[1].bindTexture("bullets", "default");
-            } else {
-                ClientRenderHooks.customRenderers[1].bindTexture("bullets", entityIn.getBulletName());
+            boolean flag=true;
+            if(itemBullet.type.sameTextureAsGun) {
+                GunType gunType=ModularWarfare.gunTypes.get(entityIn.getGunName()).type;
+                if(gunType.modelSkins!=null&&gunType.modelSkins.length>entityIn.getGunSkinID()) {
+                    flag=false;
+                    ClientRenderHooks.customRenderers[1].bindTexture("gun",gunType.modelSkins[entityIn.getGunSkinID()].getSkin());
+                }
+            }
+            if(flag) {
+                if (itemBullet.type.shellModelFileName.equals(itemBullet.type.defaultModel)) {
+                    ClientRenderHooks.customRenderers[1].bindTexture("bullets", "default");
+                } else {
+                    String path=entityIn.getBulletName();
+                    if(itemBullet.type.modelSkins!=null&&itemBullet.type.modelSkins.length>0) {
+                        path= itemBullet.type.modelSkins[0].getSkin();
+                    }
+                    ClientRenderHooks.customRenderers[1].bindTexture("bullets",path);
+                }  
             }
             shell.renderShell(worldScale);
         }

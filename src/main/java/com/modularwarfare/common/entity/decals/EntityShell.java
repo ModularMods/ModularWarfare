@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -25,6 +26,8 @@ public class EntityShell extends Entity implements IProjectile {
 
     private static final DataParameter AGE = EntityDataManager.createKey(EntityShell.class, DataSerializers.VARINT);
     private static final DataParameter BULLET_NAME = EntityDataManager.createKey(EntityShell.class, DataSerializers.STRING);
+    private static final DataParameter GUN_NAME = EntityDataManager.createKey(EntityShell.class, DataSerializers.STRING);
+    private static final DataParameter GUN_SKINID = EntityDataManager.createKey(EntityShell.class, DataSerializers.VARINT);
     public boolean playedSound;
     protected int ticksInGround;
     protected int maxTimeAlive;
@@ -37,13 +40,23 @@ public class EntityShell extends Entity implements IProjectile {
         playedSound = false;
     }
 
-    public EntityShell(World worldIn, EntityPlayer throwerIn, ItemGun gun, ItemBullet bullet) {
+    public EntityShell(World worldIn, EntityPlayer throwerIn,ItemStack gunStack, ItemGun gun, ItemBullet bullet) {
         super(worldIn);
         
         if(bullet==null) {
             setDead();
             return;
         }
+        
+        int skinId = 0;
+        if (gunStack.hasTagCompound()) {
+            if (gunStack.getTagCompound().hasKey("skinId")) {
+                skinId = gunStack.getTagCompound().getInteger("skinId");
+            }
+        }
+        setGunSkinID(skinId);
+        setGunType(gun.type.internalName);
+        
         this.setBulletType(bullet.type.internalName);
 
         Vec3d rotateYaw = new Vec3d(0, 0, 0);
@@ -67,6 +80,8 @@ public class EntityShell extends Entity implements IProjectile {
     protected void entityInit() {
         this.dataManager.register(AGE, 0);
         this.dataManager.register(BULLET_NAME, "");
+        this.dataManager.register(GUN_NAME, "");
+        this.dataManager.register(GUN_SKINID, 0);
     }
 
     public int getAge() {
@@ -83,6 +98,22 @@ public class EntityShell extends Entity implements IProjectile {
 
     public void setBulletType(String bulletType) {
         this.dataManager.set(BULLET_NAME, bulletType);
+    }
+    
+    public String getGunName() {
+        return (String) this.dataManager.get(GUN_NAME);
+    }
+
+    public void setGunType(String gunType) {
+        this.dataManager.set(GUN_NAME, gunType);
+    }
+
+    public int getGunSkinID() {
+        return (Integer) this.dataManager.get(GUN_SKINID);
+    }
+
+    public void setGunSkinID(int num) {
+        this.dataManager.set(GUN_SKINID, num);
     }
 
 

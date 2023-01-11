@@ -524,6 +524,13 @@ public class ModularWarfare {
                         PROXY.preloadSkinTypes.put(skin, ((ItemGun) item).type);
                     }
                 }
+                
+                if(item instanceof ItemBullet){
+                    for(SkinType skin: ((ItemBullet) item).type.modelSkins) {
+                        PROXY.preloadSkinTypes.put(skin, ((ItemBullet) item).type);
+                    }
+                }
+                
                 if(item instanceof ItemMWArmor) {
                     for(SkinType skin: ((ItemMWArmor) item).type.modelSkins) {
                         PROXY.preloadSkinTypes.put(skin, ((ItemMWArmor) item).type);
