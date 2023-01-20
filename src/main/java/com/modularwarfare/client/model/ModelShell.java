@@ -9,13 +9,13 @@ public class ModelShell extends MWModelBase {
 
     public ModelShell(BulletType bulletType, boolean loadDefault) {
         if (bulletType.isInDirectory) {
-            if (loadDefault) {
+            if (!loadDefault) {
                 this.staticModel = ObjModelLoader.load(bulletType.contentPack + "/obj/shells/" + bulletType.shellModelFileName);
             } else {
                 this.staticModel = ObjModelLoader.load(bulletType.contentPack + "/obj/shells/" + bulletType.defaultModel);
             }
         } else {
-            if (loadDefault) {
+            if (!loadDefault) {
                 this.staticModel = ObjModelLoader.load(bulletType, "obj/shells/" + bulletType.shellModelFileName);
             } else {
                 this.staticModel = ObjModelLoader.load(bulletType, "obj/shells/" + bulletType.defaultModel);

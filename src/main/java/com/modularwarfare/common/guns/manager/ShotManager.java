@@ -119,7 +119,7 @@ public class ShotManager {
                 }
             }
 
-            EntityShell shell = new EntityShell(world, entityPlayer, itemGun, bulletItem);
+            EntityShell shell = new EntityShell(world, entityPlayer,gunStack, itemGun, bulletItem);
 
             shell.setHeadingFromThrower(entityPlayer, entityPlayer.rotationPitch, entityPlayer.rotationYaw + 110, 0.0F, 0.2F, 5);
             world.spawnEntity(shell);
