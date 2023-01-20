@@ -159,6 +159,7 @@ public class PacketExpGunFire extends PacketBase {
                                                 } else {
                                                     target.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setProjectile(), (hitboxType.contains("HEAD") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
                                                 }
+                                                target.hurtResistantTime = 0;
                                                 if (entityPlayer instanceof EntityPlayerMP) {
                                                     ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(hitboxType.contains("HEAD")), entityPlayer);
                                                     ModularWarfare.NETWORK.sendTo(new PacketPlaySound(target.getPosition(), "flyby", 1f, 1f), (EntityPlayerMP) target);
