@@ -65,6 +65,7 @@ public class RenderedGltfModelGL20MWF extends RenderedGltfModelGL20 implements I
 		ArrayList<Runnable> shaderModNodeRenderCommands = new ArrayList<Runnable>();
 		SkinModel skinModel = nodeModel.getSkinModel();
 		if(skinModel != null) {
+			//TODO: These part of code will need to optimized once MCglTF with SIMD comes out.
 			int jointCount = skinModel.getJoints().size();
 			
 			float[][] transforms = new float[jointCount][];
@@ -81,7 +82,6 @@ public class RenderedGltfModelGL20MWF extends RenderedGltfModelGL20 implements I
 					skinModel.getInverseBindMatrix(i, inverseBindMatrix);
 					MathUtils.mul4x4(transform, inverseBindMatrix, transform);
 					MathUtils.mul4x4(transform, bindShapeMatrix, transform);
-					MathUtils.transpose4x4(transform, transform);
 				});
 			}
 			
