@@ -17,6 +17,7 @@ import com.modularwarfare.common.entity.grenades.EntityGrenade;
 import com.modularwarfare.common.guns.*;
 import com.modularwarfare.common.handler.ServerTickHandler;
 import com.modularwarfare.common.hitbox.hits.BulletHit;
+import com.modularwarfare.common.hitbox.hits.OBBHit;
 import com.modularwarfare.common.hitbox.hits.PlayerHit;
 import com.modularwarfare.common.hitbox.maths.EnumHitboxType;
 import com.modularwarfare.common.network.*;
@@ -69,7 +70,8 @@ public class ShotManager {
             if (!ItemGun.hasNextShot(gunStack)) {
                 if (fireMode == WeaponFireMode.BURST) gunStack.getTagCompound().setInteger("shotsremaining", 0);
                 if(defemptyclickLock) {
-                    ((ClientProxy)ModularWarfare.PROXY).playSound(new MWSound(entityPlayer.getPosition(), "defemptyclick", 1.0f, 1.0f));
+                    //((ClientProxy)ModularWarfare.PROXY).playSound(new MWSound(entityPlayer.getPosition(), "defemptyclick", 1.0f, 1.0f));
+                    gunType.playClientSound(entityPlayer, WeaponSoundType.DryFire);
                     ModularWarfare.PROXY.onShootFailedAnimation(entityPlayer, gunType.internalName);
                     defemptyclickLock=false;
                 }
@@ -130,11 +132,14 @@ public class ShotManager {
         /**
          * Hit Register
          */
+        /*
         if (!ModConfig.INSTANCE.shots.client_sided_hit_registration || gunType.weaponType == WeaponType.Launcher) {
             ModularWarfare.NETWORK.sendToServer(new PacketGunFire(gunType.internalName, gunType.fireTickDelay, gunType.recoilPitch, gunType.recoilYaw, gunType.recoilAimReducer, gunType.bulletSpread, entityPlayer.rotationPitch, entityPlayer.rotationYaw));
         } else {
             fireClientSide(entityPlayer, itemGun);
         }
+        */
+        fireClientSide(entityPlayer, itemGun);
     }
     
     public static boolean checkCanFireClient(EntityPlayer entityPlayer, World world, ItemStack gunStack, ItemGun itemGun, WeaponFireMode fireMode) {
@@ -157,7 +162,7 @@ public class ShotManager {
         return true;
     }
 
-
+    @Deprecated
     public static void fireServer(EntityPlayer entityPlayer, float rotationPitch, float rotationYaw, World world, ItemStack gunStack, ItemGun itemGun, WeaponFireMode fireMode, final int clientFireTickDelay, final float recoilPitch, final float recoilYaw, final float recoilAimReducer, final float bulletSpread) {
         GunType gunType = itemGun.type;
         // Can fire checks
@@ -370,13 +375,14 @@ public class ShotManager {
 
             boolean headshot = false;
             for (BulletHit rayTrace : rayTraceList) {
-                if (rayTrace instanceof PlayerHit) {
-                    final EntityPlayer victim = ((PlayerHit) rayTrace).getEntity();
+                if (rayTrace instanceof OBBHit) {
+                    final EntityLivingBase victim = ((OBBHit) rayTrace).entity;
                     if (victim != null) {
                         if (!victim.isDead && victim.getHealth() > 0.0f) {
                             entities.add(victim);
                             //Send server player hit + hitbox
-                            ModularWarfare.NETWORK.sendToServer(new PacketExpGunFire(victim.getEntityId(), itemGun.type.internalName, ((PlayerHit) rayTrace).hitbox.type.name(), itemGun.type.fireTickDelay, itemGun.type.recoilPitch, itemGun.type.recoilYaw, itemGun.type.recoilAimReducer, itemGun.type.bulletSpread, rayTrace.rayTraceResult.hitVec.x, rayTrace.rayTraceResult.hitVec.y, rayTrace.rayTraceResult.hitVec.z));
+                            //entityPlayer.sendMessage(new TextComponentString(((OBBHit) rayTrace).box.name));
+                            ModularWarfare.NETWORK.sendToServer(new PacketExpGunFire(victim.getEntityId(), itemGun.type.internalName, ((OBBHit) rayTrace).box.name, itemGun.type.fireTickDelay, itemGun.type.recoilPitch, itemGun.type.recoilYaw, itemGun.type.recoilAimReducer, itemGun.type.bulletSpread, rayTrace.rayTraceResult.hitVec.x, rayTrace.rayTraceResult.hitVec.y, rayTrace.rayTraceResult.hitVec.z));
                         }
                     }
                 } else {

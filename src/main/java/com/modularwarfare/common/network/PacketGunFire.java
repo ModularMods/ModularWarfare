@@ -14,6 +14,7 @@ import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+@Deprecated
 public class PacketGunFire extends PacketBase {
 
     public String internalname;
@@ -72,6 +73,7 @@ public class PacketGunFire extends PacketBase {
 
     @Override
     public void handleServerSide(EntityPlayerMP entityPlayer) {
+        /*
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
@@ -88,6 +90,7 @@ public class PacketGunFire extends PacketBase {
                 }
             }
         });
+        */
     }
 
     @Override

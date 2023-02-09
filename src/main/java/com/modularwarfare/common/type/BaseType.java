@@ -153,6 +153,10 @@ public class BaseType {
                     for (SoundEntry soundEntry : weaponSoundMap.get(weaponSoundType)) {
                         Minecraft.getMinecraft().world.playSound(player, player.getPosition(), ClientProxy.modSounds.get(soundEntry.soundName), SoundCategory.PLAYERS, 1f, 1f);
                     }
+                }else {
+                    if (allowDefaultSounds && weaponSoundType.defaultSound != null) {
+                        Minecraft.getMinecraft().world.playSound(player, player.getPosition(), ClientProxy.modSounds.get(weaponSoundType.defaultSound), SoundCategory.PLAYERS, 1f, 1f);
+                    }
                 }
             }
         }

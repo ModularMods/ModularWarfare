@@ -6,17 +6,28 @@ import com.modularwarfare.common.entity.grenades.EntityGrenade;
 import com.modularwarfare.common.hitbox.PlayerHitbox;
 import com.modularwarfare.common.hitbox.PlayerSnapshot;
 import com.modularwarfare.common.hitbox.hits.BulletHit;
+import com.modularwarfare.common.hitbox.hits.OBBHit;
 import com.modularwarfare.common.hitbox.hits.PlayerHit;
+import com.modularwarfare.common.hitbox.maths.EnumHitboxType;
 import com.modularwarfare.common.hitbox.playerdata.PlayerData;
 import com.modularwarfare.common.network.PacketPlaySound;
+import com.modularwarfare.common.vector.Matrix4f;
+import com.modularwarfare.common.vector.Vector3f;
+import com.modularwarfare.raycast.obb.OBBModelBox;
+import com.modularwarfare.raycast.obb.OBBPlayerManager;
+import com.modularwarfare.raycast.obb.OBBPlayerManager.Line;
+import com.modularwarfare.raycast.obb.OBBPlayerManager.PlayerOBBModelObject;
+
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.*;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
@@ -30,6 +41,7 @@ import java.util.List;
  */
 public class DefaultRayCasting extends RayCasting {
 
+    //在未来应当考虑穿透
     @Override
     public BulletHit computeDetection(World world, float x, float y, float z, float tx, float ty, float tz, float borderSize, HashSet<Entity> excluded, boolean collideablesOnly, int ping) {
         Vec3d startVec = new Vec3d(x, y, z);
@@ -56,15 +68,40 @@ public class DefaultRayCasting extends RayCasting {
         } else {
             realVecEnd = endVec;
         }
+        Vector3f rayVec=new Vector3f(endVec.x-startVec.x, endVec.y-startVec.y, endVec.z-startVec.z);
+        float len=rayVec.length();
+        Vector3f normlVec=rayVec.normalise(null);
+        OBBModelBox ray=new OBBModelBox();
+        float pitch=(float) Math.asin(normlVec.y);
+        normlVec.y=0;
+        normlVec=normlVec.normalise(null);
+        float yaw=(float)Math.asin(normlVec.x);
+        if(normlVec.z<0) {
+            yaw=(float) (Math.PI-yaw);
+        }
+        Matrix4f matrix=new Matrix4f();
+        matrix.rotate(yaw, new Vector3f(0, 1, 0));
+        matrix.rotate(pitch, new Vector3f(-1, 0, 0));
+        ray.center=new Vector3f((startVec.x+endVec.x)/2, (startVec.y+endVec.y)/2, (startVec.z+endVec.z)/2);
+        ray.axis.x=new Vector3f(0, 0, 0);
+        ray.axis.y=new Vector3f(0, 0, 0);
+        ray.axis.z=Matrix4f.transform(matrix, new Vector3f(0, 0, len/2), null);
+        ray.axisNormal.x=Matrix4f.transform(matrix, new Vector3f(1, 0, 0), null);
+        ray.axisNormal.y=Matrix4f.transform(matrix, new Vector3f(0, 1, 0), null);
+        ray.axisNormal.z=Matrix4f.transform(matrix, new Vector3f(0, 0, 1), null);
+        
 
-
+        OBBPlayerManager.lines.add(new Line(ray));
+        OBBPlayerManager.lines.add(new Line(new Vector3f(startVec), new Vector3f(endVec)));
         //Iterate over all entities
         for (int i = 0; i < world.loadedEntityList.size(); i++) {
             Entity obj = world.loadedEntityList.get(i);
 
             if (((excluded != null && !excluded.contains(obj)) || excluded == null)) {
                 if (obj instanceof EntityPlayer) {
-
+                    //to delete in the future
+                    
+                    /*
                     PlayerData data = ModularWarfare.PLAYERHANDLER.getPlayerData((EntityPlayer) obj);
 
                     int snapshotToTry = ping / 50;
@@ -92,7 +129,37 @@ public class DefaultRayCasting extends RayCasting {
                                 return new PlayerHit(hitbox, intercept);
                             }
                         }
-                }
+                    }
+                    */
+                    //Minecraft.getMinecraft().player.sendMessage(new TextComponentString("test:"+startVec+" "+endVec));
+                    PlayerOBBModelObject obbModelObject = OBBPlayerManager.getPlayerOBBObject(obj.getName());
+                    OBBModelBox finalBox=null;
+                    boolean isHeadShot=false;
+                    boolean isBodyShot=false;
+                    List<OBBModelBox> boxes = obbModelObject.calculateIntercept(ray);
+                    if (boxes.size() > 0) {
+                        double distanceSq = Double.MAX_VALUE;
+                        for (OBBModelBox obb : boxes) {
+                            if (obb.name.equals("obb_head")) {
+                                finalBox=obb;
+                                isHeadShot=true;
+                                break;
+                            } else if (!isHeadShot && obb.name.equals("obb_body")) {
+                                finalBox=obb;
+                                isBodyShot=true;
+                            } else if (!isHeadShot && !isBodyShot) {
+                                double d = startVec
+                                        .squareDistanceTo(new Vec3d(obb.center.x, obb.center.y, obb.center.z));
+                                if (d < distanceSq) {
+                                    distanceSq = d;
+                                    finalBox=obb;
+                                }
+                            }
+                        }
+                        PlayerData data = ModularWarfare.PLAYERHANDLER.getPlayerData((EntityPlayer) obj);
+                        RayTraceResult intercept = new RayTraceResult(obj, new Vec3d(finalBox.center.x, finalBox.center.y, finalBox.center.z));
+                        return new OBBHit((EntityPlayer)obj,finalBox.copy(), intercept);
+                    }
                 }
             }
         }

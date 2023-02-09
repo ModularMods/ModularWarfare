@@ -251,7 +251,7 @@ public class RenderGunEnhanced extends CustomItemRenderer {
         /**
          * ACTION PROBE
          */
-        if(Loader.isModLoaded("modularmovements")) {
+        if(ModularWarfare.isLoadedModularMovements) {
             rotateX+=15F * ClientLitener.cameraProbeOffset;
         }
         mat.rotate(toRadians(rotateX),  new Vector3f(1f, 0f, 0f));

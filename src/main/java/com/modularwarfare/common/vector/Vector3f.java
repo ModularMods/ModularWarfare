@@ -93,6 +93,10 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
         this((float) x, (float) y, (float) z);
     }
 
+    public Vector3f add(float x,float y,float z) {
+        return add(this, new Vector3f(x, y, z), this);
+    }
+    
     /**
      * Add a vector to another vector and place the result in a destination
      * vector.
@@ -164,6 +168,9 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
      */
     public static float dot(Vector3f left, Vector3f right) {
         return left.x * right.x + left.y * right.y + left.z * right.z;
+    }
+    public static double dotDouble(Vector3f left, Vector3f right) {
+        return (double)left.x * (double)right.x + (double)left.y * (double)right.y + (double)left.z * (double)right.z;
     }
 
     /**

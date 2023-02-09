@@ -279,6 +279,21 @@ public class Matrix4f extends Matrix implements Serializable {
 
         return dest;
     }
+    
+    public static Vector3f transform(Matrix4f left, Vector3f right, Vector3f dest) {
+        if (dest == null)
+            dest = new Vector3f();
+
+        float x = left.m00 * right.x + left.m10 * right.y + left.m20 * right.z;
+        float y = left.m01 * right.x + left.m11 * right.y + left.m21 * right.z;
+        float z = left.m02 * right.x + left.m12 * right.y + left.m22 * right.z;
+
+        dest.x = x;
+        dest.y = y;
+        dest.z = z;
+
+        return dest;
+    }
 
     /**
      * Scales the source matrix and put the result in the destination matrix

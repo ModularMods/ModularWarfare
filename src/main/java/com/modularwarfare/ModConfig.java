@@ -26,7 +26,6 @@ public class ModConfig {
     //shots
     public Shots shots = new Shots();
     public static class Shots {
-        public boolean client_sided_hit_registration = true;
         public boolean shot_break_glass = false;
         public boolean knockback_entity_damage = false;
     }

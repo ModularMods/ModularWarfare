@@ -53,6 +53,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -142,6 +143,8 @@ public class ModularWarfare {
      */
     public static File addonDir;
     public static AddonLoaderManager loaderManager;
+    
+    public static boolean isLoadedModularMovements=false;
 
 
     public static void loadContent() {
@@ -383,6 +386,10 @@ public class ModularWarfare {
     public void onInitialization(FMLInitializationEvent event) {
         new ServerTickHandler();
 
+        if(Loader.isModLoaded("modularmovements")) {
+            isLoadedModularMovements=true;
+        }
+        
         PROXY.load();
 
         NETWORK = new NetworkHandler();

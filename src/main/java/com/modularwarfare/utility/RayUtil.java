@@ -109,7 +109,7 @@ public class RayUtil {
         Vec3d vec3d1 = entity.getLook(partialTicks);
         Vec3d vec3d2 = vec3d.addVector(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
 
-        if(Loader.isModLoaded("modularmovements")) {
+        if(ModularWarfare.isLoadedModularMovements) {
             if (entity instanceof EntityPlayer) {
                 vec3d = ModularMovementsHooks.onGetPositionEyes((EntityPlayer) entity, partialTicks);
             }
@@ -157,10 +157,8 @@ public class RayUtil {
         HashSet<Entity> hashset = new HashSet<Entity>(1);
         hashset.add(player);
 
-        final float accuracy = calculateAccuracyServer(item, player);
-
+        float accuracy = calculateAccuracyServer(item, player);
         Vec3d dir = getGunAccuracy(rotationPitch, rotationYaw, accuracy, player.world.rand);
-
         double dx = dir.x * range;
         double dy = dir.y * range;
         double dz = dir.z * range;
@@ -184,6 +182,6 @@ public class RayUtil {
             }
         }
 
-        return ModularWarfare.INSTANCE.RAY_CASTING.computeDetection(world, (float) offsetVec.x, (float) offsetVec.y, (float) offsetVec.z, (float) (player.posX + dx + player.motionX), (float) (player.posY + dy + player.motionY), (float) (player.posZ + dz + player.motionZ), 0.001f, hashset, false, ping);
+        return ModularWarfare.INSTANCE.RAY_CASTING.computeDetection(world, (float) offsetVec.x, (float) offsetVec.y, (float) offsetVec.z, (float) (offsetVec.x + dx), (float) (offsetVec.y + dy), (float) (offsetVec.z + dz), 0.001f, hashset, false, ping);
     }
 }

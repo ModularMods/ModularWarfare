@@ -183,7 +183,7 @@ public class GunUI {
 
 
                                 GlStateManager.translate(xPos, yPos, 0f);
-                                if(Loader.isModLoaded("modularmovements")) {
+                                if(ModularWarfare.isLoadedModularMovements) {
                                     GL11.glRotatef(15F * ClientLitener.cameraProbeOffset, 0, 0, 1);
                                 }
                                 GlStateManager.enableBlend();

@@ -44,39 +44,37 @@ public class PacketExpShot extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if(ModConfig.INSTANCE.shots.client_sided_hit_registration) {
-                    if (entityPlayer.ping > 100 * 20) {
-                        entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
-                        return;
-                    }
-                    if (entityPlayer != null) {
-                        if (entityPlayer.getHeldItemMainhand() != null) {
-                            if (entityPlayer.getHeldItemMainhand().getItem() instanceof ItemGun) {
+                if (entityPlayer.ping > 100 * 20) {
+                    entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
+                    return;
+                }
+                if (entityPlayer != null) {
+                    if (entityPlayer.getHeldItemMainhand() != null) {
+                        if (entityPlayer.getHeldItemMainhand().getItem() instanceof ItemGun) {
 
-                                if (ServerTickHandler.playerAimShootCooldown.get(entityPlayer.getName()) == null) {
-                                    ModularWarfare.NETWORK.sendToAll(new PacketAimingReponse(entityPlayer.getName(), true));
+                            if (ServerTickHandler.playerAimShootCooldown.get(entityPlayer.getName()) == null) {
+                                ModularWarfare.NETWORK.sendToAll(new PacketAimingReponse(entityPlayer.getName(), true));
+                            }
+                            ServerTickHandler.playerAimShootCooldown.put(entityPlayer.getName(), 60);
+
+                            if (ModularWarfare.gunTypes.get(internalname) != null) {
+                                ItemGun itemGun = ModularWarfare.gunTypes.get(internalname);
+                                WeaponFireMode fireMode = itemGun.type.getFireMode(entityPlayer.getHeldItemMainhand());
+                                int shotCount = fireMode == WeaponFireMode.BURST ? entityPlayer.getHeldItemMainhand().getTagCompound().getInteger("shotsremaining") > 0 ? entityPlayer.getHeldItemMainhand().getTagCompound().getInteger("shotsremaining") : itemGun.type.numBurstRounds : 1;
+
+                                // Burst Stuff
+                                if (fireMode == WeaponFireMode.BURST) {
+                                    shotCount = shotCount - 1;
+                                    entityPlayer.getHeldItemMainhand().getTagCompound().setInteger("shotsremaining", shotCount);
                                 }
-                                ServerTickHandler.playerAimShootCooldown.put(entityPlayer.getName(), 60);
 
-                                if (ModularWarfare.gunTypes.get(internalname) != null) {
-                                    ItemGun itemGun = ModularWarfare.gunTypes.get(internalname);
-                                    WeaponFireMode fireMode = itemGun.type.getFireMode(entityPlayer.getHeldItemMainhand());
-                                    int shotCount = fireMode == WeaponFireMode.BURST ? entityPlayer.getHeldItemMainhand().getTagCompound().getInteger("shotsremaining") > 0 ? entityPlayer.getHeldItemMainhand().getTagCompound().getInteger("shotsremaining") : itemGun.type.numBurstRounds : 1;
+                                itemGun.consumeShot(entityPlayer.getHeldItemMainhand());
 
-                                    // Burst Stuff
-                                    if (fireMode == WeaponFireMode.BURST) {
-                                        shotCount = shotCount - 1;
-                                        entityPlayer.getHeldItemMainhand().getTagCompound().setInteger("shotsremaining", shotCount);
-                                    }
-
-                                    itemGun.consumeShot(entityPlayer.getHeldItemMainhand());
-
-                                    // Sound
-                                    if (GunType.getAttachment(entityPlayer.getHeldItemMainhand(), AttachmentPresetEnum.Barrel) != null) {
-                                        itemGun.type.playSound(entityPlayer, WeaponSoundType.FireSuppressed, entityPlayer.getHeldItemMainhand(), entityPlayer);
-                                    } else {
-                                        itemGun.type.playSound(entityPlayer, WeaponSoundType.Fire, entityPlayer.getHeldItemMainhand(), entityPlayer);
-                                    }
+                                // Sound
+                                if (GunType.getAttachment(entityPlayer.getHeldItemMainhand(), AttachmentPresetEnum.Barrel) != null) {
+                                    itemGun.type.playSound(entityPlayer, WeaponSoundType.FireSuppressed, entityPlayer.getHeldItemMainhand(), entityPlayer);
+                                } else {
+                                    itemGun.type.playSound(entityPlayer, WeaponSoundType.Fire, entityPlayer.getHeldItemMainhand(), entityPlayer);
                                 }
                             }
                         }
