@@ -69,39 +69,59 @@ public class RenderedGltfModelGL33MWF extends RenderedGltfModelGL33 implements I
 		ArrayList<Runnable> shaderModNodeRenderCommands = new ArrayList<Runnable>();
 		SkinModel skinModel = nodeModel.getSkinModel();
 		if(skinModel != null) {
-			int jointCount = skinModel.getJoints().size();
-			int jointMatrixSize = jointCount * 16;
+			//TODO: These part of code will need to optimized once MCglTF with SIMD comes out.
+			boolean canHaveHardwareSkinning;
+			checkHardwareSkinning: {
+				for(MeshModel meshModel : nodeModel.getMeshModels()) {
+					for(MeshPrimitiveModel meshPrimitiveModel : meshModel.getMeshPrimitiveModels()) {
+						if(!meshPrimitiveModel.getAttributes().containsKey("JOINTS_1")) {
+							canHaveHardwareSkinning = true;
+							break checkHardwareSkinning;
+						}
+					}
+				}
+				canHaveHardwareSkinning = false;
+			}
 			
-			int jointMatrixBuffer = GL15.glGenBuffers();
-			gltfRenderData.add(() -> GL15.glDeleteBuffers(jointMatrixBuffer));
-			GL15.glBindBuffer(GL31.GL_TEXTURE_BUFFER, jointMatrixBuffer);
-			GL15.glBufferData(GL31.GL_TEXTURE_BUFFER, jointMatrixSize * Float.BYTES, GL15.GL_STATIC_DRAW);
-			int glTexture = GL11.glGenTextures();
-			gltfRenderData.add(() -> GL11.glDeleteTextures(glTexture));
-			GL11.glBindTexture(GL31.GL_TEXTURE_BUFFER, glTexture);
-			GL31.glTexBuffer(GL31.GL_TEXTURE_BUFFER, GL30.GL_RGBA32F, jointMatrixBuffer);
+			int jointCount = skinModel.getJoints().size();
 			
 			float[][] transforms = new float[jointCount][];
 			float[] invertNodeTransform = new float[16];
 			float[] bindShapeMatrix = new float[16];
-			float[] jointMatrices = new float[jointMatrixSize];
 			
-			List<Runnable> jointMatricesTransformCommands = new ArrayList<Runnable>(jointCount);
-			for(int joint = 0; joint < jointCount; joint++) {
-				int i = joint;
-				float[] transform = transforms[i] = new float[16];
-				float[] inverseBindMatrix = new float[16];
-				jointMatricesTransformCommands.add(() -> {
-					MathUtils.mul4x4(invertNodeTransform, transform, transform);
-					skinModel.getInverseBindMatrix(i, inverseBindMatrix);
-					MathUtils.mul4x4(transform, inverseBindMatrix, transform);
-					MathUtils.mul4x4(transform, bindShapeMatrix, transform);
-					System.arraycopy(transform, 0, jointMatrices, i * 16, 16);
-				});
-			}
+			List<Runnable> vanillaSingleNodeRenderCommands = new ArrayList<Runnable>();
+			List<Runnable> shaderModSingleNodeRenderCommands = new ArrayList<Runnable>();
 			
-			nodeSkinningCommands.add(() -> {
-				if(visibleToggle.booleanValue()) {
+			if(canHaveHardwareSkinning) {
+				List<Runnable> skinningSingleNodeRenderCommands = new ArrayList<Runnable>();
+				
+				int jointMatrixSize = jointCount * 16;
+				float[] jointMatrices = new float[jointMatrixSize];
+				
+				int jointMatrixBuffer = GL15.glGenBuffers();
+				gltfRenderData.add(() -> GL15.glDeleteBuffers(jointMatrixBuffer));
+				GL15.glBindBuffer(GL31.GL_TEXTURE_BUFFER, jointMatrixBuffer);
+				GL15.glBufferData(GL31.GL_TEXTURE_BUFFER, jointMatrixSize * Float.BYTES, GL15.GL_STATIC_DRAW);
+				int glTexture = GL11.glGenTextures();
+				gltfRenderData.add(() -> GL11.glDeleteTextures(glTexture));
+				GL11.glBindTexture(GL31.GL_TEXTURE_BUFFER, glTexture);
+				GL31.glTexBuffer(GL31.GL_TEXTURE_BUFFER, GL30.GL_RGBA32F, jointMatrixBuffer);
+				
+				List<Runnable> jointMatricesTransformCommands = new ArrayList<Runnable>(jointCount);
+				for(int joint = 0; joint < jointCount; joint++) {
+					int i = joint;
+					float[] transform = transforms[i] = new float[16];
+					float[] inverseBindMatrix = new float[16];
+					jointMatricesTransformCommands.add(() -> {
+						MathUtils.mul4x4(invertNodeTransform, transform, transform);
+						skinModel.getInverseBindMatrix(i, inverseBindMatrix);
+						MathUtils.mul4x4(transform, inverseBindMatrix, transform);
+						MathUtils.mul4x4(transform, bindShapeMatrix, transform);
+						System.arraycopy(transform, 0, jointMatrices, i * 16, 16);
+					});
+				}
+				
+				skinningSingleNodeRenderCommands.add(() -> {
 					for(int i = 0; i < transforms.length; i++) {
 						System.arraycopy(findGlobalTransform(skinModel.getJoints().get(i)), 0, transforms[i], 0, 16);
 					}
@@ -113,22 +133,59 @@ public class RenderedGltfModelGL33MWF extends RenderedGltfModelGL33 implements I
 					GL15.glBufferSubData(GL31.GL_TEXTURE_BUFFER, 0, putFloatBuffer(jointMatrices));
 					
 					GL11.glBindTexture(GL31.GL_TEXTURE_BUFFER, glTexture);
+				});
+				
+				Runnable transformCommand = createTransformCommand(nodeModel);
+				vanillaSingleNodeRenderCommands.add(transformCommand);
+				shaderModSingleNodeRenderCommands.add(transformCommand);
+				for(MeshModel meshModel : nodeModel.getMeshModels()) {
+					for(MeshPrimitiveModel meshPrimitiveModel : meshModel.getMeshPrimitiveModels()) {
+						processMeshPrimitiveModel(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, transforms, skinningSingleNodeRenderCommands, vanillaSingleNodeRenderCommands, shaderModSingleNodeRenderCommands);
+					}
 				}
-			});
-			
-			List<Runnable> vanillaSingleNodeRenderCommands = new ArrayList<Runnable>();
-			List<Runnable> shaderModSingleNodeRenderCommands = new ArrayList<Runnable>();
-			
-			Runnable transformCommand = createTransformCommand(nodeModel);
-			vanillaSingleNodeRenderCommands.add(transformCommand);
-			shaderModSingleNodeRenderCommands.add(transformCommand);
-			for(MeshModel meshModel : nodeModel.getMeshModels()) {
-				for(MeshPrimitiveModel meshPrimitiveModel : meshModel.getMeshPrimitiveModels()) {
-					processMeshPrimitiveModel(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, nodeSkinningCommands, vanillaSingleNodeRenderCommands, shaderModSingleNodeRenderCommands);
-				}
+				vanillaSingleNodeRenderCommands.add(GL11::glPopMatrix);
+				shaderModSingleNodeRenderCommands.add(GL11::glPopMatrix);
+				
+				nodeSkinningCommands.add(() -> {
+					if(visibleToggle.booleanValue()) skinningSingleNodeRenderCommands.forEach(Runnable::run);
+				});
 			}
-			vanillaSingleNodeRenderCommands.add(GL11::glPopMatrix);
-			shaderModSingleNodeRenderCommands.add(GL11::glPopMatrix);
+			else {
+				List<Runnable> jointMatricesTransformCommands = new ArrayList<Runnable>(jointCount);
+				for(int joint = 0; joint < jointCount; joint++) {
+					int i = joint;
+					float[] transform = transforms[i] = new float[16];
+					float[] inverseBindMatrix = new float[16];
+					jointMatricesTransformCommands.add(() -> {
+						MathUtils.mul4x4(invertNodeTransform, transform, transform);
+						skinModel.getInverseBindMatrix(i, inverseBindMatrix);
+						MathUtils.mul4x4(transform, inverseBindMatrix, transform);
+						MathUtils.mul4x4(transform, bindShapeMatrix, transform);
+					});
+				}
+				
+				Runnable jointMatricesTransformCommand = () -> {
+					for(int i = 0; i < transforms.length; i++) {
+						System.arraycopy(findGlobalTransform(skinModel.getJoints().get(i)), 0, transforms[i], 0, 16);
+					}
+					MathUtils.invert4x4(findGlobalTransform(nodeModel), invertNodeTransform);
+					skinModel.getBindShapeMatrix(bindShapeMatrix);
+					jointMatricesTransformCommands.parallelStream().forEach(Runnable::run);
+				};
+				vanillaSingleNodeRenderCommands.add(jointMatricesTransformCommand);
+				shaderModSingleNodeRenderCommands.add(jointMatricesTransformCommand);
+				
+				Runnable transformCommand = createTransformCommand(nodeModel);
+				vanillaSingleNodeRenderCommands.add(transformCommand);
+				shaderModSingleNodeRenderCommands.add(transformCommand);
+				for(MeshModel meshModel : nodeModel.getMeshModels()) {
+					for(MeshPrimitiveModel meshPrimitiveModel : meshModel.getMeshPrimitiveModels()) {
+						processMeshPrimitiveModel(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, transforms, vanillaSingleNodeRenderCommands, shaderModSingleNodeRenderCommands);
+					}
+				}
+				vanillaSingleNodeRenderCommands.add(GL11::glPopMatrix);
+				shaderModSingleNodeRenderCommands.add(GL11::glPopMatrix);
+			}
 			
 			vanillaNodeRenderCommands.add(() -> {
 				if(visibleToggle.booleanValue()) vanillaSingleNodeRenderCommands.forEach(Runnable::run);
@@ -284,7 +341,7 @@ public class RenderedGltfModelGL33MWF extends RenderedGltfModelGL33 implements I
 	 * Copy-paste from parent class, replace default material command with MWF material command and force generate Mikk tangent with it.
 	 */
 	@Override
-	protected void processMeshPrimitiveModel(List<Runnable> gltfRenderData, NodeModel nodeModel, MeshModel meshModel, MeshPrimitiveModel meshPrimitiveModel, List<Runnable> skinningCommand, List<Runnable> vanillaRenderCommands, List<Runnable> shaderModRenderCommands) {
+	protected void processMeshPrimitiveModel(List<Runnable> gltfRenderData, NodeModel nodeModel, MeshModel meshModel, MeshPrimitiveModel meshPrimitiveModel, float[][] jointMatrices, List<Runnable> skinningCommand, List<Runnable> vanillaRenderCommands, List<Runnable> shaderModRenderCommands) {
 		Map<String, AccessorModel> attributes = meshPrimitiveModel.getAttributes();
 		AccessorModel positionsAccessorModel = attributes.get("POSITION");
 		if(positionsAccessorModel != null) {
@@ -293,7 +350,8 @@ public class RenderedGltfModelGL33MWF extends RenderedGltfModelGL33 implements I
 			if(normalsAccessorModel != null) {
 				AccessorModel tangentsAccessorModel = attributes.get("TANGENT");
 				if(tangentsAccessorModel != null) {
-					processMeshPrimitiveModelIncludedTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand, attributes, positionsAccessorModel, normalsAccessorModel, tangentsAccessorModel);
+					if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelIncludedTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices, attributes, positionsAccessorModel, normalsAccessorModel, tangentsAccessorModel);
+					else processMeshPrimitiveModelIncludedTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand, attributes, positionsAccessorModel, normalsAccessorModel, tangentsAccessorModel);
 					MaterialModel materialModel = meshPrimitiveModel.getMaterialModel();
 					if(materialModel != null) {
 						Object extras = materialModel.getExtras();
@@ -321,22 +379,28 @@ public class RenderedGltfModelGL33MWF extends RenderedGltfModelGL33 implements I
 							vanillaRenderCommands.add(renderedMaterial.vanillaMaterialCommand);
 							shaderModRenderCommands.add(renderedMaterial.shaderModMaterialCommand);
 							if(renderedMaterial.normalTexture != null) {
-								processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
+								if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+								else processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
 							}
 							else {
-								processMeshPrimitiveModelSimpleTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand, attributes, positionsAccessorModel, normalsAccessorModel);
+								if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelSimpleTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices, attributes, positionsAccessorModel, normalsAccessorModel);
+								else processMeshPrimitiveModelSimpleTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand, attributes, positionsAccessorModel, normalsAccessorModel);
 							}
 						}
 						else {
 							vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
 							shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
-							processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand); //This was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+							//These was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+							if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+							else processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
 						}
 					}
 					else {
 						vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
 						shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
-						processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand); //This was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+						//These was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+						if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+						else processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
 					}
 				}
 			}
@@ -349,22 +413,120 @@ public class RenderedGltfModelGL33MWF extends RenderedGltfModelGL33 implements I
 						vanillaRenderCommands.add(renderedMaterial.vanillaMaterialCommand);
 						shaderModRenderCommands.add(renderedMaterial.shaderModMaterialCommand);
 						if(renderedMaterial.normalTexture != null) {
-							processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
+							if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+							else processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
 						}
 						else {
-							processMeshPrimitiveModelFlatNormalSimpleTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
+							if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelFlatNormalSimpleTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+							else processMeshPrimitiveModelFlatNormalSimpleTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
 						}
 					}
 					else {
 						vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
 						shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
-						processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand); //This was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+						//These was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+						if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+						else processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
 					}
 				}
 				else {
 					vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
 					shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
-					processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand); //This was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+					//These was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+					if(attributes.containsKey("JOINTS_1")) processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+					else processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, skinningCommand);
+				}
+			}
+			vanillaRenderCommands.addAll(renderCommand);
+			shaderModRenderCommands.addAll(renderCommand);
+		}
+	}
+	
+	/**
+	 * Copy-paste from parent class, replace default material command with MWF material command and force generate Mikk tangent with it.
+	 */
+	@Override
+	protected void processMeshPrimitiveModel(List<Runnable> gltfRenderData, NodeModel nodeModel, MeshModel meshModel, MeshPrimitiveModel meshPrimitiveModel, float[][] jointMatrices, List<Runnable> vanillaRenderCommands, List<Runnable> shaderModRenderCommands) {
+		Map<String, AccessorModel> attributes = meshPrimitiveModel.getAttributes();
+		AccessorModel positionsAccessorModel = attributes.get("POSITION");
+		if(positionsAccessorModel != null) {
+			List<Runnable> renderCommand = new ArrayList<Runnable>();
+			AccessorModel normalsAccessorModel = attributes.get("NORMAL");
+			if(normalsAccessorModel != null) {
+				AccessorModel tangentsAccessorModel = attributes.get("TANGENT");
+				if(tangentsAccessorModel != null) {
+					processMeshPrimitiveModelIncludedTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices, attributes, positionsAccessorModel, normalsAccessorModel, tangentsAccessorModel);
+					MaterialModel materialModel = meshPrimitiveModel.getMaterialModel();
+					if(materialModel != null) {
+						Object extras = materialModel.getExtras();
+						if(extras != null) {
+							Material renderedMaterial = obtainMaterial(gltfRenderData, extras);
+							vanillaRenderCommands.add(renderedMaterial.vanillaMaterialCommand);
+							shaderModRenderCommands.add(renderedMaterial.shaderModMaterialCommand);
+						}
+						else {
+							vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
+							shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
+						}
+					}
+					else {
+						vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
+						shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
+					}
+				}
+				else {
+					MaterialModel materialModel = meshPrimitiveModel.getMaterialModel();
+					if(materialModel != null) {
+						Object extras = materialModel.getExtras();
+						if(extras != null) {
+							Material renderedMaterial = obtainMaterial(gltfRenderData, extras);
+							vanillaRenderCommands.add(renderedMaterial.vanillaMaterialCommand);
+							shaderModRenderCommands.add(renderedMaterial.shaderModMaterialCommand);
+							if(renderedMaterial.normalTexture != null) {
+								processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+							}
+							else {
+								processMeshPrimitiveModelSimpleTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices, attributes, positionsAccessorModel, normalsAccessorModel);
+							}
+						}
+						else {
+							vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
+							shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
+							processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices); //This was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+						}
+					}
+					else {
+						vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
+						shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
+						processMeshPrimitiveModelMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices); //This was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+					}
+				}
+			}
+			else {
+				MaterialModel materialModel = meshPrimitiveModel.getMaterialModel();
+				if(materialModel != null) {
+					Object extras = materialModel.getExtras();
+					if(extras != null) {
+						Material renderedMaterial = obtainMaterial(gltfRenderData, extras);
+						vanillaRenderCommands.add(renderedMaterial.vanillaMaterialCommand);
+						shaderModRenderCommands.add(renderedMaterial.shaderModMaterialCommand);
+						if(renderedMaterial.normalTexture != null) {
+							processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+						}
+						else {
+							processMeshPrimitiveModelFlatNormalSimpleTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices);
+						}
+					}
+					else {
+						vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
+						shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
+						processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices); //This was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
+					}
+				}
+				else {
+					vanillaRenderCommands.add(RenderedGltfModelMWF.mwfVanillaMaterialCommand);
+					shaderModRenderCommands.add(RenderedGltfModelMWF.mwfShaderModMaterialCommand);
+					processMeshPrimitiveModelFlatNormalMikkTangent(gltfRenderData, nodeModel, meshModel, meshPrimitiveModel, renderCommand, jointMatrices); //This was originally generate simple tangent, but TextureManager.bindTexture() may also bind normal map as well.
 				}
 			}
 			vanillaRenderCommands.addAll(renderCommand);
