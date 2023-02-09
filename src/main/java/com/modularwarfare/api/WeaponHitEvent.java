@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 import java.util.List;
 
+@Deprecated
 public class WeaponHitEvent extends WeaponEvent {
 
     public WeaponHitEvent(EntityPlayer entityPlayer, ItemStack stackWeapon, ItemGun itemWeapon) {

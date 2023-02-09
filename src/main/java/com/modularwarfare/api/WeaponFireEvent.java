@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import java.util.List;
 
 @Event.HasResult
+@Deprecated
 public class WeaponFireEvent extends WeaponEvent {
 
     public WeaponFireEvent(EntityPlayer entityPlayer, ItemStack stackWeapon, ItemGun itemWeapon) {
