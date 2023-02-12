@@ -381,7 +381,7 @@ public class ShotManager {
                         if (!victim.isDead && victim.getHealth() > 0.0f) {
                             entities.add(victim);
                             //Send server player hit + hitbox
-                            entityPlayer.sendMessage(new TextComponentString(((OBBHit) rayTrace).box.name));
+                            //entityPlayer.sendMessage(new TextComponentString(((OBBHit) rayTrace).box.name));
                             ModularWarfare.NETWORK.sendToServer(new PacketExpGunFire(victim.getEntityId(), itemGun.type.internalName, ((OBBHit) rayTrace).box.name, itemGun.type.fireTickDelay, itemGun.type.recoilPitch, itemGun.type.recoilYaw, itemGun.type.recoilAimReducer, itemGun.type.bulletSpread, rayTrace.rayTraceResult.hitVec.x, rayTrace.rayTraceResult.hitVec.y, rayTrace.rayTraceResult.hitVec.z));
                         }
                     }
