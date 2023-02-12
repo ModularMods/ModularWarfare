@@ -7,7 +7,6 @@
     "drop_extra_slots_on_death": true
   },
   "shots": {
-    "client_sided_hit_registration": true,
     "shot_break_glass": false,
     "knockback_entity_damage": false
   },
@@ -69,5 +68,5 @@
   "model_optimization": true,
   "debug_hits_message": false,
   "dev_mode": true,
-  "version": "2.3.2f"
+  "version": "2.3.3f"
 }

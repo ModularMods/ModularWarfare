@@ -143,6 +143,8 @@ public class PacketExpGunFire extends PacketBase {
                                     WeaponFireMode fireMode = GunType.getFireMode(entityPlayer.getHeldItemMainhand());
                                     if (fireMode == null)
                                         return;
+                                    IExtraItemHandler extraSlots = null;
+                                    ItemStack plate = null;
                                     if (ShotValidation.verifShot(entityPlayer, entityPlayer.getHeldItemMainhand(), itemGun, fireMode, fireTickDelay, recoilPitch, recoilYaw, recoilAimReducer, bulletSpread)) {
                                         if (target != null) {
                                             float damage = itemGun.type.gunDamage;
@@ -150,8 +152,8 @@ public class PacketExpGunFire extends PacketBase {
                                                 if (hitboxType.contains("body")) {
                                                     EntityPlayer player = (EntityPlayer) target;
                                                     if (player.hasCapability(CapabilityExtra.CAPABILITY, null)) {
-                                                        final IExtraItemHandler extraSlots = player.getCapability(CapabilityExtra.CAPABILITY, null);
-                                                        final ItemStack plate = extraSlots.getStackInSlot(1);
+                                                        extraSlots = player.getCapability(CapabilityExtra.CAPABILITY, null);
+                                                        plate = extraSlots.getStackInSlot(1);
                                                         if (plate != null) {
                                                             if (plate.getItem() instanceof ItemSpecialArmor) {
                                                                 ArmorType armorType = ((ItemSpecialArmor) plate.getItem()).type;
@@ -185,15 +187,44 @@ public class PacketExpGunFire extends PacketBase {
                                             }
                                             
                                             damage*= bulletItem.type.bulletDamageFactor;
-                                            
-                                            //BULLET END
 
+                                            //BULLET END
+                                            boolean flag=false;
+                                            DamageSource damageSource=DamageSource.causePlayerDamage(entityPlayer).setProjectile();
+                                           
+                                            
+                                            if(bulletItem.type.isFireDamage) {
+                                                damageSource.setFireDamage();
+                                            }
+                                            if(bulletItem.type.isAbsoluteDamage) {
+                                                damageSource.setDamageIsAbsolute();
+                                            }
+                                            if(bulletItem.type.isBypassesArmorDamage) {
+                                                damageSource.setDamageBypassesArmor();
+                                            }
+                                            if(bulletItem.type.isExplosionDamage) {
+                                                damageSource.setExplosion();
+                                            }
+                                            if(bulletItem.type.isMagicDamage) {
+                                                damageSource.setMagicDamage();
+                                            }
                                             if (!ModConfig.INSTANCE.shots.knockback_entity_damage) {
-                                                RayUtil.attackEntityWithoutKnockback(target, DamageSource.causePlayerDamage(entityPlayer).setProjectile(), (hitboxType.contains("head") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
+                                                flag=RayUtil.attackEntityWithoutKnockback(target, damageSource, (hitboxType.contains("head") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
                                             } else {
-                                                target.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setProjectile(), (hitboxType.contains("head") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
+                                                flag=target.attackEntityFrom(damageSource, (hitboxType.contains("head") ? damage + itemGun.type.gunDamageHeadshotBonus : damage));
                                             }
                                             target.hurtResistantTime = 0;
+                                            if(flag) {
+                                                if(plate!=null) {
+                                                    plate.attemptDamageItem(1,entityPlayer.getRNG(), entityPlayer);
+                                                    //entityPlayer.sendMessage(new TextComponentString(plate.getItemDamage()+"/"+plate.getMaxDamage()));
+                                                    if(plate.getItemDamage()>=plate.getMaxDamage()) {
+                                                        extraSlots.setStackInSlot(1, ItemStack.EMPTY);
+                                                    }else {
+                                                        extraSlots.setStackInSlot(1,plate);
+                                                    }
+                                                }
+                                            }
                                             
                                             if (entityPlayer instanceof EntityPlayerMP) {
                                                 ModularWarfare.NETWORK.sendTo(new PacketPlayHitmarker(hitboxType.contains("head")), entityPlayer);

@@ -17,6 +17,12 @@ public class BulletType extends BaseType {
     public float bulletDamageFactor = 1.0f;
     public float bulletAccuracyFactor = 1.0f;
     public boolean isSlug = false;
+    
+    public boolean isFireDamage=false;
+    public boolean isAbsoluteDamage=false;
+    public boolean isBypassesArmorDamage=false;
+    public boolean isExplosionDamage=false;
+    public boolean isMagicDamage=false;
 
     /**
      * If the ammo model need to be rendered on guns
