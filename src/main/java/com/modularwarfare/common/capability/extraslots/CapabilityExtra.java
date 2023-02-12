@@ -100,6 +100,15 @@ public class CapabilityExtra {
             }
         }
     }
+    
+    @SubscribeEvent
+    public static void playerClone(PlayerEvent.Clone event) {
+        IExtraItemHandler oldHandler= (IExtraItemHandler) event.getOriginal().getCapability((Capability) CapabilityExtra.CAPABILITY, (EnumFacing) null);
+        IExtraItemHandler newHandler= (IExtraItemHandler) event.getEntityPlayer().getCapability((Capability) CapabilityExtra.CAPABILITY, (EnumFacing) null);
+        for(int i=0;i<newHandler.getSlots();i++) {
+            newHandler.setStackInSlot(i, oldHandler.getStackInSlot(i).copy()); 
+        } 
+    }
 
     public static void sync(final EntityPlayer entity, final Collection<? extends EntityPlayer> receivers) {
         if (entity.hasCapability(CapabilityExtra.CAPABILITY, null)) {
