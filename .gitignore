@@ -28,3 +28,4 @@ build.bat
 forge*changelog.txt
 
 gltf/*
+src/main/java/com/modularwarfare/common/protector/ModularProtectorOfficial.java

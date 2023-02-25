@@ -154,10 +154,7 @@ public class ClientProxy extends CommonProxy {
                     try {
                         ZipFile zipFile = new ZipFile(file);
                         if (zipFile.isEncrypted()) {
-                            /** Check if the zipFile is encrypted by a password or not */
-
-                            ModularWarfare.PROTECTOR.requestPassword(file.getName());
-                            ModularWarfare.PROTECTOR.applyPassword(zipFile, file.getName());
+                            ModularWarfare.PROTECTOR.dhazkjdhakjdbcjbkajb(zipFile, file.getName());
 
                             HashMap<String, Object> map = new HashMap<String, Object>();
                             map.put("modid", ModularWarfare.MOD_ID);
