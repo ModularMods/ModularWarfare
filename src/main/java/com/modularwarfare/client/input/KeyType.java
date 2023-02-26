@@ -10,7 +10,7 @@ public enum KeyType {
     GunUnload("Unload Key", 0x16), // U
     AddAttachment("Attachment Mode", 0x32), // M
     Flashlight("Flashlight", 0x23), // H
-    Backpack("Backpack Inventory", 0x30), // B
+    Inventory("Open Inventory", 0x30), // B
 
 
     Left("Left (Attach mode)", 203), // H
