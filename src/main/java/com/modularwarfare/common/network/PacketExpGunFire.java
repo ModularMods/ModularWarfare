@@ -123,10 +123,6 @@ public class PacketExpGunFire extends PacketBase {
         IThreadListener mainThread = (WorldServer) entityPlayer.world;
         mainThread.addScheduledTask(new Runnable() {
             public void run() {
-                if (entityPlayer.ping > 100 * 20) {
-                    entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
-                    return;
-                }
                 if (entityPlayer != null) {
                     if (entityPlayer.getHeldItemMainhand() != null) {
                         if (entityPlayer.getHeldItemMainhand().getItem() instanceof ItemGun) {
@@ -138,7 +134,14 @@ public class PacketExpGunFire extends PacketBase {
                                     return;
                                 }
 
+                                if (entityPlayer.ping > ModConfig.INSTANCE.shots.maxShooterPingMs) {
+                                    entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
+                                    return;
+                                }
+
                                 if (entityId != -1) {
+
+
                                     Entity target = entityPlayer.world.getEntityByID(entityId);
                                     WeaponFireMode fireMode = GunType.getFireMode(entityPlayer.getHeldItemMainhand());
                                     if (fireMode == null)
