@@ -61,13 +61,11 @@ public class DefaultRayCasting extends RayCasting {
         startVec = new Vec3d(x, y, z);
         endVec = new Vec3d(tx, ty, tz);
         float maxDistance = (float) endVec.distanceTo(startVec);
-        Vec3d realVecEnd;
         if (blockHit != null) {
             maxDistance = (float) blockHit.hitVec.distanceTo(startVec);
-            realVecEnd = blockHit.hitVec;
-        } else {
-            realVecEnd = endVec;
+            endVec = blockHit.hitVec;
         }
+
         Vector3f rayVec=new Vector3f(endVec.x-startVec.x, endVec.y-startVec.y, endVec.z-startVec.z);
         float len=rayVec.length();
         Vector3f normlVec=rayVec.normalise(null);
