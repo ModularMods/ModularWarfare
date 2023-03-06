@@ -8,7 +8,8 @@
   },
   "shots": {
     "shot_break_glass": false,
-    "knockback_entity_damage": false
+    "knockback_entity_damage": false,
+    "maxShooterPing": 1000.0
   },
   "guns": {
     "guns_interaction_hand": true,
@@ -68,5 +69,5 @@
   "model_optimization": true,
   "debug_hits_message": false,
   "dev_mode": true,
-  "version": "2.3.4f"
+  "version": "2.4.1f"
 }

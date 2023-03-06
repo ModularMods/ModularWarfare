@@ -28,7 +28,7 @@ public class ModConfig {
     public static class Shots {
         public boolean shot_break_glass = false;
         public boolean knockback_entity_damage = false;
-        public float maxShooterPingMs = 150;
+        public float maxShooterPing = 1000;
     }
 
     //guns

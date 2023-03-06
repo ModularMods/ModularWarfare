@@ -134,7 +134,7 @@ public class PacketExpGunFire extends PacketBase {
                                     return;
                                 }
 
-                                if (entityPlayer.ping > ModConfig.INSTANCE.shots.maxShooterPingMs) {
+                                if (entityPlayer.ping > ModConfig.INSTANCE.shots.maxShooterPing) {
                                     entityPlayer.sendMessage(new TextComponentString(TextFormatting.GRAY + "[" + TextFormatting.RED + "ModularWarfare" + TextFormatting.GRAY + "] Your ping is too high, shot not registered."));
                                     return;
                                 }
