@@ -446,14 +446,11 @@ public class ModularWarfare {
                 protector_class = Class.forName("com.modularwarfare.common.protector.ModularProtectorOfficial");
                 PROTECTOR = (ModularProtector) protector_class.newInstance();
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                PROTECTOR = new ModularProtectorTemplate();
             } catch (InstantiationException e) {
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
-            }
-            if(protector_class == null){
-                PROTECTOR = new ModularProtectorTemplate();
             }
             LOGGER.info("Registered ModularProtector :"+PROTECTOR.getClass().toString());
         }
